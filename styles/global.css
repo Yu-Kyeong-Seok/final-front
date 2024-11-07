@@ -1,10 +1,9 @@
-@import url("https:fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100..900&display=swap");
 @import "./reset.css";
 
 body {
-  font-family: "Noto Sans KR", serif;
-  /* Weight: 100 – 900 */
+  font-family: "Pretendard", sans-serif;
 }
+/* font-weight: 100 - 900 */
 
 /* Grayscale
  $color-white: #ffffff;
@@ -57,4 +56,15 @@ body {
   --color-main3: #b0e3d4;
   --color-main4: #eaf8f4;
   --color-main5: #f2f9f7;
+}
+
+button {
+  background-color: transparent;
+}
+
+.Inner {
+  margin: 0 auto;
+  padding: 0 15px;
+  width: 100%;
+  max-width: 800px;
 }

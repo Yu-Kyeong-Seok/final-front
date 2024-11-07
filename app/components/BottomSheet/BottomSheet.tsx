@@ -1,5 +1,5 @@
 import { useState } from "react";
-import styles from "./FilterBottomSheet.module.scss";
+import styles from "./BottomSheet.module.scss";
 import cn from "classnames/bind";
 import { MdKeyboardArrowDown } from "react-icons/md";
 import { IoCloseOutline } from "react-icons/io5";
@@ -35,8 +35,8 @@ const BottomSheet = (props: BottomSheetProps) => {
   };
 
   return (
-    <div className={cx("FilterWrap")}>
-      <div className={cx("FilterInner")}>
+    <div className={cx("Wrapper")}>
+      <div className={cx("Inner")}>
         {items.map((item) => (
           <button
             key={item.id}
