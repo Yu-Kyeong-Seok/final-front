@@ -3,16 +3,16 @@ import Chip from "./Chip";
 
 type ChipsProps = {
   labels: string[];
-  onLabelClick: (label: string) => void;
+  onClick: (label: string) => void;
 };
 
 const Chips = (props: ChipsProps) => {
-  const { labels, onLabelClick } = props;
+  const { labels, onClick } = props;
   return (
     <div>
       <div>
         {labels.map((label) => (
-          <Chip key={label} label={label} onClick={onLabelClick} />
+          <Chip key={label} label={label} onClick={onClick} />
         ))}
       </div>
     </div>

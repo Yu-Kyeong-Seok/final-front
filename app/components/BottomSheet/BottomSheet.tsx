@@ -6,28 +6,28 @@ import { IoCloseOutline } from "react-icons/io5";
 
 const cx = cn.bind(styles);
 
-type Filter = {
+type Item = {
   id: string;
   label: string;
 };
 
-type FilterBottomSheetProps = {
-  filters: Filter[];
-  onFilterSelect?: (filterId: string) => void;
+type BottomSheetProps = {
+  items: Item[];
+  onSelect?: (itemId: string) => void;
   title?: string;
-  defaultFilter?: string;
+  defaultSelectedItem?: string;
 };
 
-const FilterBottomSheet = (props: FilterBottomSheetProps) => {
-  const { filters, onFilterSelect, title, defaultFilter } = props;
+const BottomSheet = (props: BottomSheetProps) => {
+  const { items, onSelect, title, defaultSelectedItem } = props;
 
   const [isOpen, setIsOpen] = useState(false);
-  const [selectedFilter, setSelectedFilter] = useState(defaultFilter);
+  const [selectedItem, setSelectedItem] = useState(defaultSelectedItem);
 
-  const handleFilterClick = (filterId: string) => {
-    setSelectedFilter(filterId);
+  const handleItemClick = (itemId: string) => {
+    setSelectedItem(itemId);
     setIsOpen(true);
-    onFilterSelect?.(filterId);
+    onSelect?.(itemId);
   };
 
   const handleClose = () => {
@@ -36,17 +36,16 @@ const FilterBottomSheet = (props: FilterBottomSheetProps) => {
 
   return (
     <div className={cx("FilterWrap")}>
-      {/* 필터 맵 */}
       <div className={cx("FilterInner")}>
-        {filters.map((filter) => (
+        {items.map((item) => (
           <button
-            key={filter.id}
+            key={item.id}
             onClick={() => {
-              handleFilterClick(filter.id);
+              handleItemClick(item.id);
             }}
             className={cx("FilterBtn")}
           >
-            {filter.label}
+            {item.label}
             <span>
               <MdKeyboardArrowDown />
             </span>
@@ -61,9 +60,7 @@ const FilterBottomSheet = (props: FilterBottomSheetProps) => {
         {/* isOpen이 true면 opened 클래스 붙여줌 */}
 
         <div className={cx("BottomSheetInner")}>
-          <h3>
-            {filters.find((f) => f.id === selectedFilter)?.label || title}
-          </h3>
+          <h3>{items.find((f) => f.id === selectedItem)?.label || title}</h3>
 
           <button onClick={handleClose} className={cx("BottomSheetBtn")}>
             <IoCloseOutline />
@@ -74,4 +71,4 @@ const FilterBottomSheet = (props: FilterBottomSheetProps) => {
   );
 };
 
-export default FilterBottomSheet;
+export default BottomSheet;
