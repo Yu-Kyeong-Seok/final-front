@@ -1,0 +1,13 @@
+{
+    "results":[
+        {
+            "name":"고구마 1KG",
+            "originalPrice":"6900",
+            "price":"4480",
+            "discount":"35"
+        }
+    ],
+    "prev":null,
+    "next":null,
+    "count": 8
+}
