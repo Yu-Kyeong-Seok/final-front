@@ -1,9 +1,6 @@
-"use client";
-
 import React from "react";
 import ButtonStyled from "./Button.styled";
 import { ButtonBaseProps, ButtonFullProps } from "./Button.type";
-import "../../styles/global.scss"
 import { FaRegHeart } from "react-icons/fa";
 import { MdOutlineRefresh } from "react-icons/md";
 
