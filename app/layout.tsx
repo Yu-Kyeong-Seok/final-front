@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import styles from './layout.module.scss';
 import cn from "classnames/bind";
-import "./globals.css";
+import "../styles/global.css"
+import HeaderWrap from "./components/header/Header";
+import BottomTab from "./components/bottomTab/BottomTab";
 
 const cx = cn.bind(styles);
 
@@ -15,10 +17,15 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+
   return (
     <html lang="ko">
       <body>
-        {children}
+        <HeaderWrap backgroundColor={"var(--color-main)"} title="Market" color={"var(--color-white)"} canGoBack={true} />
+        <div className={cx("Wrap")}>
+          {children}
+        </div>
+        <BottomTab/>
       </body>
     </html>
   );
