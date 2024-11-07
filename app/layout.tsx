@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import styles from './layout.module.scss';
 import cn from "classnames/bind";
 import "../styles/global.css"
-import HeaderWrap from "./components/header/Header";
-import BottomTab from "./components/bottomTab/BottomTab";
+import HeaderWrap from "./components/Header/Header";
+import BottomTab from "./components/BottomTab/BottomTab";
 
 const cx = cn.bind(styles);
 
