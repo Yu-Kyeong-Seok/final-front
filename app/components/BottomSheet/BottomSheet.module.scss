@@ -1,8 +1,8 @@
-.FilterWrap {
+.Wrapper {
   position: relative;
 }
 
-.FilterInner {
+.Inner {
   display: flex;
   background-color: var(--color-white);
 
@@ -36,7 +36,6 @@
 
 .BottomSheet {
   position: fixed;
-  // top: 0;
   left: 0;
   right: 0;
   bottom: 0;
@@ -52,12 +51,12 @@
 
 .BottomSheetInner {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
   background-color: var(--color-white);
   border-radius: 10px 10px 0 0;
   padding: 20px;
-  max-height: 90vh;
+  min-height: 80dvh;
 
   .BottomSheetBtn {
     background-color: transparent;

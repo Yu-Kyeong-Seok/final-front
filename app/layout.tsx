@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
-import "../styles/global.scss";
-import "../styles/reset.scss";
+import "../styles/global.css";
 
 export const metadata: Metadata = {
   title: "컬리즘",
@@ -14,9 +13,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ko">
-      <body>
-        {children}
-      </body>
+      <body>{children}</body>
     </html>
   );
 }
