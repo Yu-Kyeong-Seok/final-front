@@ -1,0 +1,67 @@
+.FilterWrap {
+  position: relative;
+}
+
+.FilterInner {
+  display: flex;
+  background-color: var(--color-white);
+
+  justify-content: space-evenly;
+
+  button {
+    padding: 5px 10px;
+    border-radius: 50px;
+    border: 1px solid var(--color-200);
+    background-color: var(--color-white);
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--color-500);
+    white-space: nowrap;
+
+    &:focus {
+      outline: none;
+    }
+  }
+}
+
+.Dimmed {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 99;
+}
+
+.BottomSheet {
+  position: fixed;
+  // top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+
+  transform: translateY(100%);
+  transition: transform 0.3s ease-out;
+  z-index: 100;
+
+  &.opened {
+    transform: translateY(0);
+  }
+}
+
+.BottomSheetInner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: var(--color-white);
+  border-radius: 10px 10px 0 0;
+  padding: 20px;
+  max-height: 90vh;
+
+  .BottomSheetBtn {
+    background-color: transparent;
+    font-size: 20px;
+    padding: 0;
+  }
+}

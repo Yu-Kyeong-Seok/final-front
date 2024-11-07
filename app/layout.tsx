@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
-import "./globals.css";
+import "../styles/global.scss";
+import "../styles/reset.scss";
 
 export const metadata: Metadata = {
   title: "컬리즘",

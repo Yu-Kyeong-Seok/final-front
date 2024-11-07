@@ -1,0 +1,8 @@
+.TabList {
+  display: flex;
+  overflow-x: auto;
+  white-space: nowrap;
+}
+.TabList::-webkit-scrollbar {
+  display: none;
+}
