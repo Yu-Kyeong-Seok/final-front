@@ -1,0 +1,14 @@
+.TabItem {
+  cursor: pointer;
+  flex: 1;
+  padding: 10px;
+  color: var(--color-500);
+  font-weight: 400;
+  text-align: center;
+
+  &.active {
+    color: var(--color-main);
+    font-weight: 500;
+    border-bottom: 2px solid var(--color-main);
+  }
+}

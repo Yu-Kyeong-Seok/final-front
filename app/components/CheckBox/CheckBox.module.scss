@@ -1,0 +1,27 @@
+fieldset {
+  border: none;
+}
+
+.CheckBox {
+  display: flex;
+  align-items: center;
+}
+
+.CheckBoxWrapper {
+  font-size: 25px;
+  padding-right: 5px;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.UncheckedIcon {
+  color: var(--color-200);
+}
+
+.CheckedIcon {
+  color: var(--color-main);
+}
+
+.CheckBoxText {
+  cursor: pointer;
+}
