@@ -26,6 +26,7 @@
         padding-top:0.8rem;
         .name{
             font-size:1.3rem;
+            display: -webkit-box;
             color:var(--color-700);
             font-weight: 600;
             text-overflow: ellipsis;
