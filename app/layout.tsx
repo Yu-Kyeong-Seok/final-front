@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
-import "../styles/global.scss";
-import "../styles/reset.scss";
+import styles from './layout.module.scss';
+import cn from "classnames/bind";
+import "./globals.css";
+
+const cx = cn.bind(styles);
 
 export const metadata: Metadata = {
   title: "컬리즘",
