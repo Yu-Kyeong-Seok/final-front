@@ -8,7 +8,7 @@ export default function Home() {
   };
   return (
     <div>
-      <Chips labels={chips} onLabelClick={handleChipsClick} />
+      <Chips labels={chips} onClick={handleChipsClick} />
     </div>
   );
 }
