@@ -1,0 +1,36 @@
+.Wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0 20px;
+}
+
+.Form {
+    border: 1px solid #ededed;
+    display: flex;
+    flex-direction: column;
+    // gap: 16px;
+    // padding: 16px;
+    width: 100%;
+    // max-width: 500px;
+    margin: 0;
+}
+
+.Label {
+    padding: 18px 0px 7px;
+}
+
+.Span {
+    color: red;
+}
+
+.InputWrapper {
+    display: flex;
+    flex-direction: row;
+    
+    button {
+        width: 122px;
+        height: 54px;
+        margin-left: 8px;
+    }
+}
