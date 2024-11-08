@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
-import React, { useState } from "react";
-import styles from './layout.module.scss';
+import React from "react";
+import styles from "./layout.module.scss";
 import cn from "classnames/bind";
-import "../styles/global.css"
+import "../styles/global.css";
 import HeaderWrap from "./components/Header/Header";
 import BottomTab from "./components/BottomTab/BottomTab";
-import TopTabList from "./components/TopTab/TopTabList";
+
 import Home from "./components/TopTab/page";
 import localFont from "next/font/local";
 
@@ -33,18 +33,20 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-
   return (
     <html lang="ko">
-      <body>
-        <HeaderWrap backgroundColor={"var(--color-main)"} title="Market" color={"var(--color-white)"} canGoBack={true} />
-          <div className={cx("Wrap")}>
-            <Home/>
-            <div className={cx("Content")}>
-            {children}
-            </div>
-          </div>
-        <BottomTab/>
+      <body className={pretendard.className}>
+        <HeaderWrap
+          backgroundColor={"var(--color-main)"}
+          title="Market"
+          color={"var(--color-white)"}
+          canGoBack={true}
+        />
+        <div className={cx("Wrap")}>
+          <Home />
+          <div className={cx("Content")}>{children}</div>
+        </div>
+        <BottomTab />
       </body>
     </html>
   );
