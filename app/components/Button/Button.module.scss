@@ -1,0 +1,58 @@
+.Button {
+    display: block;
+    text-align: center;
+    overflow: hidden;
+    width: 100%;
+    height: 46px;
+    border-radius: 5px;
+
+    color: var(--color-white); 
+    background-color: var(--color-main);
+
+    border: 1px none transparent;
+
+    &:focus {
+        border-color: transparent; 
+    }
+    &:hover {
+        border-color: transparent; 
+    }
+    &:active {
+        border-color: transparent; 
+    }
+    &:disabled {
+        background-color: var(--color-100);
+        color: var(--color-white);
+        border : 2px none transparent;
+    }
+
+    &.solid {
+        background-color: var(--color-main);
+        color: var(--color-white); 
+        border: 1px none transparent;
+        
+        &:disabled {
+            background-color: var(--color-100);
+            color: var(--color-white);
+            border : 2px none transparent;
+        }
+    }
+    &.outline {
+        background-color: var(--color-white);
+        color: var(--color-main); 
+        border: 2px solid var(--color-main);
+        
+        &:disabled {
+            background-color: var(--color-white);
+            color: var(--color-200);
+            border : 2px solid var(--color-100);
+        }
+    }
+    &.danger {
+
+    }
+}
+
+.Span {
+
+}
