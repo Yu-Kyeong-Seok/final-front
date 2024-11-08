@@ -1,8 +1,7 @@
 .product-box {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-    gap: 20px;
-    padding: 20px;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 2fr));
+    gap: 1rem;
 }
 
 .loading,

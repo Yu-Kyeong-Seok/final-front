@@ -1,9 +1,12 @@
 import type { Metadata } from "next";
+import React, { useState } from "react";
 import styles from './layout.module.scss';
 import cn from "classnames/bind";
 import "../styles/global.css"
 import HeaderWrap from "./components/Header/Header";
 import BottomTab from "./components/BottomTab/BottomTab";
+import TopTabList from "./components/TopTab/TopTabList";
+import Home from "./components/TopTab/page";
 
 const cx = cn.bind(styles);
 
@@ -22,9 +25,12 @@ export default function RootLayout({
     <html lang="ko">
       <body>
         <HeaderWrap backgroundColor={"var(--color-main)"} title="Market" color={"var(--color-white)"} canGoBack={true} />
-        <div className={cx("Wrap")}>
-          {children}
-        </div>
+          <div className={cx("Wrap")}>
+            <Home/>
+            <div className={cx("Content")}>
+            {children}
+            </div>
+          </div>
         <BottomTab/>
       </body>
     </html>

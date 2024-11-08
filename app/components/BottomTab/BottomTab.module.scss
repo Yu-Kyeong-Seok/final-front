@@ -1,14 +1,16 @@
 .bottomTab {
     position: fixed;
+    width:100%;
+    max-width: 76.8rem;
     bottom: 0;
-    left: 0;
-    right: 0;
+    left: 50%;
+    transform: translateX(-50%);
     height: 60px;
-    background-color: white;
+    background-color: var(--color-white);
     display: flex;
     justify-content: space-around;
     align-items: center;
-    border-top: 1px solid #eee;
+    border: 1px solid #eee;
     z-index: 50;
   }
   

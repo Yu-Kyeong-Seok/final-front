@@ -15,7 +15,7 @@ interface ProductItemProps {
 const ProductItem = ({ product }: ProductItemProps) => (
     <div className={cx("product")}>
         <div className={cx("img")}>
-            <img src="images/sample.png" alt={product.name} />
+            <img src="assets/images/sample.png" alt={product.name} />
             <button className={cx("cart")}><MdOutlineShoppingBag/></button>
         </div>
         <div className={cx("desc")}>
