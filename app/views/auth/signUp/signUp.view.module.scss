@@ -6,7 +6,7 @@
 }
 
 .Form {
-    border: 1px solid #ededed;
+    // border: 1px solid #ededed;
     display: flex;
     flex-direction: column;
     // gap: 16px;
@@ -24,7 +24,7 @@
     color: red;
 }
 
-.InputWrapper {
+.InputContainer {
     display: flex;
     flex-direction: row;
     
@@ -33,4 +33,8 @@
         height: 54px;
         margin-left: 8px;
     }
+}
+
+.Padding {
+    padding: 20px;
 }
