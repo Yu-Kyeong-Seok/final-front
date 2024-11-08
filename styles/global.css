@@ -1,10 +1,5 @@
 @import "./reset.css";
 
-body {
-  font-family: "Pretendard", sans-serif;
-}
-/* font-weight: 100 - 900 */
-
 /* Grayscale
  $color-white: #ffffff;
  $color-10: #f5f5f5;

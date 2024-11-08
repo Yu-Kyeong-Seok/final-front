@@ -4,12 +4,12 @@ import localFont from "next/font/local";
 const pretendard = localFont({
   src: [
     {
-      path: "/fonts/PretendardVariable.woff2",
+      path: "../public/fonts/PretendardVariable.woff2",
       weight: "100 900",
       style: "normal",
     },
   ],
-  display: "swap", // 폰트 로딩 방식
+  display: "swap",
 });
 
 function MyApp({ Component, pageProps }) {
