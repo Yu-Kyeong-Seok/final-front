@@ -5,7 +5,7 @@ import cn from "classnames/bind";
 import "../styles/global.css";
 import HeaderWrap from "./components/Header/Header";
 import BottomTab from "./components/BottomTab/BottomTab";
-// import TopTabList from "./components/TopTab/TopTabList";
+
 import Home from "./components/TopTab/page";
 import localFont from "next/font/local";
 
