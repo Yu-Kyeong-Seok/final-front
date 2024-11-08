@@ -25,14 +25,3 @@
   --color-main4: #eaf8f4;
   --color-main5: #f2f9f7;
 }
-
-button {
-  background-color: transparent;
-}
-
-.Inner {
-  margin: 0 auto;
-  padding: 0 15px;
-  width: 100%;
-  max-width: 800px;
-}
