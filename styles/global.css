@@ -1,8 +1,16 @@
+<<<<<<< HEAD
 @import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.8/dist/web/static/pretendard.css");
 @import url("./reset.css");
 body {
   font-family: Pretendard, sans-serif;
+=======
+@import "./reset.css";
+
+body {
+  font-family: "Pretendard", sans-serif;
+>>>>>>> develop
 }
+/* font-weight: 100 - 900 */
 
 :root {
   --color-white: #ffffff;
@@ -28,4 +36,15 @@ body {
   --color-main3: #b0e3d4;
   --color-main4: #eaf8f4;
   --color-main5: #f2f9f7;
+}
+
+button {
+  background-color: transparent;
+}
+
+.Inner {
+  margin: 0 auto;
+  padding: 0 15px;
+  width: 100%;
+  max-width: 800px;
 }
