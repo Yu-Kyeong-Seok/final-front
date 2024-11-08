@@ -5,9 +5,8 @@ import cn from "classnames/bind";
 import "../styles/global.css";
 import HeaderWrap from "./components/Header/Header";
 import BottomTab from "./components/BottomTab/BottomTab";
-
-import Home from "./components/TopTab/page";
 import localFont from "next/font/local";
+import { headers } from "next/headers";
 
 const cx = cn.bind(styles);
 
@@ -28,11 +27,14 @@ const pretendard = localFont({
   display: "swap",
 });
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const pathname = (await headers()).get("x-pathname");
+
+  console.log(pathname);
   return (
     <html lang="ko">
       <body className={pretendard.className}>
@@ -42,8 +44,11 @@ export default function RootLayout({
           color={"var(--color-white)"}
           canGoBack={true}
         />
-        <div className={cx("Wrap")}>
-          <Home />
+        <div
+          className={cx("Wrap", {
+            no: pathname === "/order",
+          })}
+        >
           <div className={cx("Content")}>{children}</div>
         </div>
         <BottomTab />

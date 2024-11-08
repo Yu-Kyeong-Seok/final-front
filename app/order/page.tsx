@@ -59,9 +59,9 @@ export default function OrderPage() {
   };
 
   return (
-    <div className={cx("Wrapper")}>
+    <div className={cx("PageContainer")}>
       <div className={cx("Inner")}>
-        <div className={cx("AppHeader")}>
+        <div className={cx("PageHeader")}>
           <h3>주문서</h3>
         </div>
         <div className={cx("Contents")}>
