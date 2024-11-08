@@ -1,12 +1,10 @@
 import type { Metadata } from "next";
 import React from "react";
+import "../styles/global.css";
 import styles from "./layout.module.scss";
 import cn from "classnames/bind";
-import "../styles/global.css";
 import HeaderWrap from "./components/Header/Header";
 import BottomTab from "./components/BottomTab/BottomTab";
-
-import Home from "./components/TopTab/page";
 import localFont from "next/font/local";
 
 const cx = cn.bind(styles);
@@ -43,7 +41,6 @@ export default function RootLayout({
           canGoBack={true}
         />
         <div className={cx("Wrap")}>
-          <Home />
           <div className={cx("Content")}>{children}</div>
         </div>
         <BottomTab />
