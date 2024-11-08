@@ -5,14 +5,10 @@
   margin: 0 auto;
   display: flex;
   flex-direction: column;
-  padding: 5rem 2rem;
-  &.no {
-    padding: 0;
-  }
+  padding: 5rem 0 6rem;
 }
 .Content {
   flex: 1;
-  padding: 0 2rem;
   overflow-y: auto;
   scrollbar-width: thin;
   scrollbar-color: var(--color-main) var(--color-white);
@@ -22,8 +18,4 @@
   &::-webkit-scrollbar-thumb {
     border-radius: 3px;
   }
-}
-
-.no {
-  padding: 0;
 }

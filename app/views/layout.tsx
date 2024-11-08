@@ -1,7 +1,7 @@
 import React from "react";
 import HeaderWrap from "../components/Header/Header";
 
-export default function OrderLayout({
+export default function HomeLayout({
   children,
 }: {
   children: React.ReactNode;
@@ -9,9 +9,9 @@ export default function OrderLayout({
   return (
     <>
       <HeaderWrap
-        backgroundColor="white"
-        title="주문하기"
-        color="black"
+        backgroundColor={"var(--color-main)"}
+        title="Market"
+        color={"var(--color-white)"}
         canGoBack={true}
       />
       {children}

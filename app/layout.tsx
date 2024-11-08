@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import React from "react";
+import "../styles/global.css";
 import styles from "./layout.module.scss";
 import cn from "classnames/bind";
-import "../styles/global.css";
 import HeaderWrap from "./components/Header/Header";
 import BottomTab from "./components/BottomTab/BottomTab";
 import localFont from "next/font/local";
@@ -44,11 +44,7 @@ export default async function RootLayout({
           color={"var(--color-white)"}
           canGoBack={true}
         />
-        <div
-          className={cx("Wrap", {
-            no: pathname === "/order",
-          })}
-        >
+        <div className={cx("Wrap")}>
           <div className={cx("Content")}>{children}</div>
         </div>
         <BottomTab />
