@@ -1,13 +1,22 @@
 {
     "results":[
         {
-            "name":"고구마 1KG",
+            "name":"고구마 1KG고구마 1KG고구마 1KG고구마 1KG고구마 1KG고구마 1KG고구마 1KG고구마 1KG고구마 1KG",
+            "originalPrice":"6900",
+            "price":"4480",
+            "discount":"35"
+        },
+        {
+            "name":"감자 1KG",
+            "originalPrice":"5900",
+            "price":"3480",
+            "discount":"35"
+        },
+        {
+            "name":"컬리즘 1KG",
             "originalPrice":"6900",
             "price":"4480",
             "discount":"35"
         }
-    ],
-    "prev":null,
-    "next":null,
-    "count": 8
+    ]
 }

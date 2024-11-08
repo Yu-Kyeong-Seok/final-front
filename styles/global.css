@@ -1,5 +1,18 @@
+<<<<<<< HEAD
+@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.8/dist/web/static/pretendard.css");
+@import url("./reset.css");
+body {
+  font-family: Pretendard, sans-serif;
+=======
 @import "./reset.css";
 
+<<<<<<< HEAD
+body {
+  font-family: "Pretendard", sans-serif;
+>>>>>>> develop
+}
+/* font-weight: 100 - 900 */
+=======
 /* Grayscale
  $color-white: #ffffff;
  $color-10: #f5f5f5;
@@ -26,6 +39,7 @@
  $color-main3: #b0e3d4;
  $color-main4: #eaf8f4;
  $color-main5: #f2f9f7; */
+>>>>>>> develop
 
 :root {
   --color-white: #ffffff;
