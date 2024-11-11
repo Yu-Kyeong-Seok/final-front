@@ -1,11 +1,11 @@
 import React from "react";
-import SignUpView from "@/src/views/auth/signUp/signUp.view";
+import LoginView from "@/src/views/auth/login/login.view";
 
 export default async function Home() {
 
     return (
         <React.Fragment>
-            <SignUpView/>
+            <LoginView/>
         </React.Fragment>
     );
 }
