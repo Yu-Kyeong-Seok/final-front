@@ -8,7 +8,6 @@ import { LuChevronDown, LuChevronUp } from "react-icons/lu";
 import Image from "next/image";
 import Button from "@/app/components/Button/Button";
 import Input from "@/app/components/Input/Input";
-import OrderView from "@/views/order.view";
 
 const cx = cn.bind(styles);
 
