@@ -1,10 +1,10 @@
 "use client";
-import Input from "@/app/components/Input/Input";
+import Input from "@/src/components/Input/Input";
 import styles from "./signUp.view.module.scss";
 import cn from "classnames/bind";
 import { Controller, useForm } from "react-hook-form";
-import Button from "@/app/components/Button/Button";
-import CheckBoxView from "@/app/components/CheckBox/CheckBox.view";
+import Button from "@/src/components/Button/Button";
+import CheckBoxView from "@/src/components/CheckBox/CheckBox.view";
 
 const cx = cn.bind(styles);
 
