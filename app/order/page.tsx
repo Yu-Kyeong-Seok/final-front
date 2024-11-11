@@ -167,7 +167,7 @@ export default function OrderPage() {
               <ul>
                 <li className={cx("AddressInfo")}>{userInfos[0].address}</li>
                 <li className={cx("AddressBtn")}>
-                  <Button text={"변경"} disabled={false} Variants={"outline"} />
+                  <Button text={"변경"} disabled={false} variants={"outline"} />
                 </li>
               </ul>
             </div>
@@ -193,7 +193,7 @@ export default function OrderPage() {
                 <Button
                   text={"카카오페이"}
                   disabled={false}
-                  Variants={"solid"}
+                  variants={"solid"}
                 />
               </div>
 
@@ -201,14 +201,14 @@ export default function OrderPage() {
                 <Button
                   text={"신용카드"}
                   disabled={false}
-                  Variants={"outline"}
+                  variants={"outline"}
                 />
                 <Button
                   text={"간편결제"}
                   disabled={false}
-                  Variants={"outline"}
+                  variants={"outline"}
                 />
-                <Button text={"휴대폰"} disabled={false} Variants={"outline"} />
+                <Button text={"휴대폰"} disabled={false} variants={"outline"} />
               </div>
             </div>
           </div>
@@ -248,7 +248,7 @@ export default function OrderPage() {
               <Button
                 text={`${totalPayment.toLocaleString()}원 결제하기`}
                 disabled={false}
-                Variants={"solid"}
+                variants={"solid"}
               />
             </div>
           </div>
