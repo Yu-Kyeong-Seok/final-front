@@ -3,8 +3,8 @@ import React from "react";
 import "../styles/global.css";
 import styles from "./layout.module.scss";
 import cn from "classnames/bind";
-import HeaderWrap from "./components/Header/Header";
-import BottomTab from "./components/BottomTab/BottomTab";
+import HeaderWrap from "@/src/components/Header/Header";
+import BottomTab from "@/src/components/BottomTab/BottomTab";
 import localFont from "next/font/local";
 import { headers } from "next/headers";
 
