@@ -3,10 +3,17 @@ import { useState } from "react";
 import styles from "./order.module.scss";
 import cn from "classnames/bind";
 import { LuChevronDown, LuChevronUp } from "react-icons/lu";
+// import { LuChevronDown, LuChevronUp, LuFileCheck2 } from "react-icons/lu";
+// import { BiSolidMessageRounded } from "react-icons/bi";
 import Image from "next/image";
+import Button from "@/app/components/Button/Button";
+import Input from "@/app/components/Input/Input";
+import OrderView from "@/views/order.view";
 
 const cx = cn.bind(styles);
 
+/** 주문 아이템 */
+/** props로 내려줄 것 => view 컴포넌트로 */
 const orderItems = [
   {
     id: 1,
@@ -30,21 +37,34 @@ const orderItems = [
     id: 3,
     name: "베키아에누보 이탈리안 올리브 치아바타",
     quantity: 2,
-    currentPrice: 108900,
+    currentPrice: 20900,
     originalPrice: 12300,
     image:
       "https://product-image.kurly.com/hdims/resize/%5E%3E720x%3E936/cropcenter/720x936/quality/85/src/product/image/e971445b-df76-482b-9502-88a64f62041f.jpg",
   },
 ];
 
+/** 주문자 정보 */
 const userInfos = [
   {
     id: "random1",
     name: "황다영",
     phone: "010-0000-0000",
     email: "1234@gmail.com",
+    address: "서울특별시 강남구 테헤란로 133 한국타이어빌딩 18층 (역삼동)",
   },
 ];
+
+/** 현재금액 * 수량 */
+const totalAmount = orderItems.reduce((sum, item) => {
+  return sum + item.currentPrice * item.quantity;
+}, 0);
+
+/** 배송비 계산 */
+const deliveryFee = totalAmount >= 40000 ? 0 : 3000;
+
+/** 결제 예정 금액 */
+const totalPayment = totalAmount + deliveryFee;
 
 export default function OrderPage() {
   const [isOrderOpen, setIsOrderOpen] = useState(false);
@@ -62,14 +82,19 @@ export default function OrderPage() {
     <div className={cx("PageContainer")}>
       <div className={cx("Inner")}>
         <div className={cx("PageHeader")}>
-          <h3>주문서</h3>
+          {/* <h3>
+            <LuFileCheck2 />
+            &nbsp; 주문서
+          </h3> */}
         </div>
         <div className={cx("Contents")}>
           {/* 주문상품 아코디언 */}
           <div className={cx("Item")}>
             <div className={cx("ItemHeader")} onClick={toggleOrderAccordion}>
               <span className={cx("ItemTitle")}>주문상품</span>
-              <span>{isOrderOpen ? <LuChevronUp /> : <LuChevronDown />}</span>
+              <span className={cx("ItemIcon")}>
+                {isOrderOpen ? <LuChevronUp /> : <LuChevronDown />}
+              </span>
             </div>
             {isOrderOpen && (
               <div className={cx("ItemContent", { open: isOrderOpen })}>
@@ -94,9 +119,9 @@ export default function OrderPage() {
                           {/* 원래 가격 */}
                           {item.originalPrice.toLocaleString()}원
                         </span>
+                        {/* 수량 */}
+                        <span>{item.quantity}개</span>
                       </div>
-                      {/* 수량 */}
-                      <span>수량: {item.quantity}</span>
                     </div>
                   </div>
                 ))}
@@ -108,27 +133,125 @@ export default function OrderPage() {
           <div className={cx("Item")}>
             <div className={cx("ItemHeader")} onClick={toggleUserAccordion}>
               <span className={cx("ItemTitle")}>주문자 정보</span>
-              <span>{isUserOpen ? <LuChevronUp /> : <LuChevronDown />}</span>
+              <span className={cx("ItemIcon")}>
+                {isUserOpen ? <LuChevronUp /> : <LuChevronDown />}
+              </span>
             </div>
             {isUserOpen && (
               <div className={cx("ItemContent", { open: isUserOpen })}>
                 {userInfos.map((info) => (
-                  <div key={info.id} className={cx("ItemDetail")}>
-                    <div className={cx("ItemInfo")}>
-                      <h4 className={cx("InfoTitle")}>{info.name}</h4>
-                      <div className={cx("PriceInfo")}>
-                        <span className={cx("ItemInfoDetail")}>
-                          {info.phone}
-                        </span>
-                        <span className={cx("ItemInfoDetail")}>
-                          {info.email}
-                        </span>
-                      </div>
+                  <div key={info.id} className={cx("UserDetail")}>
+                    <div className={cx("UserInfo")}>
+                      <ul className={cx("UserInfoDetail", "InfoText")}>
+                        <li>보내는 분</li>
+                        <li>휴대폰</li>
+                        <li>이메일</li>
+                      </ul>
+                      <ul className={cx("UserInfoDetail")}>
+                        <li>{info.name}</li>
+                        <li>{info.phone}</li>
+                        <li>{info.email}</li>
+                      </ul>
                     </div>
                   </div>
                 ))}
               </div>
             )}
+          </div>
+
+          {/* 배송지 */}
+          <div className={cx("Item")}>
+            <div className={cx("ItemHeader")}>
+              <span className={cx("ItemTitle")}>배송지</span>
+            </div>
+            <div className={cx("Address")}>
+              <ul>
+                <li className={cx("AddressInfo")}>{userInfos[0].address}</li>
+                <li className={cx("AddressBtn")}>
+                  <Button text={"변경"} disabled={false} Variants={"outline"} />
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          {/* 배송 요청사항 */}
+          <div className={cx("Item")}>
+            <div className={cx("ItemHeader")}>
+              <span className={cx("ItemTitle")}>배송 요청사항</span>
+            </div>
+            <div className={cx("Address")}>
+              <Input placeholder={"배송 요청사항을 입력해주세요."} />
+            </div>
+          </div>
+
+          {/* 결제 수단 */}
+          <div className={cx("Item")}>
+            <div className={cx("ItemHeader")}>
+              <span className={cx("ItemTitle")}>결제 수단</span>
+            </div>
+            <div className={cx("Payment")}>
+              <div className={cx("Kakao")}>
+                <Button
+                  text={"카카오페이"}
+                  disabled={false}
+                  Variants={"solid"}
+                />
+              </div>
+
+              <div className={cx("PaymentType")}>
+                <Button
+                  text={"신용카드"}
+                  disabled={false}
+                  Variants={"outline"}
+                />
+                <Button
+                  text={"간편결제"}
+                  disabled={false}
+                  Variants={"outline"}
+                />
+                <Button text={"휴대폰"} disabled={false} Variants={"outline"} />
+              </div>
+            </div>
+          </div>
+          {/* 상품 계산 금액 */}
+          <div className={cx("Item")}>
+            <div className={cx("ItemHeader")}>
+              <span className={cx("ItemTitle")}>상품 금액</span>
+              <span className={cx("ItemTitle")}>
+                {totalAmount.toLocaleString()}원
+              </span>
+            </div>
+            <div className={cx("Total")}>
+              {/* <ul>
+                <li>상품할인금액</li>
+                <li>3,300원</li>
+              </ul> */}
+              <ul className={cx("DeliveryFee")}>
+                <li>배송비</li>
+                <li>{deliveryFee.toString()}원</li>
+              </ul>
+              <div className={cx("ItemHeader")}>
+                <span className={cx("ItemTitle")}>결제예정금액</span>
+                <span className={cx("TotalAmout")}>
+                  {totalPayment.toLocaleString()}원
+                </span>
+              </div>
+            </div>
+          </div>
+          {/* 결제 동의 및 결제하기 버튼 */}
+          <div className={cx("Item")}>
+            <div>
+              <span className={cx("PaymentTitle")}>
+                위 내용을 확인 하였으며 결제에 동의합니다.
+              </span>
+            </div>
+            <div className={cx("PaymentButton")}>
+              <Button
+                text={`${totalPayment.toLocaleString()}원 결제하기`}
+                disabled={false}
+                Variants={"solid"}
+              />
+            </div>
           </div>
         </div>
       </div>
