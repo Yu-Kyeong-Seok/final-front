@@ -5,17 +5,12 @@
     margin:0 auto;
     display:flex;
     flex-direction: column; 
+    overflow-x: hidden;
     padding:5rem 0 6rem; 
 }
 .Content{
     flex:1; 
-    overflow-y: auto; 
-    scrollbar-width: thin;
-    scrollbar-color: var(--color-main) var(--color-white); 
-    &::-webkit-scrollbar{
-        width:5px;
-    }
-    &::-webkit-scrollbar-thumb{
-        border-radius: 3px;
-    }
+    // overflow-y: auto; 
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none; /* Firefox */
 }

@@ -8,6 +8,7 @@ import BottomTab from "./components/BottomTab/BottomTab";
 import localFont from "next/font/local";
 
 const cx = cn.bind(styles);
+let backState = false;
 
 export const metadata: Metadata = {
   title: "컬리즘",
@@ -38,7 +39,7 @@ export default function RootLayout({
           backgroundColor={"var(--color-main)"}
           title="Market"
           color={"var(--color-white)"}
-          canGoBack={true}
+          canGoBack={backState}
         />
         <div className={cx("Wrap")}>
           <div className={cx("Content")}>{children}</div>
