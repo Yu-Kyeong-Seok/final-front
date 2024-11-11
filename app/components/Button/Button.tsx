@@ -7,13 +7,14 @@ const cx = cn.bind(styles);
 type ButtonProps = {
     text?: string;
     disabled?: boolean;
-    Variants?: "solid" | "outline"; 
+    variants?: "solid" | "outline"; 
+    onClick?: any;
 }
 
 const Button = (props: ButtonProps) => {
-    const { text, disabled, Variants } = props;
+    const { text, disabled, variants, onClick} = props;
     return (
-        <button className={cx("Button", {[`${Variants}`]: Variants})} disabled={disabled}>
+        <button className={cx("Button", {[`${variants}`]: variants})} disabled={disabled} onClick={onClick}>
             <span className={cx("span")}>{text}</span>
         </button>
 

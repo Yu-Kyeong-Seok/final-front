@@ -15,7 +15,7 @@ const SignUpView = () => {
                 <label className={cx("Label")}>아이디<span className={cx("Span")}>*</span></label>
                 <div className={cx("InputContainer")}>
                     <Input placeholder="아이디를 입력해주세요"></Input>
-                    <Button text="중복확인"></Button>
+                    <Button variants="solid" text="중복확인"></Button>
                 </div>
                 <label className={cx("Label")}>비밀번호<span className={cx("Span")}>*</span></label>
                 <Input placeholder="비밀번호를 입력해주세요"></Input>
@@ -26,7 +26,7 @@ const SignUpView = () => {
                 <label className={cx("Label")}>이메일<span className={cx("Span")}>*</span></label>
                 <div className={cx("InputContainer")}>
                     <Input placeholder="예: marketkurly"></Input>
-                    <Button Variants="outline" text="중복확인"></Button>
+                    <Button variants="solid" text="중복확인"></Button>
                 </div>
                 <label className={cx("Label")}>휴대폰<span className={cx("Span")}>*</span></label>
                 <div className={cx("InputContainer")}>
