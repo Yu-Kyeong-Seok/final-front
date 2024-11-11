@@ -213,5 +213,9 @@
 
 // 결제완료 바텀시트
 .PayBottomSheet {
-  font-size: 16px;
+  font-size: 20px;
+
+  .BottomSheetInner {
+    display: flex;
+  }
 }

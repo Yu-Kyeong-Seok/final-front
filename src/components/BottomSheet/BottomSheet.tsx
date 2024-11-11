@@ -16,10 +16,13 @@ type BottomSheetProps = {
   title?: string;
   selectedItem?: string;
   className?: string;
+  children?: React.ReactNode;
+  // 바텀시트 내부 내용 동적으로 받기위해 추가함
 };
 
 const BottomSheet = (props: BottomSheetProps) => {
-  const { items, isOpen, onClose, title, selectedItem, className } = props;
+  const { items, isOpen, onClose, title, selectedItem, className, children } =
+    props;
 
   return (
     <div className={cx("Container")}>
@@ -31,11 +34,15 @@ const BottomSheet = (props: BottomSheetProps) => {
         {/* isOpen이 true면 opened 클래스 붙여줌 */}
 
         <div className={cx("BottomSheetInner", className)}>
-          <h3>{items.find((f) => f.id === selectedItem)?.label || title}</h3>
+          <div className={cx("BottomSheetHeader")}>
+            <h3>{items.find((f) => f.id === selectedItem)?.label || title}</h3>
 
-          <button onClick={onClose} className={cx("BottomSheetBtn")}>
-            <IoCloseOutline />
-          </button>
+            <button onClick={onClose} className={cx("BottomSheetBtn")}>
+              <IoCloseOutline />
+            </button>
+          </div>
+
+          <div className={cx("BottomSheetContent")}>{children}</div>
         </div>
       </div>
     </div>

@@ -267,7 +267,7 @@ export default function OrderView(props: OrderViewProps) {
               items={items}
               isOpen={isBottomSheetOpen}
               onClose={handleCloseBottomSheet}
-              title="결제 완료"
+              title="주문완료"
               selectedItem={selectedItem}
               className={cx("PayBottomSheet")}
             />
