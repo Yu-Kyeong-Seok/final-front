@@ -15,21 +15,22 @@ type BottomSheetProps = {
   onClose: () => void;
   title?: string;
   selectedItem?: string;
+  className?: string;
 };
 
 const BottomSheet = (props: BottomSheetProps) => {
-  const { items, isOpen, onClose, title, selectedItem } = props;
+  const { items, isOpen, onClose, title, selectedItem, className } = props;
 
   return (
-    <div className={cx("Wrapper")}>
+    <div className={cx("Container")}>
       {/* 배경 dimmed  */}
       {isOpen && <div className={cx("Dimmed")} onClick={onClose}></div>}
 
       {/* 바텀 시트부분 */}
-      <div className={cx("BottomSheet", { opened: isOpen })}>
+      <div className={cx("BottomSheet", { opened: isOpen }, className)}>
         {/* isOpen이 true면 opened 클래스 붙여줌 */}
 
-        <div className={cx("BottomSheetInner")}>
+        <div className={cx("BottomSheetInner", className)}>
           <h3>{items.find((f) => f.id === selectedItem)?.label || title}</h3>
 
           <button onClick={onClose} className={cx("BottomSheetBtn")}>

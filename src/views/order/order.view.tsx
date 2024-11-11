@@ -48,6 +48,7 @@ export default function OrderView(props: OrderViewProps) {
   const [isOrderOpen, setIsOrderOpen] = useState(false);
   const [isUserOpen, setIsUserOpen] = useState(false);
 
+  /** 바텀시트 useState */
   const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState<string>();
 
@@ -72,6 +73,7 @@ export default function OrderView(props: OrderViewProps) {
   /** 결제 예정 금액 */
   const totalPayment = totalAmount + deliveryFee;
 
+  /** 바텀시트 items & 핸들러 */
   const items = [
     { id: "1", label: "메뉴 1" },
     { id: "2", label: "메뉴 2" },
@@ -252,6 +254,7 @@ export default function OrderView(props: OrderViewProps) {
                 위 내용을 확인 하였으며 결제에 동의합니다.
               </span>
             </div>
+
             <div className={cx("PaymentButton")}>
               <Button
                 text={`${totalPayment.toLocaleString()}원 결제하기`}
@@ -259,15 +262,15 @@ export default function OrderView(props: OrderViewProps) {
                 variants={"solid"}
                 onClick={handleOpenBottomSheet}
               />
-
-              <BottomSheet
-                items={items}
-                isOpen={isBottomSheetOpen}
-                onClose={handleCloseBottomSheet}
-                title="바텀시트 제목"
-                selectedItem={selectedItem}
-              />
             </div>
+            <BottomSheet
+              items={items}
+              isOpen={isBottomSheetOpen}
+              onClose={handleCloseBottomSheet}
+              title="결제 완료"
+              selectedItem={selectedItem}
+              className={cx("PayBottomSheet")}
+            />
           </div>
         </div>
       </div>
