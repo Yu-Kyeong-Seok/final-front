@@ -3,12 +3,13 @@
 import React, { useEffect, useState } from "react";
 import styles from './page.module.css';
 import cn from 'classnames/bind';
-import { fetchProducts, Product } from "./components/ProductList/api/productApi";
-import ProductItem from "./components/ProductList/ProductItem/ProductItem";
+import { fetchProducts, Product } from "@/src/components/ProductList/api/productApi";
+import ProductItem from "@/src/components/ProductList/ProductItem/ProductItem";
 import Link from "next/link";
-import TopTabList from "./components/TopTab/TopTabList";
+import TopTabList from "@/src/components/TopTab/TopTabList";
 
 const cx = cn.bind(styles);
+
 
 export default function Home() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -89,6 +90,5 @@ export default function Home() {
         </div>
       </div>
     </div>
-     
   );
 }

@@ -1,9 +1,9 @@
 "use client";
-import Input from "@/app/components/Input/Input";
+import Input from "@/src/components/Input/Input";
 import styles from "./login.view.module.scss";
 import cn from "classnames/bind";
 import { Controller, useForm } from "react-hook-form";
-import Button from "@/app/components/Button/Button";
+import Button from "@/src/components/Button/Button";
 
 const cx = cn.bind(styles);
 

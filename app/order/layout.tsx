@@ -1,5 +1,5 @@
 import React from "react";
-import HeaderWrap from "../components/Header/Header";
+import HeaderWrap from "@/src/components/Header/Header";
 
 export default function OrderLayout({
   children,
