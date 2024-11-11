@@ -1,7 +1,7 @@
 import OrderView from "@/src/views/order/order.view";
 
 /** props로 내려줄 것 => view 컴포넌트로 */
-/** 데이터와 상태관리를 page에서  */
+/** 데이터관리를 page에서. "use client" 사용X  */
 
 /** 주문 아이템 */
 const orderItems = [
@@ -45,6 +45,9 @@ const userInfos = [
   },
 ];
 
+/** 주문서 페이지 */
 export default function OrderPage() {
   return <OrderView orderItems={orderItems} userInfos={userInfos} />;
 }
+
+/** 주문완료 페이지 */

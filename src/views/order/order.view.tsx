@@ -6,6 +6,8 @@ import { LuChevronDown, LuChevronUp } from "react-icons/lu";
 import Image from "next/image";
 import Button from "@/src/components/Button/Button";
 import Input from "@/src/components/Input/Input";
+import BottomSheet from "@/src/components/BottomSheet/BottomSheet";
+// import BottomSheet from "@/src/components/BottomSheet/BottomSheet";
 
 const cx = cn.bind(styles);
 
@@ -42,8 +44,12 @@ type OrderViewProps = {
 export default function OrderView(props: OrderViewProps) {
   const { orderItems, userInfos } = props;
 
+  /** useState */
   const [isOrderOpen, setIsOrderOpen] = useState(false);
   const [isUserOpen, setIsUserOpen] = useState(false);
+
+  const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
+  const [selectedItem, setSelectedItem] = useState<string>();
 
   /** 주문 상품 목록 아코디언 */
   const toggleOrderAccordion = () => {
@@ -65,6 +71,19 @@ export default function OrderView(props: OrderViewProps) {
 
   /** 결제 예정 금액 */
   const totalPayment = totalAmount + deliveryFee;
+
+  const items = [
+    { id: "1", label: "메뉴 1" },
+    { id: "2", label: "메뉴 2" },
+  ];
+
+  const handleOpenBottomSheet = () => {
+    setIsBottomSheetOpen(true);
+  };
+
+  const handleCloseBottomSheet = () => {
+    setIsBottomSheetOpen(false);
+  };
 
   return (
     <div className={cx("PageContainer")}>
@@ -238,6 +257,15 @@ export default function OrderView(props: OrderViewProps) {
                 text={`${totalPayment.toLocaleString()}원 결제하기`}
                 disabled={false}
                 variants={"solid"}
+                onClick={handleOpenBottomSheet}
+              />
+
+              <BottomSheet
+                items={items}
+                isOpen={isBottomSheetOpen}
+                onClose={handleCloseBottomSheet}
+                title="바텀시트 제목"
+                selectedItem={selectedItem}
               />
             </div>
           </div>
