@@ -1,5 +1,5 @@
 "use client";
-import { useState, useNavigate } from "react";
+import { useState } from "react";
 import styles from "./order.module.scss";
 import cn from "classnames/bind";
 import { LuChevronDown, LuChevronUp, LuCheckCircle } from "react-icons/lu";
@@ -7,6 +7,7 @@ import Image from "next/image";
 import Button from "@/src/components/Button/Button";
 import Input from "@/src/components/Input/Input";
 import BottomSheet from "@/src/components/BottomSheet/BottomSheet";
+import { useRouter } from "next/navigation";
 // import BottomSheet from "@/src/components/BottomSheet/BottomSheet";
 
 const cx = cn.bind(styles);
@@ -86,6 +87,12 @@ export default function OrderView(props: OrderViewProps) {
 
   const handleCloseBottomSheet = () => {
     setIsBottomSheetOpen(false);
+  };
+
+  /** 버튼 클릭 시 페이지 이동 */
+  const router = useRouter();
+  const handleClick = () => {
+    router.push("/");
   };
 
   return (
@@ -296,6 +303,7 @@ export default function OrderView(props: OrderViewProps) {
                     text={"쇼핑 계속하기"}
                     disabled={false}
                     variants={"solid"}
+                    onClick={handleClick}
                   />
                 </div>
               </div>

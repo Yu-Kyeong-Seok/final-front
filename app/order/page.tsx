@@ -49,5 +49,3 @@ const userInfos = [
 export default function OrderPage() {
   return <OrderView orderItems={orderItems} userInfos={userInfos} />;
 }
-
-/** 주문완료 페이지 */
