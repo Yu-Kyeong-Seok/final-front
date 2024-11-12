@@ -1,8 +1,8 @@
 "use client";
-import { useState } from "react";
+import { useState, useNavigate } from "react";
 import styles from "./order.module.scss";
 import cn from "classnames/bind";
-import { LuChevronDown, LuChevronUp } from "react-icons/lu";
+import { LuChevronDown, LuChevronUp, LuCheckCircle } from "react-icons/lu";
 import Image from "next/image";
 import Button from "@/src/components/Button/Button";
 import Input from "@/src/components/Input/Input";
@@ -50,7 +50,7 @@ export default function OrderView(props: OrderViewProps) {
 
   /** 바텀시트 useState */
   const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
-  const [selectedItem, setSelectedItem] = useState<string>();
+  // const [selectedItem, setSelectedItem] = useState<string>();
 
   /** 주문 상품 목록 아코디언 */
   const toggleOrderAccordion = () => {
@@ -73,12 +73,13 @@ export default function OrderView(props: OrderViewProps) {
   /** 결제 예정 금액 */
   const totalPayment = totalAmount + deliveryFee;
 
-  /** 바텀시트 items & 핸들러 */
-  const items = [
-    { id: "1", label: "메뉴 1" },
-    { id: "2", label: "메뉴 2" },
-  ];
+  /** 바텀시트 items */
+  // const items = [
+  //   { id: "1", label: "메뉴 1" },
+  //   { id: "2", label: "메뉴 2" },
+  // ];
 
+  /** 바텀시트 핸들러 */
   const handleOpenBottomSheet = () => {
     setIsBottomSheetOpen(true);
   };
@@ -264,13 +265,41 @@ export default function OrderView(props: OrderViewProps) {
               />
             </div>
             <BottomSheet
-              items={items}
+              // items={items}
+              // selectedItem={selectedItem}
               isOpen={isBottomSheetOpen}
               onClose={handleCloseBottomSheet}
-              title="주문완료"
-              selectedItem={selectedItem}
+              // title="주문완료"
               className={cx("PayBottomSheet")}
-            />
+            >
+              <div className={cx("BottomSheetContent")}>
+                <span className={cx("BottomSheetIcon")}>
+                  <LuCheckCircle />
+                </span>
+                <div className={cx("BottomSheetText")}>
+                  <h3>{userInfos[0].name}님의 주문이 완료되었습니다.</h3>
+                  <b>내일 아침에 만나요!</b>
+                </div>
+                <div className={cx("ItemHeader")}>
+                  <span className={cx("ItemTitle")}>결제금액</span>
+                  <span className={cx("TotalAmout")}>
+                    {totalPayment.toLocaleString()}원
+                  </span>
+                </div>
+                <div className={cx("ItemHeader", "BottomSheetBtns")}>
+                  <Button
+                    text={"주문 상세보기"}
+                    disabled={false}
+                    variants={"outline"}
+                  />
+                  <Button
+                    text={"쇼핑 계속하기"}
+                    disabled={false}
+                    variants={"solid"}
+                  />
+                </div>
+              </div>
+            </BottomSheet>
           </div>
         </div>
       </div>

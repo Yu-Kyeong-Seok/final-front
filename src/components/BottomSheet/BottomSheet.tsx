@@ -10,14 +10,14 @@ type Item = {
 };
 
 type BottomSheetProps = {
-  items: Item[];
+  items?: Item[];
   isOpen: boolean;
   onClose: () => void;
   title?: string;
   selectedItem?: string;
   className?: string;
   children?: React.ReactNode;
-  // 바텀시트 내부 내용 동적으로 받기위해 추가함
+  // 바텀시트 내부 내용 동적으로 받기위해 추가함!
 };
 
 const BottomSheet = (props: BottomSheetProps) => {
@@ -35,7 +35,7 @@ const BottomSheet = (props: BottomSheetProps) => {
 
         <div className={cx("BottomSheetInner", className)}>
           <div className={cx("BottomSheetHeader")}>
-            <h3>{items.find((f) => f.id === selectedItem)?.label || title}</h3>
+            <h3>{items?.find((f) => f.id === selectedItem)?.label || title}</h3>
 
             <button onClick={onClose} className={cx("BottomSheetBtn")}>
               <IoCloseOutline />
