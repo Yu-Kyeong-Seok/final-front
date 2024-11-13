@@ -1,8 +1,7 @@
 .PageContainer {
   background-color: #f6f6f6;
   padding: 20px 10px;
-  height: calc(100dvh - 110px);
-  // 헤더, 바텀탭 높이만큼 빼줌! calc(100dvh - 110px)
+  height: 100%;
 }
 .PageHeader {
   line-height: 50px;
@@ -68,7 +67,7 @@
     flex-direction: column;
     flex-wrap: wrap;
     gap: 5px;
-    padding: 0 5px;
+    padding: 0 5px 0 10px;
     // width: 100%;
 
     @media (max-width: 375px) {
