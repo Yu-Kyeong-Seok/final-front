@@ -1,27 +1,8 @@
-.Wrapper {
+.Container {
   position: relative;
-}
-
-.Inner {
-  display: flex;
-  background-color: var(--color-white);
-
-  justify-content: space-evenly;
-
-  button {
-    padding: 5px 10px;
-    border-radius: 50px;
-    border: 1px solid var(--color-200);
-    background-color: var(--color-white);
-    font-size: 14px;
-    font-weight: 500;
-    color: var(--color-500);
-    white-space: nowrap;
-
-    &:focus {
-      outline: none;
-    }
-  }
+  width: 100%;
+  max-width: inherit;
+  margin: 0 auto;
 }
 
 .Dimmed {
@@ -30,37 +11,44 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(0, 0, 0, 0.6);
   z-index: 99;
 }
 
 .BottomSheet {
   position: fixed;
-  left: 0;
-  right: 0;
+  left: 50%;
+  transform: translateX(-50%) translateY(100%);
   bottom: 0;
-
-  transform: translateY(100%);
+  width: 100%;
+  max-width: inherit;
   transition: transform 0.3s ease-out;
   z-index: 100;
 
+  @media (min-width: 768px) {
+    max-width: 76.8rem;
+  }
+
   &.opened {
-    transform: translateY(0);
+    transform: translateX(-50%) translateY(0);
   }
 }
 
 .BottomSheetInner {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
   background-color: var(--color-white);
   border-radius: 10px 10px 0 0;
-  padding: 20px;
+  padding: 25px;
   min-height: 80dvh;
+
+  .BottomSheetHeader {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+  }
 
   .BottomSheetBtn {
     background-color: transparent;
-    font-size: 20px;
+    font-size: 30px;
     padding: 0;
   }
 }

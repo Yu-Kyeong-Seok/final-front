@@ -1,7 +1,5 @@
-import { useState } from "react";
 import styles from "./BottomSheet.module.scss";
 import cn from "classnames/bind";
-import { MdKeyboardArrowDown } from "react-icons/md";
 import { IoCloseOutline } from "react-icons/io5";
 
 const cx = cn.bind(styles);
@@ -12,59 +10,39 @@ type Item = {
 };
 
 type BottomSheetProps = {
-  items: Item[];
-  onSelect?: (itemId: string) => void;
+  items?: Item[];
+  isOpen: boolean;
+  onClose: () => void;
   title?: string;
-  defaultSelectedItem?: string;
+  selectedItem?: string;
+  className?: string;
+  children?: React.ReactNode;
+  // 바텀시트 내부 내용 동적으로 받기위해 추가함!
 };
 
 const BottomSheet = (props: BottomSheetProps) => {
-  const { items, onSelect, title, defaultSelectedItem } = props;
-
-  const [isOpen, setIsOpen] = useState(false);
-  const [selectedItem, setSelectedItem] = useState(defaultSelectedItem);
-
-  const handleItemClick = (itemId: string) => {
-    setSelectedItem(itemId);
-    setIsOpen(true);
-    onSelect?.(itemId);
-  };
-
-  const handleClose = () => {
-    setIsOpen(false);
-  };
+  const { items, isOpen, onClose, title, selectedItem, className, children } =
+    props;
 
   return (
-    <div className={cx("Wrapper")}>
-      <div className={cx("Inner")}>
-        {items.map((item) => (
-          <button
-            key={item.id}
-            onClick={() => {
-              handleItemClick(item.id);
-            }}
-            className={cx("FilterBtn")}
-          >
-            {item.label}
-            <span>
-              <MdKeyboardArrowDown />
-            </span>
-          </button>
-        ))}
-      </div>
-
+    <div className={cx("Container")}>
       {/* 배경 dimmed  */}
-      {isOpen && <div className={cx("Dimmed")} onClick={handleClose}></div>}
+      {isOpen && <div className={cx("Dimmed")} onClick={onClose}></div>}
+
       {/* 바텀 시트부분 */}
-      <div className={cx("BottomSheet", { opened: isOpen })}>
+      <div className={cx("BottomSheet", { opened: isOpen }, className)}>
         {/* isOpen이 true면 opened 클래스 붙여줌 */}
 
-        <div className={cx("BottomSheetInner")}>
-          <h3>{items.find((f) => f.id === selectedItem)?.label || title}</h3>
+        <div className={cx("BottomSheetInner", className)}>
+          <div className={cx("BottomSheetHeader")}>
+            <h3>{items?.find((f) => f.id === selectedItem)?.label || title}</h3>
 
-          <button onClick={handleClose} className={cx("BottomSheetBtn")}>
-            <IoCloseOutline />
-          </button>
+            <button onClick={onClose} className={cx("BottomSheetBtn")}>
+              <IoCloseOutline />
+            </button>
+          </div>
+
+          <div className={cx("BottomSheetContent")}>{children}</div>
         </div>
       </div>
     </div>

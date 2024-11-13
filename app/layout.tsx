@@ -6,6 +6,7 @@ import cn from "classnames/bind";
 import HeaderWrap from "@/src/components/Header/Header";
 import BottomTab from "@/src/components/BottomTab/BottomTab";
 import localFont from "next/font/local";
+import { headers } from "next/headers";
 
 const cx = cn.bind(styles);
 
@@ -26,11 +27,14 @@ const pretendard = localFont({
   display: "swap",
 });
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const pathname = (await headers()).get("x-pathname");
+
+  console.log(pathname);
   return (
     <html lang="ko">
       <body className={pretendard.className}>

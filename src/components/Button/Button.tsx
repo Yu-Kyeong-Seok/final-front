@@ -5,20 +5,24 @@ import cn from "classnames/bind";
 const cx = cn.bind(styles);
 
 type ButtonProps = {
-    text?: string;
-    disabled?: boolean;
-    variants?: "solid" | "outline"; 
-    onClick?: any;
-}
+  text?: string;
+  disabled?: boolean;
+  variants?: "solid" | "outline";
+  onClick?: any;
+  className?: string;
+};
 
 const Button = (props: ButtonProps) => {
-    const { text, disabled, variants, onClick} = props;
-    return (
-        <button className={cx("Button", {[`${variants}`]: variants})} disabled={disabled} onClick={onClick}>
-            <span className={cx("span")}>{text}</span>
-        </button>
-
-    );
+  const { text, disabled, variants, onClick, className } = props;
+  return (
+    <button
+      className={cx("Button", className, { [`${variants}`]: variants })}
+      disabled={disabled}
+      onClick={onClick}
+    >
+      <span className={cx("span")}>{text}</span>
+    </button>
+  );
 };
 
 export default Button;
