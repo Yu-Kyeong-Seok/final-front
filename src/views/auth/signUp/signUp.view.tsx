@@ -158,10 +158,11 @@ const SignUpView = () => {
                                 <Button 
                                     type="button" 
                                     variants="solid" 
-                                    text="중복확인"
                                     onClick={() => handleCheckDuplicate("id", field.value)}
                                     disabled={isChecking || !field.value || field.value === checkResult.id} // 버튼 비활성화 
-                                />
+                                >
+                                    <span>중복확인</span>
+                                </Button>
                                 </div>
                             </React.Fragment>
                         )
@@ -251,10 +252,11 @@ const SignUpView = () => {
                                     <Button 
                                         type="button" 
                                         variants="solid" 
-                                        text="중복확인"
                                         onClick={() => handleCheckDuplicate("email", field.value)}
                                         disabled={isChecking || !field.value || field.value === checkResult.email} // 버튼 비활성화 
-                                    />
+                                    >
+                                        <span>중복확인</span>
+                                    </Button>
                                 </div>
                             </React.Fragment>
                         )
@@ -280,9 +282,10 @@ const SignUpView = () => {
                                     />
                                 <Button 
                                     type="button" 
-                                    text="인증번호받기" 
                                     disabled={!field.value}
-                                />
+                                    >
+                                    <span>인증번호받기</span>
+                                </Button>
                                 </div>
                             </React.Fragment>
                         )
@@ -294,7 +297,7 @@ const SignUpView = () => {
                     <CheckBoxView></CheckBoxView>
                 </div>
                 <div className={cx("Padding")}>
-                    <Button text="가입하기"></Button>
+                    <Button><span>가입하기</span></Button>
                 </div>
             </form>
         </div>
