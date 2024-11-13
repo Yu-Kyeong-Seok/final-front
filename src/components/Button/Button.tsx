@@ -17,7 +17,7 @@ const Button = (props: ButtonProps) => {
   const { text, disabled, variants, onClick, type, className } = props;
   return (
     <button
-      className={cx("Button", className, { [`${variants}`]: variants })}
+      className={cx("Button", className, variants)}
       disabled={disabled}
       onClick={onClick}
       type={type}
