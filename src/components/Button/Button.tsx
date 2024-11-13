@@ -17,7 +17,6 @@ const Button = (props: ButtonProps) => {
     return (
         <button className={cx("Button", className, variants)} disabled={disabled} onClick={onClick} type={type}>
             {children}
-            {/* <span className={cx("span")}>{text}</span> */}
         </button>
     );
 };
