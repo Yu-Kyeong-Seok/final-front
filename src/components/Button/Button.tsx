@@ -9,12 +9,14 @@ type ButtonProps = {
     disabled?: boolean;
     variants?: "solid" | "outline"; 
     onClick?: any;
+    type?: "submit" | "reset" | "button" | undefined;
+    className?: string;
 }
 
 const Button = (props: ButtonProps) => {
-    const { text, disabled, variants, onClick} = props;
+    const { text, disabled, variants, onClick, type} = props;
     return (
-        <button className={cx("Button", {[`${variants}`]: variants})} disabled={disabled} onClick={onClick}>
+        <button className={cx("Button", className, {[`${variants}`]: variants})} disabled={disabled} onClick={onClick} type={type}>
             <span className={cx("span")}>{text}</span>
         </button>
 
