@@ -73,6 +73,12 @@ export default function OrderView(props: OrderViewProps) {
   /** 결제 예정 금액 */
   const totalPayment = totalAmount + deliveryFee;
 
+  /** 아이템 텍스트 길이 제한 */
+  const truncateText = (text: string, maxLength: number) => {
+    if (text.length <= maxLength) return text;
+    return text.slice(0, maxLength) + "...";
+  };
+
   /** 바텀시트 items */
   // const items = [
   //   { id: "1", label: "메뉴 1" },
@@ -108,9 +114,16 @@ export default function OrderView(props: OrderViewProps) {
           <div className={cx("Item")}>
             <div className={cx("ItemHeader")} onClick={toggleOrderAccordion}>
               <span className={cx("ItemTitle")}>주문상품</span>
-              <span className={cx("ItemIcon")}>
-                {isOrderOpen ? <LuChevronUp /> : <LuChevronDown />}
-              </span>
+              <div>
+                <span className="ItemText">
+                  {orderItems.length === 1
+                    ? truncateText(orderItems[0].name, 20)
+                    : `${truncateText(orderItems[0].name, 20)} 외 ${orderItems.length - 1}건`}
+                </span>
+                <span className={cx("ItemIcon")}>
+                  {isOrderOpen ? <LuChevronUp /> : <LuChevronDown />}
+                </span>
+              </div>
             </div>
             {isOrderOpen && (
               <div className={cx("ItemContent", { open: isOrderOpen })}>
@@ -184,7 +197,9 @@ export default function OrderView(props: OrderViewProps) {
               <ul>
                 <li className={cx("AddressInfo")}>{userInfos[0].address}</li>
                 <li className={cx("AddressBtn")}>
-                  <Button text={"변경"} disabled={false} variants={"outline"} />
+                  <Button disabled={false} variants={"outline"}>
+                    <span>변경</span>
+                  </Button>
                 </li>
               </ul>
             </div>
@@ -207,25 +222,22 @@ export default function OrderView(props: OrderViewProps) {
             </div>
             <div className={cx("Payment")}>
               <div className={cx("Kakao")}>
-                <Button
-                  text={"카카오페이"}
-                  disabled={false}
-                  variants={"solid"}
-                />
+                <Button disabled={false} variants={"solid"}>
+                  <span>카카오페이</span>
+                </Button>
               </div>
 
               <div className={cx("PaymentType")}>
-                <Button
-                  text={"신용카드"}
-                  disabled={false}
-                  variants={"outline"}
-                />
-                <Button
-                  text={"간편결제"}
-                  disabled={false}
-                  variants={"outline"}
-                />
-                <Button text={"휴대폰"} disabled={false} variants={"outline"} />
+                <Button disabled={false} variants={"outline"}>
+                  {" "}
+                  <span>신용카드</span>
+                </Button>
+                <Button disabled={false} variants={"outline"}>
+                  <span>간편결제</span>
+                </Button>
+                <Button disabled={false} variants={"outline"}>
+                  <span>휴대폰</span>
+                </Button>
               </div>
             </div>
           </div>
@@ -264,11 +276,12 @@ export default function OrderView(props: OrderViewProps) {
 
             <div className={cx("PaymentButton")}>
               <Button
-                text={`${totalPayment.toLocaleString()}원 결제하기`}
                 disabled={false}
                 variants={"solid"}
                 onClick={handleOpenBottomSheet}
-              />
+              >
+                <span>{`${totalPayment.toLocaleString()}원 결제하기`}</span>
+              </Button>
             </div>
             <BottomSheet
               // items={items}
@@ -294,17 +307,20 @@ export default function OrderView(props: OrderViewProps) {
                 </div>
                 <div className={cx("ItemHeader", "BottomSheetBtns")}>
                   <Button
-                    text={"주문 상세보기"}
+                    // text={"주문 상세보기"}
                     disabled={false}
                     variants={"outline"}
                     onClick={() => handleClick("/order/[detail]")}
-                  />
+                  >
+                    <span>주문 상세보기</span>
+                  </Button>
                   <Button
-                    text={"쇼핑 계속하기"}
                     disabled={false}
                     variants={"solid"}
                     onClick={() => handleClick("/")}
-                  />
+                  >
+                    <span>쇼핑 계속하기</span>
+                  </Button>
                 </div>
               </div>
             </BottomSheet>

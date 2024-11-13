@@ -56,6 +56,12 @@ export default function OrderDetailView(props: OrderViewProps) {
   //   router.push(path);
   // };
 
+  /** 아이템 텍스트 길이 제한 */
+  const truncateText = (text: string, maxLength: number) => {
+    if (text.length <= maxLength) return text;
+    return text.slice(0, maxLength) + "...";
+  };
+
   return (
     <div className={cx("PageContainer")}>
       <div className={cx("Inner")}>
@@ -96,11 +102,9 @@ export default function OrderDetailView(props: OrderViewProps) {
                   {/* 주문완료 & 장바구니 버튼 */}
                   <div className={cx("StatusInfo")}>
                     <span>{orderStatus}</span>
-                    <Button
-                      text={"장바구니"}
-                      disabled={false}
-                      variants={"outline"}
-                    />
+                    <Button disabled={false} variants={"outline"}>
+                      <span>장바구니</span>
+                    </Button>
                   </div>
                 </div>
               ))}
@@ -108,17 +112,21 @@ export default function OrderDetailView(props: OrderViewProps) {
               {/* 주문취소 & 다시담기 버튼*/}
               <div className={cx("OrderCancel")}>
                 <Button
-                  text={"주문취소"}
+                  // text={"주문취소"}
                   disabled={false}
                   variants={"outline"}
                   className={cx("CancelButton")}
-                />
+                >
+                  <span>주문취소</span>
+                </Button>
                 <Button
-                  text={"전체 상품 다시 담기"}
+                  // text={"전체 상품 다시 담기"}
                   disabled={false}
                   variants={"outline"}
                   className={cx("CancelButton")}
-                />
+                >
+                  <span>전체 상품 다시 담기</span>
+                </Button>
               </div>
             </div>
           </div>
@@ -132,8 +140,8 @@ export default function OrderDetailView(props: OrderViewProps) {
             <div className={cx("ItemContent", "DeliveryContent")}>
               <span>
                 {orderItems.length === 1
-                  ? orderItems[0].name
-                  : `${orderItems[0].name} 외 ${orderItems.length - 1}건...`}
+                  ? truncateText(orderItems[0].name, 20)
+                  : `${truncateText(orderItems[0].name, 20)} 외 ${orderItems.length - 1}건`}
               </span>
               <span className={cx("DeliveryInfo")}>배송조회</span>
             </div>
