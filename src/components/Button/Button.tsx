@@ -9,13 +9,14 @@ type ButtonProps = {
   disabled?: boolean;
   variants?: "solid" | "outline";
   onClick?: any;
+  className?: string;
 };
 
 const Button = (props: ButtonProps) => {
-  const { text, disabled, variants, onClick } = props;
+  const { text, disabled, variants, onClick, className } = props;
   return (
     <button
-      className={cx("Button", { [`${variants}`]: variants })}
+      className={cx("Button", className, { [`${variants}`]: variants })}
       disabled={disabled}
       onClick={onClick}
     >

@@ -8,7 +8,6 @@ import Button from "@/src/components/Button/Button";
 import Input from "@/src/components/Input/Input";
 import BottomSheet from "@/src/components/BottomSheet/BottomSheet";
 import { useRouter } from "next/navigation";
-// import BottomSheet from "@/src/components/BottomSheet/BottomSheet";
 
 const cx = cn.bind(styles);
 
@@ -91,8 +90,8 @@ export default function OrderView(props: OrderViewProps) {
 
   /** 버튼 클릭 시 페이지 이동 */
   const router = useRouter();
-  const handleClick = () => {
-    router.push("/");
+  const handleClick = (path: string) => {
+    router.push(path);
   };
 
   return (
@@ -298,12 +297,13 @@ export default function OrderView(props: OrderViewProps) {
                     text={"주문 상세보기"}
                     disabled={false}
                     variants={"outline"}
+                    onClick={() => handleClick("/order/[detail]")}
                   />
                   <Button
                     text={"쇼핑 계속하기"}
                     disabled={false}
                     variants={"solid"}
-                    onClick={handleClick}
+                    onClick={() => handleClick("/")}
                   />
                 </div>
               </div>
