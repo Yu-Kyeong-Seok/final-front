@@ -1,7 +1,4 @@
-import OrderView from "@/src/views/order/order.view";
-
-/** props로 내려줄 것 => view 컴포넌트로 */
-/** 데이터관리를 page에서. "use client" 사용X  */
+import OrderDetailView from "@/src/views/order/orderDetail.view";
 
 /** 주문 아이템 */
 const orderItems = [
@@ -35,17 +32,28 @@ const orderItems = [
 ];
 
 /** 주문자 정보 */
-const userInfos = [
-  {
-    id: "random1",
-    name: "황다영",
-    phone: "010-0000-0000",
-    email: "1234@gmail.com",
-    address: "서울특별시 강남구 테헤란로 133 한국타이어빌딩 18층 (역삼동)",
-  },
-];
+// const userInfos = [
+//   {
+//     id: "random1",
+//     name: "황다영",
+//     phone: "010-0000-0000",
+//     email: "1234@gmail.com",
+//     address: "서울특별시 강남구 테헤란로 133 한국타이어빌딩 18층 (역삼동)",
+//   },
+// ];
 
-/** 주문서 페이지 */
-export default function OrderPage() {
-  return <OrderView orderItems={orderItems} userInfos={userInfos} />;
+const orderNumber = "ORD123456789";
+
+const orderStatus = "주문완료";
+
+/** 주문서 페이지 props 내려줌 */
+export default function OrderDetailPage() {
+  return (
+    <OrderDetailView
+      orderItems={orderItems}
+      // userInfos={userInfos}
+      orderNumber={orderNumber}
+      orderStatus={orderStatus}
+    />
+  );
 }
