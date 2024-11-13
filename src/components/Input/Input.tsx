@@ -7,14 +7,23 @@ const cx = cn.bind(styles);
 type InputProps = {
     placeholder?: string;
     type?: string;
+    id?: string;
+    name?: string;
+    onChange?: any;
+    value?: any;
 }
 
 const Input = (props: InputProps) => {
-    const { placeholder, type } = props;
+    const { placeholder, type, id, name, onChange, value } = props;
     return (
-        <input className={cx("Input")} placeholder={placeholder} type={type}>
-
-        </input>
+        <input className={cx("Input")} 
+            placeholder={placeholder}
+            type={type}
+            id={id}
+            name={name}
+            onChange={onChange}
+            value={value}
+        />
     );
 };
 
