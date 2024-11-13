@@ -10,14 +10,14 @@
     flex-direction: column;
     width: 100%;
     margin: 0;
+    
 }
 
-.Label {
+.RequiredLabel {
     padding: 18px 0px 7px;
-}
-
-.Span {
-    color: red;
+        span {
+            color: red;
+        }
 }
 
 .InputContainer {

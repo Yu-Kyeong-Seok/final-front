@@ -13,7 +13,7 @@ const LoginView = () => {
             <form className={cx("Form")}>
                 <div className={cx("InnerContainer")}>
                     <Input placeholder="아이디를 입력해주세요"></Input>
-                    <Input placeholder="비밀번호를 입력해주세요"></Input>
+                    <Input type="password" placeholder="비밀번호를 입력해주세요"></Input>
                 </div>
                 <div className={cx("InnerContainer")}>
                     <Button variants="solid" text="로그인"></Button>
