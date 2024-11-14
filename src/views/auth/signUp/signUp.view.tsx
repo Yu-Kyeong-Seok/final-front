@@ -4,10 +4,10 @@ import styles from "./signUp.view.module.scss";
 import cn from "classnames/bind";
 import { Controller, useForm } from "react-hook-form";
 import Button from "@/src/components/Button/Button";
-import CheckBoxView from "@/src/components/CheckBox/CheckBox.view";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import CheckBox from "@/src/components/CheckBox/CheckBox";
 
 const cx = cn.bind(styles);
 
@@ -29,12 +29,12 @@ const SignUpView = () => {
         mode: "onSubmit",
         reValidateMode: "onSubmit",
         defaultValues: {
-            id: "",
-            password : "",
-            passwordConfirm : "",
-            name : "",
-            email : "",
-            phoneNumber : "",
+            id: "TestId",
+            password : "12341234",
+            passwordConfirm : "12341234",
+            name : "TestName",
+            email : "Test@naver.com",
+            phoneNumber : "01012341234",
             terms : [],
         },
         resolver: yupResolver(
@@ -67,19 +67,19 @@ const SignUpView = () => {
                 .string()
                 .matches(/^[0-9]{10,11}$/, "올바른 휴대폰 번호를 입력해주세요")
                 .required("휴대폰 번호를 입력해주세요"),
-                // terms: yup
-                // .array()
-                // .of(yup.string())
-                // .test(
-                //     "requird",
-                //     "개인정보 처리방침과 서비스 이용약관은 필수로 동의해야합니다.",
-                //     (value) => {
-                //     const requiredTerms = ["privacy", "using"];
+                terms: yup
+                .array()
+                .of(yup.string().required("필수 약관을 선택해주세요"))
+                .test(
+                    "requird",
+                    "필수 이용 약관에 동의해주세요.",
+                    (value) => {
+                    const requiredTerms = ["privacy", "using", "age"];
 
-                //     return requiredTerms.every((term) => value?.includes(term));
-                //     }
-                // )
-                // .required(),
+                    return requiredTerms.every((term) => value?.includes(term));
+                    }
+                )
+                .required("약관 동의는 필수입니다."),
             })
         ),
     });
@@ -90,8 +90,9 @@ const SignUpView = () => {
             privacy: data.terms.includes("privacy"),
             using: data.terms.includes("using"),
             marketing: data.terms.includes("marketing"),
+            age: data.terms.includes("age"),
             };
-    
+            
             console.log(data);
         },
         (error) => {
@@ -135,6 +136,40 @@ const SignUpView = () => {
             setIsChecking(false);
         }
     };
+
+    const [selectAll, setSelectAll] = useState(false); // 전체 선택 상태 추가
+
+    const handleTermsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { id } = e.target;
+        const currentValue = form.getValues("terms");
+        const newValue = currentValue.includes(id)
+        ? currentValue.filter((value) => value !== id)
+        : [...currentValue, id];
+        form.setValue("terms", newValue);
+    };
+
+    const handleSelectAllChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const isChecked = e.target.checked;
+        setSelectAll(isChecked);
+        if (isChecked) {
+        // 전체 선택
+        form.setValue("terms", ["privacy", "using", "marketing", "age"]);
+        // form.setValue("terms", ["privacy", "using", "marketing", "age"]);
+        } else {
+        // 전체 해제
+        form.setValue("terms", []);
+        // form.setValue("terms", []);
+        }
+
+    };
+
+    useEffect(() => {
+        const currentTerms = form.getValues("terms");
+        const allTerms = ["privacy", "using", "marketing", "age"];
+
+        const allChecked = allTerms.every((term) => currentTerms.includes(term));
+        setSelectAll(allChecked);
+    }, [form]);
 
     return (
         <div className={cx("Wrapper")}>
@@ -280,10 +315,7 @@ const SignUpView = () => {
                                         onChange={field.onChange}
                                         value={field.value}
                                     />
-                                <Button 
-                                    type="button" 
-                                    disabled={!field.value}
-                                    >
+                                <Button type="button" disabled={!field.value}>
                                     <span>인증번호받기</span>
                                 </Button>
                                 </div>
@@ -294,10 +326,71 @@ const SignUpView = () => {
                 {/* 이용약관동의 */}
                 <label className={cx("RequiredLabel")}>이용약관동의<span>*</span></label>
                 <div className={cx("Padding")}>
-                    <CheckBoxView></CheckBoxView>
+                <fieldset>
+                    <CheckBox
+                        id="selectAll"
+                        label="전체 동의합니다."
+                        name="selectAll"
+                        value={selectAll ? ["selectAll"] : []}
+                        onChange={handleSelectAllChange}
+                    />
+                    <p>선택항목에 동의하지 않은 경우도 회원가입 및 일반적인 서비스를 이용할 수 있습니다.</p>
+                    <Controller
+                        control={form.control}
+                        name="terms"
+                        render={({ field }) => (
+                            <CheckBox
+                                id="privacy"
+                                label="이용약관 동의(필수)"
+                                name={field.name}
+                                value={field.value}
+                                onChange={handleTermsChange}
+                            />
+                        )}
+                    />
+                    <Controller
+                        control={form.control}
+                        name="terms"
+                        render={({ field }) => (
+                            <CheckBox
+                                id="using"
+                                label="개인정보, 이용동의(필수)"
+                                name={field.name}
+                                value={field.value}
+                                onChange={handleTermsChange}
+                            />
+                        )}
+                    />
+                    <Controller
+                        control={form.control}
+                        name="terms"
+                        render={({ field }) => (
+                            <CheckBox
+                                id="marketing"
+                                label="마케팅 정보 수신 동의(선택)"
+                                name={field.name}
+                                value={field.value}
+                                onChange={handleTermsChange}
+                            />
+                        )}
+                    />
+                    <Controller
+                        control={form.control}
+                        name="terms"
+                        render={({ field }) => (
+                            <CheckBox
+                                id="age"
+                                label="본인은 만 14세 이상입니다.(필수)"
+                                name={field.name}
+                                value={field.value}
+                                onChange={handleTermsChange}
+                            />
+                        )}
+                    />
+                </fieldset>
                 </div>
                 <div className={cx("Padding")}>
-                    <Button><span>가입하기</span></Button>
+                    <Button type="submit" ><span>가입하기</span></Button>
                 </div>
             </form>
         </div>

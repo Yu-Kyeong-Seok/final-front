@@ -1,5 +1,8 @@
+import path from 'path';
+import { promises as fs } from 'fs';
+
 export interface Product {
-    id:number;
+    id: number;
     name: string;
     originalPrice: number;
     price: number;
@@ -8,11 +11,10 @@ export interface Product {
 
 export const fetchProducts = async () => {
     try {
-        const response = await fetch("/assets/dummy/product-item.json");
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        const data = await response.json();
+        // public 폴더의 파일 직접 읽기
+        const filePath = path.join(process.cwd(), 'public/assets/dummy/product-item.json');
+        const jsonData = await fs.readFile(filePath, 'utf8');
+        const data = JSON.parse(jsonData);
         return data.results;
     } catch (error) {
         console.error("Error fetching product data:", error);
