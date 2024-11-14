@@ -4,12 +4,13 @@ import cn from 'classnames/bind';
 
 const cx = cn.bind(styles);
 
-type ModalWrapProps = {
+type ModalWrapProps = React.PropsWithChildren<{
     onCancel?: (...args: any) => void;
     onConfirm?: (...args: any) => void;
-}
+}>;
 
 export default function ModalWrap(props:ModalWrapProps) {
+    const {children} = props;
     const [isOpen, setIsOpen] = useState(false);
 
     const openModal = () => setIsOpen(true);
@@ -26,18 +27,18 @@ export default function ModalWrap(props:ModalWrapProps) {
     
     return(
         <div>
-            <button onClick={openModal}>모달 열기</button>
+            {/* 모달 예시버튼 */}
+            {/* <button onClick={openModal}>모달 열기</button> */}
 
             {isOpen && (
                 <div className={cx('modalOverlay')} onClick={closeModal}>
-                <div className={cx('modalContent')} onClick={(e) => e.stopPropagation()}>
-                    <h2>여기에 텍스트를 입력해주세요</h2>
-                    <p>모달 내용을 여기에 작성하세요.</p>
-                    <div className={cx('button-box')}>
-                        <button className={cx('closeButton')} onClick={handleCancel}>취소</button>
-                        <button className={cx('closeButton')} onClick={handleConfirm} >확인</button>
+                    <div className={cx('modalContent')} onClick={(e) => e.stopPropagation()}>
+                        {children}
+                        <div className={cx('button-box')}>
+                            <button className={cx('closeButton')} onClick={handleCancel}>취소</button>
+                            <button className={cx('closeButton')} onClick={handleConfirm} >확인</button>
+                        </div>
                     </div>
-                </div>
                 </div>
             )}
         </div>
