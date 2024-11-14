@@ -6,6 +6,7 @@ import cn from "classnames/bind";
 // import { LuChevronDown, LuChevronUp, LuCheckCircle } from "react-icons/lu";
 import Image from "next/image";
 import Button from "@/src/components/Button/Button";
+// import ModalWrap from "@/src/components/Modal/Modal";
 
 // import { useRouter } from "next/navigation";
 
@@ -102,7 +103,11 @@ export default function OrderDetailView(props: OrderViewProps) {
                   {/* 주문완료 & 장바구니 버튼 */}
                   <div className={cx("StatusInfo")}>
                     <span>{orderStatus}</span>
-                    <Button disabled={false} variants={"outline"}>
+                    <Button
+                      disabled={false}
+                      variants={"outline"}
+                      className={cx("CartBtn")}
+                    >
                       <span>장바구니</span>
                     </Button>
                   </div>
@@ -119,6 +124,7 @@ export default function OrderDetailView(props: OrderViewProps) {
                 >
                   <span>주문취소</span>
                 </Button>
+
                 <Button
                   // text={"전체 상품 다시 담기"}
                   disabled={false}
@@ -143,7 +149,10 @@ export default function OrderDetailView(props: OrderViewProps) {
                   ? truncateText(orderItems[0].name, 20)
                   : `${truncateText(orderItems[0].name, 20)} 외 ${orderItems.length - 1}건`}
               </span>
-              <span className={cx("DeliveryInfo")}>배송조회</span>
+              <div className={cx("StatusInfo")}>
+                <span>{orderStatus}</span>
+                <span className={cx("DeliveryInfo")}>배송조회</span>
+              </div>
             </div>
           </div>
 
