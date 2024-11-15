@@ -17,8 +17,8 @@ const LoginView = () => {
                     <Input type="password" placeholder="비밀번호를 입력해주세요"></Input>
                 </div>
                 <div className={cx("InnerContainer")}>
-                    <Button variants="solid"><span>로그인</span></Button>
-                    <Button variants="outline"><span>회원가입</span></Button>
+                    <Button type="submit" variants="solid"><span>로그인</span></Button>
+                    <Button type="button" variants="outline"><span>회원가입</span></Button>
                 </div>
                 <div className={cx("SearchContainer")}>
                     <a>아이디 찾기</a>
