@@ -6,7 +6,7 @@ import cn from "classnames/bind";
 // import { useState } from "react";
 import { LuChevronLeft, LuAlertCircle, LuPencil } from "react-icons/lu";
 import { useState } from "react";
-// import { useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 const cx = cn.bind(styles);
 
@@ -37,6 +37,12 @@ export default function DeliveryAddressView(props: OrderViewProps) {
     );
   };
 
+  /** 버튼 클릭 시 페이지 이동 */
+  const router = useRouter();
+  const handleClick = (path: string) => {
+    router.push(path);
+  };
+
   return (
     <div className={cx("PageContainer")}>
       <div className={cx("PageHeader")}>
@@ -44,7 +50,9 @@ export default function DeliveryAddressView(props: OrderViewProps) {
           <LuChevronLeft />
         </a>
         <h3>배송지 관리</h3>
-        <a className={cx("AddAdress")}>추가</a>
+        <a className={cx("AddAdress")} onClick={() => handleClick("/delivery")}>
+          추가
+        </a>
       </div>
       <span className={cx("DeliveryAlertText")}>
         <LuAlertCircle /> 배송지에 따라 상품정보 및 배송유형이 달라질 수
@@ -57,7 +65,7 @@ export default function DeliveryAddressView(props: OrderViewProps) {
             onChange={handleChange}
             value={selectedValues}
             id="checkbox1"
-            name="checkbox-group"
+            name="checkbox"
           />
           <ul>
             <li className={cx("AddressItem")}>{userInfos[0].address}</li>
