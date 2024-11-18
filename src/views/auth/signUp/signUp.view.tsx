@@ -2,8 +2,8 @@
 import Input from "@/src/components/Input/Input";
 import styles from "./signUp.view.module.scss";
 import cn from "classnames/bind";
-import { Controller, useForm } from "react-hook-form";
 import Button from "@/src/components/Button/Button";
+import { Controller, useForm } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import React, { useEffect, useState } from "react";
@@ -105,6 +105,7 @@ const SignUpView = () => {
             form.setFocus(firstErrorField as keyof SignUpFormType);
         }
     );
+
     const handleCheckDuplicate = async (type: "id" | "email", value: string) => {
         if (!value) {
             alert(`${type === "id" ? "아이디" : "이메일"}을 입력해주세요.`);
