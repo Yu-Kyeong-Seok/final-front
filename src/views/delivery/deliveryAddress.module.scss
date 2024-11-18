@@ -34,4 +34,64 @@
     text-align: center;
     color: var(--color-400);
   }
+
+  section {
+    padding: 15px 0;
+
+    .AddressList {
+      display: flex;
+      align-items: flex-start;
+      font-size: 14px;
+      padding: 10px;
+      color: var(--color-700);
+      border-bottom: 1px solid var(--color-100);
+
+      ul {
+        padding: 0 10px;
+
+        .AddressItem {
+          line-height: 1.2;
+          text-overflow: ellipsis;
+          white-space: wrap;
+          overflow: hidden;
+          width: 100%;
+        }
+
+        li {
+          ul {
+            display: flex;
+            gap: 5px;
+            padding: 5px 0;
+
+            li:nth-child(1) {
+              &::after {
+                content: "";
+                display: inline-block;
+                width: 1px;
+                height: 10px;
+                background-color: var(--color-300);
+                margin-left: 5px;
+              }
+            }
+          }
+
+          .AddressUser {
+            font-size: 13px;
+          }
+        }
+
+        .DeliveryType {
+          font-size: 12px;
+          font-weight: 600;
+          color: var(--color-main);
+          padding: 5px 0;
+        }
+      }
+
+      span {
+        color: var(--color-300);
+        font-size: 19px;
+      }
+    }
+  }
 }
