@@ -2,7 +2,7 @@
 // import { useState } from "react";
 import styles from "./mypage.module.scss";
 import cn from "classnames/bind";
-import { LuChevronRight, LuClub } from "react-icons/lu";
+import { LuChevronRight, LuUserCircle2 } from "react-icons/lu";
 // import { useRouter } from "next/navigation";
 
 const cx = cn.bind(styles);
@@ -27,12 +27,13 @@ export default function MypageView(props: OrderViewProps) {
   return (
     <div className={cx("MypageContainer")}>
       <section className={cx("MypageSection")}>
-        <h3>
+        <div className={cx("MypageTitle")}>
           <a>
-            <LuClub />
+            <LuUserCircle2 />
           </a>
-          {userInfos[0].name}님의 마이페이지
-        </h3>
+          <h3> {userInfos[0].name}님의 마이페이지 </h3>
+        </div>
+
         <ul>
           <li>
             주문내역
