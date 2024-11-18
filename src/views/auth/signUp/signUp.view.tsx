@@ -19,11 +19,15 @@ type SignUpFormType = {
     email: string;
     phoneNumber: string;
     terms: string[];
+    verificationNumber?: string;
 };
 
 const SignUpView = () => {
     const [isChecking, setIsChecking] = useState(false); // For handling loading state
     const [checkResult, setCheckResult] = useState<{ id?: string; email?: string }>({}); // Store check results
+
+    const [showVerificationInput, setShowVerificationInput] = useState(false); // 인증번호 확인 입력 필드 표시 여부
+    const [timer, setTimer] = useState(0); // 남은 시간 (초 단위)
 
     const form = useForm<SignUpFormType>({
         mode: "onSubmit",
@@ -84,6 +88,7 @@ const SignUpView = () => {
         ),
     });
 
+    // 가입하기
     const handleSubmit = form.handleSubmit(
         (data) => {
             const results = {
@@ -99,13 +104,24 @@ const SignUpView = () => {
             const [key, { message }] = Object.entries(error)[0];
 
             alert(message);
-
-            // Focus
-            const firstErrorField = Object.keys(error)[0];
-            form.setFocus(firstErrorField as keyof SignUpFormType);
         }
     );
 
+    // 인증번호 받기
+    const handleSendPhoneNumber = async () => {
+        try {
+
+            setShowVerificationInput(true); // 클릭 시 인증번호 확인 필드 숨김
+
+            setTimer(5); // 3분 타이머 시작
+            // await new Promise((resolve) => setTimeout(resolve, 5000)); // 1분 = 60,000ms
+        } catch (error) {
+            console.error(error);
+        } finally {
+
+        }
+    }
+    // 중복확인
     const handleCheckDuplicate = async (type: "id" | "email", value: string) => {
         if (!value) {
             alert(`${type === "id" ? "아이디" : "이메일"}을 입력해주세요.`);
@@ -138,6 +154,7 @@ const SignUpView = () => {
         }
     };
 
+    // CheckBox
     const [selectAll, setSelectAll] = useState(false); // 전체 선택 상태 추가
 
     const handleTermsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -171,6 +188,25 @@ const SignUpView = () => {
         const allChecked = allTerms.every((term) => currentTerms.includes(term));
         setSelectAll(allChecked);
     }, [form]);
+
+    useEffect(() => {
+        if (timer > 0) {
+            const countdown = setInterval(() => {
+                setTimer((prev) => prev - 1);
+            }, 1000);
+            return () => clearInterval(countdown); // 컴포넌트 언마운트 시 클리어
+        }
+        else {
+            setShowVerificationInput(false);
+        }
+
+        }, [timer]);
+
+    const formatTime = (seconds: number) => {
+            const minutes = Math.floor(seconds / 60);
+            const secs = seconds % 60;
+            return `${minutes}:${secs < 10 ? '0' : ''}${secs}`;
+        };
 
     return (
         <div className={cx("Wrapper")}>
@@ -227,6 +263,7 @@ const SignUpView = () => {
                         )
                     }}
                 />
+                {/* 비밀번호 확인 */}
                 <Controller
                     control={form.control}
                     name={"passwordConfirm"}
@@ -316,14 +353,44 @@ const SignUpView = () => {
                                         onChange={field.onChange}
                                         value={field.value}
                                     />
-                                <Button type="button" disabled={!field.value}>
-                                    <span>인증번호받기</span>
-                                </Button>
+                                    <Button type="button" disabled={!field.value} onClick={handleSendPhoneNumber}>
+                                        <span>인증번호 받기</span>
+                                    </Button>
+                                    {/* {loading ? '전송 중...' : timer > 0 ? `${formatTime(timer)} 후 재시도` : '인증번호 받기'} */}
                                 </div>
                             </React.Fragment>
                         )
                     }}
                 />
+                <br></br>
+                {showVerificationInput && (
+                    <Controller
+                    control={form.control}
+                    name={"verificationNumber"}
+                    render={({ field }) => {
+                        return (
+                            <React.Fragment>
+                                <div className={cx("InputContainer")}>
+                                    <div className={cx("VerificationNumberWrapper")}>
+                                        <Input 
+                                            type="number"
+                                            id={field.name}
+                                            name={field.name}
+                                            onChange={field.onChange}
+                                            value={field.value}
+                                        />
+                                        {timer > 0 ? <span className={cx("VerificationNumber")}>{formatTime(timer)}</span> : ''}
+                                    </div>
+                                    <Button type="button" disabled={!field.value}>
+                                        <span>인증번호 확인</span>
+                                    </Button>
+                                </div>
+                            </React.Fragment>
+                        )
+                    }}
+                    />
+                )}
+                {/* {timer > 0 ? `${formatTime(timer)} 후 재시도` : '인증번호 받기'} */}
                 {/* 이용약관동의 */}
                 <label className={cx("RequiredLabel")}>이용약관동의<span>*</span></label>
                 <div className={cx("Padding")}>

@@ -11,7 +11,7 @@ import { useRouter } from "next/navigation";
 
 const cx = cn.bind(styles);
 
-type LoginType = {
+type LoginFormType = {
     id: string;
     password: string;
 };
@@ -22,12 +22,12 @@ const LoginView = () => {
         router.push(path);
     };
 
-    const form = useForm<LoginType>({
+    const form = useForm<LoginFormType>({
         mode: "onSubmit",
         reValidateMode: "onSubmit",
         defaultValues: {
-            id: "TestId",
-            password : "12341234",
+            id: "",
+            password : "",
         },
         resolver: yupResolver(
             yup.object().shape({

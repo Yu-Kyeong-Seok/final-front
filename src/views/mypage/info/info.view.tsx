@@ -10,14 +10,14 @@ import { Controller, useForm } from "react-hook-form";
 
 const cx = cn.bind(styles);
 
-type InfoType = {
+type InfoFormType = {
     id: string;
     password: string;
 };
 
 const InfoView = () => {
     
-    const form = useForm<InfoType>({
+    const form = useForm<InfoFormType>({
         mode: "onSubmit",
         reValidateMode: "onSubmit",
         defaultValues: {
