@@ -170,7 +170,7 @@ const OrderListView = (props: OrderListProps) => {
                     </li>
                     <li>{orderNumber}</li>
                     <li>{paymentMethod}</li>
-                    <li>{totalPayment}</li>
+                    <li> {totalPayment.toLocaleString()}원</li>
                     <li>{orderStatus}</li>
                   </ul>
                 </div>

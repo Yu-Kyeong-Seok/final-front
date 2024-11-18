@@ -83,6 +83,7 @@ export default function OrderDetailView(props: OrderViewProps) {
                     alt={item.name}
                     width={70}
                     height={70}
+                    className={cx("ProductImage")}
                   />
                   <div className={cx("OrderInfo")}>
                     {/* 상품 이름 */}
@@ -144,7 +145,7 @@ export default function OrderDetailView(props: OrderViewProps) {
             </div>
 
             <div className={cx("ItemContent", "DeliveryContent")}>
-              <span>
+              <span className={cx("DeliverText")}>
                 {orderItems.length === 1
                   ? truncateText(orderItems[0].name, 20)
                   : `${truncateText(orderItems[0].name, 20)} 외 ${orderItems.length - 1}건`}

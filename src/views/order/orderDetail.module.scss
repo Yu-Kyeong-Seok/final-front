@@ -68,11 +68,12 @@
     flex-wrap: wrap;
     gap: 5px;
     padding: 0 5px 0 10px;
+    width: 55%;
     // width: 100%;
 
     @media (max-width: 375px) {
       padding-left: 5px;
-      width: 55%;
+      // width: 55%;
     }
 
     .InfoTitle {
@@ -92,7 +93,7 @@
       font-weight: 600;
       &:nth-child(2) {
         padding-left: 5px;
-        padding-right: 10px;
+        padding-right: 5px;
         text-decoration: line-through;
         color: var(--color-400);
         font-size: 13px;
@@ -103,7 +104,7 @@
           width: 1px;
           height: 11px;
           background-color: var(--color-400);
-          margin-left: 15px;
+          margin: 0 5px;
         }
       }
     }
@@ -115,26 +116,27 @@
   flex-direction: column;
   // flex-direction: row;
 
-  font-size: 12px;
   align-items: center;
   gap: 5px;
   margin-left: auto;
 
   span {
-    font-weight: 600;
+    font-weight: 500;
+    font-size: 13px;
   }
 
   button {
     height: auto;
-    padding: 5px;
+    padding: 3px;
     transition: 0.3s;
+
     &:hover {
       background-color: var(--color-main);
       color: var(--color-white);
     }
 
     span {
-      font-size: 13px;
+      font-size: 12px;
       font-weight: 500;
       transition: 0.3s;
       &:hover {
@@ -157,7 +159,7 @@
   justify-content: center;
 
   span {
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 600;
     transition: 0.4s;
   }
@@ -179,6 +181,10 @@
   flex-direction: row;
   justify-content: space-between;
   margin-top: 0;
+
+  .DeliverText {
+    font-size: 14px;
+  }
 
   .DeliveryInfo {
     cursor: pointer;
