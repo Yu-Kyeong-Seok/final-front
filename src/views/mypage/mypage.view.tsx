@@ -26,48 +26,46 @@ export default function MypageView(props: OrderViewProps) {
 
   return (
     <div className={cx("MypageContainer")}>
-      <div className={cx("Inner")}>
+      <section className={cx("MypageSection")}>
         <h3>
           <a>
             <LuClub />
-          </a>{" "}
+          </a>
           {userInfos[0].name}님의 마이페이지
         </h3>
-        <section className={cx("MypageSection")}>
-          <ul>
-            <li>
-              주문내역
-              <span>
-                <LuChevronRight />
-              </span>
-            </li>
-            <li>
-              배송지 관리
-              <span>
-                <LuChevronRight />
-              </span>
-            </li>
-            <li>
-              개인 정보 수정
-              <span>
-                <LuChevronRight />
-              </span>
-            </li>
-            <li>
-              로그아웃
-              <span>
-                <LuChevronRight />
-              </span>
-            </li>
-            <li>
-              회원탈퇴
-              <span>
-                <LuChevronRight />
-              </span>
-            </li>
-          </ul>
-        </section>
-      </div>
+        <ul>
+          <li>
+            주문내역
+            <span>
+              <LuChevronRight />
+            </span>
+          </li>
+          <li>
+            배송지 관리
+            <span>
+              <LuChevronRight />
+            </span>
+          </li>
+          <li>
+            개인 정보 수정
+            <span>
+              <LuChevronRight />
+            </span>
+          </li>
+          <li>
+            로그아웃
+            <span>
+              <LuChevronRight />
+            </span>
+          </li>
+          <li>
+            회원탈퇴
+            <span>
+              <LuChevronRight />
+            </span>
+          </li>
+        </ul>
+      </section>
     </div>
   );
 }

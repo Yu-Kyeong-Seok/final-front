@@ -1,36 +1,46 @@
 .MypageContainer {
-  background-color: var(--color-white);
+  background-color: #f6f6f6;
   padding: 15px;
+  height: 100%;
 
-  .Inner {
-  }
+  .MypageSection {
+    box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.1);
+    padding: 10px;
+    background-color: var(--color-white);
+    border-radius: 6px;
 
-  h3 {
-    font-size: 17px;
-    display: flex;
-    align-items: center;
-    gap: 5px;
-
-    a {
-      color: var(--color-main);
-    }
-  }
-}
-
-.MypageSection {
-  padding-top: 30px;
-  ul {
-    li {
+    h3 {
+      font-size: 17px;
       display: flex;
-      justify-content: space-between;
-      background-color: var(--color-white);
-      font-size: 15px;
-      line-height: 45px;
-      border-top: 1px solid #dadada;
-      color: var(--color-800);
+      align-items: center;
+      gap: 5px;
 
-      &:nth-child(1) {
-        border-top: none;
+      padding: 20px 10px 30px 10px;
+
+      // line-height: 50px;
+
+      a {
+        color: var(--color-main);
+      }
+    }
+
+    ul {
+      padding: 0 10px;
+      li {
+        display: flex;
+        justify-content: space-between;
+        background-color: var(--color-white);
+        font-size: 15px;
+        line-height: 50px;
+        border-top: 1px solid #e6e5e5;
+        color: var(--color-800);
+
+        // border-radius: 6px;
+
+        &:nth-child(1) {
+          border-top: none;
+          border-radius: 10px;
+        }
       }
     }
   }
