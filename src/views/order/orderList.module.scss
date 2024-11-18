@@ -1,208 +1,97 @@
 .PageContainer {
   background-color: #f6f6f6;
-  padding: 20px 10px;
+  // padding: 20px 0;
   height: 100%;
 }
-.PageHeader {
-  line-height: 50px;
-  text-align: center;
-  padding-bottom: 10px;
-  font-size: 18px;
-  // border: 1px solid red;
-}
 
-.Contents {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.Item {
+.Inner {
   background-color: var(--color-white);
-  border-radius: 6px;
-  padding: 25px 15px;
-  box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.1);
-
-  span {
-    font-size: 15px;
-  }
+  max-width: 76.8rem;
+  width: 100%;
 }
 
-.ItemHeader {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-size: 16px;
-  font-weight: 500;
-  padding-bottom: 15px;
-}
-
-.ItemContent {
+.TabAll {
   display: flex;
   flex-direction: column;
-  border-top: 1px solid var(--color-100);
-  padding-top: 15px;
-  margin-top: 15px;
-  font-size: 14px;
+
+  padding: 10px 15px;
 }
 
-.ItemDetail {
+.TabMenu {
   display: flex;
-  padding: 5px 0;
-  align-items: center;
-  // justify-content: space-between;
+  width: 100%;
+  gap: 5px;
+  padding-bottom: 35px;
 
-  .ItemImgText {
-    display: flex;
-    align-items: center;
-  }
-
-  .ProductImage {
-    object-fit: cover;
+  button {
+    // padding: 7px 20px;
+    border: 1px solid var(--color-200);
+    width: 25%;
+    padding: 0.8rem;
     border-radius: 5px;
+    font-weight: 600;
+    color: var(--color-600);
   }
 
-  .OrderInfo {
-    display: flex;
-    flex-direction: column;
-    flex-wrap: wrap;
-    gap: 5px;
-    padding: 0 5px 0 10px;
-    // width: 100%;
+  & .active {
+    border: 1px solid var(--color-main);
+    color: var(--color-main);
+  }
+}
 
-    @media (max-width: 375px) {
-      padding-left: 5px;
-      width: 55%;
-    }
+.TabContent {
+  background-color: var(--color-white);
+  text-align: left;
 
-    .InfoTitle {
-      font-weight: 400;
-      line-height: 1.2;
-      text-overflow: ellipsis;
-      overflow: hidden;
-      white-space: nowrap;
-      width: 100%;
-    }
+  // box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.1);
 
-    .ItemInfo {
-      flex-wrap: wrap;
-    }
+  section {
+    .OrderItemText {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
 
-    .ItemInfoDetail {
-      font-weight: 600;
-      &:nth-child(2) {
-        padding-left: 5px;
-        padding-right: 10px;
-        text-decoration: line-through;
-        color: var(--color-400);
-        font-size: 13px;
-        font-weight: 400;
-        &::after {
-          content: "";
-          display: inline-block;
-          width: 1px;
-          height: 11px;
-          background-color: var(--color-400);
-          margin-left: 15px;
+      .DateAndTime {
+        font-size: 17px;
+        font-weight: 500;
+
+        span {
+          letter-spacing: 0.03em;
         }
       }
     }
-  }
-}
 
-.StatusInfo {
-  display: flex;
-  flex-direction: column;
-  // flex-direction: row;
+    .OrderDetail {
+      display: flex;
+      align-items: center;
+      font-size: 14px;
+      cursor: pointer;
+      color: var(--color-600);
 
-  font-size: 12px;
-  align-items: center;
-  gap: 5px;
-  margin-left: auto;
-
-  span {
-    font-weight: 600;
-  }
-
-  button {
-    height: auto;
-    padding: 5px;
-    transition: 0.3s;
-    &:hover {
-      background-color: var(--color-main);
-      color: var(--color-white);
-    }
-
-    span {
-      font-size: 13px;
-      font-weight: 500;
-      transition: 0.3s;
       &:hover {
-        color: var(--color-white);
+        color: var(--color--900);
+        font-weight: 600;
       }
     }
-  }
-}
 
-@media (min-width: 768px) {
-  .Item {
-    padding: 20px;
-  }
-}
+    .OrderListText {
+      display: flex;
+      padding-top: 20px;
+      font-size: 16px;
+      gap: 30px;
+      flex-wrap: wrap;
 
-.OrderCancel {
-  display: flex;
-  gap: 10px;
-  padding-top: 30px;
-  justify-content: center;
+      .OrderValue {
+        color: var(--color-600);
+      }
+      ul {
+        display: flex;
+        flex-direction: column;
 
-  span {
-    font-size: 14px;
-    font-weight: 600;
-    transition: 0.4s;
-  }
-
-  .CancelButton {
-    color: var(--color-700) !important;
-    max-width: 135px;
-    border: 1px solid var(--color-200) !important;
-    transition: 0.4s;
-
-    &:hover {
-      border: 1px solid var(--color-500) !important;
-    }
-  }
-}
-
-.DeliveryContent {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  margin-top: 0;
-
-  .DeliveryInfo {
-    cursor: pointer;
-    color: var(--color-main);
-    font-weight: 600;
-    text-decoration: underline;
-    &:hover {
-      color: var(--color-main2);
-    }
-  }
-
-  .StatusInfo {
-    display: flex;
-    flex-direction: row;
-    gap: 10px;
-  }
-}
-
-.PaymentItem {
-  .ItemContent {
-    margin-top: 0;
-
-    .ItemHeader {
-      padding-bottom: 0;
+        li {
+          line-height: 1.8;
+        }
+      }
     }
   }
 }

@@ -70,7 +70,7 @@ export default function OrderDetailView(props: OrderViewProps) {
           {/* 주문상품 */}
           <div className={cx("Item")}>
             <div className={cx("ItemHeader")}>
-              <h3 className={cx("ItemTitle")}>주문 내역 상세</h3>
+              <h3>주문 내역 상세</h3>
             </div>
 
             <span>주문번호 {orderNumber}</span>
