@@ -3,7 +3,7 @@
 import styles from "./mypage.module.scss";
 import cn from "classnames/bind";
 import { LuChevronRight, LuUserCircle2 } from "react-icons/lu";
-// import { useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 const cx = cn.bind(styles);
 
@@ -24,6 +24,12 @@ type OrderViewProps = {
 export default function MypageView(props: OrderViewProps) {
   const { userInfos } = props;
 
+  /** 버튼 클릭 시 페이지 이동 */
+  const router = useRouter();
+  const handleClick = (path: string) => {
+    router.push(path);
+  };
+
   return (
     <div className={cx("MypageContainer")}>
       <section className={cx("MypageSection")}>
@@ -35,7 +41,7 @@ export default function MypageView(props: OrderViewProps) {
         </div>
 
         <ul>
-          <li>
+          <li onClick={() => handleClick("/order/list")}>
             주문내역
             <span>
               <LuChevronRight />
