@@ -47,7 +47,7 @@ export default function MypageView(props: OrderViewProps) {
               <LuChevronRight />
             </span>
           </li>
-          <li>
+          <li onClick={() => handleClick("delivery/deliveryAddress")}>
             배송지 관리
             <span>
               <LuChevronRight />

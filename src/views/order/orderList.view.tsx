@@ -72,7 +72,8 @@ function formatTime(time: Date | undefined): string {
   return `${hours}시 ${minutes}분`;
 }
 
-const OrderListView = (props: OrderListProps) => {
+// OrderListView
+export default function OrderListView(props: OrderListProps) {
   const {
     menus,
     isOpen,
@@ -184,6 +185,10 @@ const OrderListView = (props: OrderListProps) => {
       </div>
     </div>
   );
-};
+}
 
-export default OrderListView;
+// const OrderListView = (props: OrderListProps) => {
+
+// };
+
+// export default OrderListView;
