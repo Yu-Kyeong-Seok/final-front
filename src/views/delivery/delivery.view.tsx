@@ -94,9 +94,11 @@ const DeliveryView: React.FC = () => {
           </div>
         )}
 
-        <Button disabled={false} variants={"solid"} type={"submit"}>
-          <span>저장</span>
-        </Button>
+        <div className={cx("SaveButton")}>
+          <Button disabled={false} variants={"solid"} type={"submit"}>
+            <span>저장</span>
+          </Button>
+        </div>
       </div>
     </div>
   );
