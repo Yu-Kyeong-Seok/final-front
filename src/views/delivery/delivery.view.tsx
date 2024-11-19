@@ -93,6 +93,10 @@ const DeliveryView: React.FC = () => {
             </div>
           </div>
         )}
+
+        <Button disabled={false} variants={"solid"} type={"submit"}>
+          <span>저장</span>
+        </Button>
       </div>
     </div>
   );

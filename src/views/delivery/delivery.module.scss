@@ -1,4 +1,12 @@
 .AddressContainer {
+  padding: 0 15px;
+
+  @media (min-width: 767px) {
+    background-color: #f6f6f6;
+    height: calc(100vh - 110px);
+    padding: 20px;
+  }
+
   .AddressSearch {
     width: 100%;
     height: calc(100vh - 110px);
@@ -8,27 +16,23 @@
     }
   }
 
-  .AddressResult {
-    padding: 10px;
-    font-size: 15px;
-    dl {
-      dt {
-        padding-bottom: 5px;
-      }
-      // display: flex;
-      // gap: 5px;
-    }
-  }
-
   .AddressContent {
     display: flex;
     flex-direction: column;
     font-size: 14px;
-    padding: 40px 0;
+    padding: 50px 0;
+    background-color: var(--color-white);
+
+    @media (min-width: 767px) {
+      box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.1);
+      border-radius: 6px;
+      padding: 50px 20px;
+      font-size: 16px;
+    }
 
     .AddressInfoText {
       text-align: center;
-      padding-bottom: 50px;
+      padding-bottom: 60px;
 
       h3 {
         font-size: 20px;
@@ -52,20 +56,34 @@
     }
 
     .AddressResult {
-      padding: 0 15px;
+      padding-bottom: 60px;
+
       dl {
         font-weight: 500;
-        padding-bottom: 10px;
+        padding-bottom: 15px;
+        font-size: 15px;
+
+        @media (min-width: 767px) {
+          font-size: 16px;
+        }
+
+        dt {
+          padding: 5px 0;
+        }
       }
 
       input {
         height: auto;
-        padding: 10px;
+        padding: 15px;
       }
 
       .Check {
         font-size: 14px;
         padding-top: 10px;
+
+        @media (min-width: 767px) {
+          font-size: 15px;
+        }
       }
     }
   }
