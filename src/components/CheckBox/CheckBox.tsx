@@ -9,7 +9,7 @@ type CheckBoxProps = {
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   value: string[];
   id: string;
-  name: string;
+  name?: string;
   // label?: string;
   label?: React.ReactNode;
 };

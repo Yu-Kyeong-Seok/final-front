@@ -4,15 +4,22 @@ import Chip from "./Chip";
 type ChipsProps = {
   labels: string[];
   onClick: (label: string) => void;
+  className?: string;
+  containerClassName?: string;
 };
 
 const Chips = (props: ChipsProps) => {
-  const { labels, onClick } = props;
+  const { labels, onClick, className, containerClassName } = props;
   return (
-    <div>
+    <div className={containerClassName}>
       <div>
         {labels.map((label) => (
-          <Chip key={label} label={label} onClick={onClick} />
+          <Chip
+            key={label}
+            label={label}
+            onClick={onClick}
+            className={className}
+          />
         ))}
       </div>
     </div>
