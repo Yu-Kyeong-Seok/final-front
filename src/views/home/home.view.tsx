@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import styles from './home.view.module.scss';
 import cn from 'classnames/bind';
-import { Product } from "@/src/components/ProductList/api/productApi";
+import { TransformedProduct } from "@/src/components/ProductList/api/productApi";
 import ProductItem from "@/src/components/ProductList/ProductItem/ProductItem";
 import CountdownTimer from "@/src/components/Countdown/Countdown";
 import Link from "next/link";
@@ -15,7 +15,7 @@ const cx = cn.bind(styles);
 
 type HomeProps = {
     tabs:string[];
-    products:Product[];
+    products:TransformedProduct[];
 }
 
 
