@@ -6,6 +6,7 @@ import cn from "classnames/bind";
 // import { LuChevronDown, LuChevronUp, LuCheckCircle } from "react-icons/lu";
 import Image from "next/image";
 import Button from "@/src/components/Button/Button";
+// import ModalWrap from "@/src/components/Modal/Modal";
 
 // import { useRouter } from "next/navigation";
 
@@ -69,7 +70,7 @@ export default function OrderDetailView(props: OrderViewProps) {
           {/* 주문상품 */}
           <div className={cx("Item")}>
             <div className={cx("ItemHeader")}>
-              <h3 className={cx("ItemTitle")}>주문 내역 상세</h3>
+              <h3>주문 내역 상세</h3>
             </div>
 
             <span>주문번호 {orderNumber}</span>
@@ -82,6 +83,7 @@ export default function OrderDetailView(props: OrderViewProps) {
                     alt={item.name}
                     width={70}
                     height={70}
+                    className={cx("ProductImage")}
                   />
                   <div className={cx("OrderInfo")}>
                     {/* 상품 이름 */}
@@ -102,7 +104,11 @@ export default function OrderDetailView(props: OrderViewProps) {
                   {/* 주문완료 & 장바구니 버튼 */}
                   <div className={cx("StatusInfo")}>
                     <span>{orderStatus}</span>
-                    <Button disabled={false} variants={"outline"}>
+                    <Button
+                      disabled={false}
+                      variants={"outline"}
+                      className={cx("CartBtn")}
+                    >
                       <span>장바구니</span>
                     </Button>
                   </div>
@@ -119,6 +125,7 @@ export default function OrderDetailView(props: OrderViewProps) {
                 >
                   <span>주문취소</span>
                 </Button>
+
                 <Button
                   // text={"전체 상품 다시 담기"}
                   disabled={false}
@@ -138,12 +145,15 @@ export default function OrderDetailView(props: OrderViewProps) {
             </div>
 
             <div className={cx("ItemContent", "DeliveryContent")}>
-              <span>
+              <span className={cx("DeliverText")}>
                 {orderItems.length === 1
                   ? truncateText(orderItems[0].name, 20)
                   : `${truncateText(orderItems[0].name, 20)} 외 ${orderItems.length - 1}건`}
               </span>
-              <span className={cx("DeliveryInfo")}>배송조회</span>
+              <div className={cx("StatusInfo")}>
+                <span>{orderStatus}</span>
+                <span className={cx("DeliveryInfo")}>배송조회</span>
+              </div>
             </div>
           </div>
 
