@@ -1,33 +1,28 @@
 "use client";
 import Input from "@/src/components/Input/Input";
-import styles from "./login.view.module.scss";
+import styles from "./info.view.module.scss";
 import cn from "classnames/bind";
-import { Controller, useForm } from "react-hook-form";
 import Button from "@/src/components/Button/Button";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import React from "react";
-import { useRouter } from "next/navigation";
+import { Controller, useForm } from "react-hook-form";
 
 const cx = cn.bind(styles);
 
-type LoginFormType = {
+type InfoFormType = {
     id: string;
     password: string;
 };
 
-const LoginView = () => {
-    const router = useRouter();
-    const handleClick = (path: string) => {
-        router.push(path);
-    };
-
-    const form = useForm<LoginFormType>({
+const InfoView = () => {
+    
+    const form = useForm<InfoFormType>({
         mode: "onSubmit",
         reValidateMode: "onSubmit",
         defaultValues: {
-            id: "",
-            password : "",
+            id: "TestId",
+            password : "12341234",
         },
         resolver: yupResolver(
             yup.object().shape({
@@ -46,58 +41,23 @@ const LoginView = () => {
     });
 
     const handleSubmit = form.handleSubmit(
-        async (data) => {
-            try {
-                const response = await fetch( process.env.NEXT_PUBLIC_SERVER_URL + "/api/auth/login", {
-                    method: "POST",
-                    headers: {
-                    // 인증이 필요한 요청 예시 
-                    // 헤더에 아래 코드를 추가해준다 
-                    // const accessToken = localStorage.getItem("accessToken");                        
-                    // "Authorization": `Bearer ${accessToken}`, // 토큰을 Authorization 헤더에 추가
-                    "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({
-                        loginId: data.id,
-                        password: data.password,
-                    }),
-                });
+        (data) => {
 
-                if (response.status === 200) {
-                    const res = await response.json();
-
-                    console.log(res);
-                    console.log(res.data);
-                    
-                    localStorage.setItem("accessToken", res.data); // 토큰을 로컬 스토리지에 저장
-
-                    alert("로그인 성공!");
-                    // router.push("/"); // 로그인 성공 시 대시보드로 이동
-                } else {
-                    alert("로그인에 실패했습니다.");
-                }
-            } catch (error: any) {
-                if (error.response && error.response.data.message) {
-                    alert(error.response.data.message); // 서버에서 보낸 에러 메시지
-                } else {
-                    alert("로그인 중 문제가 발생했습니다.");
-                }
-            }
-            // 로그아웃시 토큰 제거 예시 
-            // function logout() {
-            //     localStorage.removeItem("accessToken");
-            //     window.location.href = "/login"; // 로그인 페이지로 이동
-            // }
+            console.log(data);
         },
         (error) => {
             const [key, { message }] = Object.entries(error)[0];
+
             alert(message);
         }
     );
 
-    return (
+    return ( 
         <div className={cx("Wrapper")}>
-            <form className={cx("Form")}>
+            <form className={cx("Form")} onSubmit={handleSubmit}>
+                <h4>비밀번호 재확인</h4>
+                <p>회원님의 정보를 안전하게 보호하기 위해 비밀번호를 다시 한번 확인해주세요.</p>
+                <br></br>
                 <Controller
                     control={form.control}
                     name={"id"}
@@ -105,6 +65,7 @@ const LoginView = () => {
                         return (
                             <React.Fragment>
                                 <div className={cx("InnerContainer")}>
+                                <label>아이디</label>
                                     <Input 
                                         placeholder="아이디를 입력해주세요"
                                         id={field.name}
@@ -125,6 +86,7 @@ const LoginView = () => {
                         return (
                             <React.Fragment>
                                 <div className={cx("InnerContainer")}>
+                                    <label className={cx("RequiredLabel")}>비밀번호<span>*</span></label>
                                     <Input 
                                         type="password"
                                         placeholder="비밀번호를 입력해주세요"
@@ -138,28 +100,12 @@ const LoginView = () => {
                         )
                     }}
                 />
-                <div className={cx("InnerContainer")}>
-                    <Button 
-                        type="submit" 
-                        variants="solid"
-                        onClick={handleSubmit}
-                    >
-                        <span>로그인</span>
-                    </Button>
-                    <Button 
-                        type="button" 
-                        variants="outline"
-                        onClick={() => handleClick("/auth/signup")}
-                    ><span>회원가입</span></Button>
-                </div>
-                <div className={cx("SearchContainer")}>
-                    <a>아이디 찾기</a>
-                    <span></span>
-                    <a >비밀번호 찾기</a>
+                <div className={cx("ButtonWrapper")}>
+                <Button type="submit">확인<span></span></Button>
                 </div>
             </form>
         </div>
     );
 };
 
-export default LoginView;
+export default InfoView;
