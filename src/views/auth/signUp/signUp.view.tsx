@@ -8,6 +8,7 @@ import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import React, { useEffect, useState } from "react";
 import CheckBox from "@/src/components/CheckBox/CheckBox";
+import { useRouter } from "next/navigation";
 
 const cx = cn.bind(styles);
 
@@ -23,6 +24,12 @@ type SignUpFormType = {
 };
 
 const SignUpView = () => {
+    const router = useRouter();
+
+    const handleClick = (path: string) => {
+        router.push(path);
+    };
+
     const [isChecking, setIsChecking] = useState(false); // For handling loading state
     const [checkResult, setCheckResult] = useState<{ id?: string; email?: string }>({}); // Store check results
 
@@ -33,12 +40,12 @@ const SignUpView = () => {
         mode: "onSubmit",
         reValidateMode: "onSubmit",
         defaultValues: {
-            id: "TestId",
-            password : "12341234",
-            passwordConfirm : "12341234",
-            name : "TestName",
-            email : "Test@naver.com",
-            phoneNumber : "01012341234",
+            id: "",
+            password : "",
+            passwordConfirm : "",
+            name : "",
+            email : "",
+            phoneNumber : "",
             terms : [],
         },
         resolver: yupResolver(
@@ -90,19 +97,41 @@ const SignUpView = () => {
 
     // 가입하기
     const handleSubmit = form.handleSubmit(
-        (data) => {
-            const results = {
-            privacy: data.terms.includes("privacy"),
-            using: data.terms.includes("using"),
-            marketing: data.terms.includes("marketing"),
-            age: data.terms.includes("age"),
-            };
-            
-            console.log(data);
+
+        async (data) => {
+            try {
+                const response = await fetch( process.env.NEXT_PUBLIC_SERVER_URL + "/api/users", {
+                    method: "POST",
+                    headers: {
+                    "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        loginId: data.id,
+                        password: data.password,
+                        email: data.email,
+                        profile: {
+                            phoneNum: data.phoneNumber,
+                            firstName: data.name,
+                        }
+                    }),
+                });
+
+                if (response.status === 200) {
+                    alert("회원가입 성공!");
+                    router.push("/auth/login"); // 회원가입 성공 시 로그인으로 이동
+                } else {
+                    alert("회원가입에 실패했습니다.");
+                }
+            } catch (error: any) {
+                if (error.response && error.response.data.message) {
+                    alert(error.response.data.message); // 서버에서 보낸 에러 메시지
+                } else {
+                    alert("회원가입 중 문제가 발생했습니다.");
+                }
+            }
         },
         (error) => {
             const [key, { message }] = Object.entries(error)[0];
-
             alert(message);
         }
     );
@@ -210,7 +239,7 @@ const SignUpView = () => {
 
     return (
         <div className={cx("Wrapper")}>
-            <form className={cx("Form")} onSubmit={handleSubmit}>
+            <form className={cx("Form")}>
                 {/* 아이디 */}
                 <Controller
                     control={form.control}
@@ -458,7 +487,12 @@ const SignUpView = () => {
                 </fieldset>
                 </div>
                 <div className={cx("Padding")}>
-                    <Button type="submit" ><span>가입하기</span></Button>
+                    <Button 
+                        type="submit" 
+                        onClick={handleSubmit}
+                    >
+                        <span>가입하기</span>
+                    </Button>
                 </div>
             </form>
         </div>

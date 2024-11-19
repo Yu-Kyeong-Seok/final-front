@@ -38,7 +38,7 @@ const BottomTab = () => {
         {
             icon: <FiUser  size={24} />,
             label: 'Profile',
-            path: '/profile'
+            path: '/auth/login'
         }
     ];
 

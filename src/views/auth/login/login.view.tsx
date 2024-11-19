@@ -46,20 +46,58 @@ const LoginView = () => {
     });
 
     const handleSubmit = form.handleSubmit(
-        (data) => {
+        async (data) => {
+            try {
+                const response = await fetch( process.env.NEXT_PUBLIC_SERVER_URL + "/api/auth/login", {
+                    method: "POST",
+                    headers: {
+                    // 인증이 필요한 요청 예시 
+                    // 헤더에 아래 코드를 추가해준다 
+                    // const accessToken = localStorage.getItem("accessToken");                        
+                    // "Authorization": `Bearer ${accessToken}`, // 토큰을 Authorization 헤더에 추가
+                    "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        loginId: data.id,
+                        password: data.password,
+                    }),
+                });
 
-            console.log(data);
+                if (response.status === 200) {
+                    const res = await response.json();
+
+                    console.log(res);
+                    console.log(res.data);
+                    
+                    localStorage.setItem("accessToken", res.data); // 토큰을 로컬 스토리지에 저장
+
+                    alert("로그인 성공!");
+                    // router.push("/"); // 로그인 성공 시 대시보드로 이동
+                } else {
+                    alert("로그인에 실패했습니다.");
+                }
+            } catch (error: any) {
+                if (error.response && error.response.data.message) {
+                    alert(error.response.data.message); // 서버에서 보낸 에러 메시지
+                } else {
+                    alert("로그인 중 문제가 발생했습니다.");
+                }
+            }
+            // 로그아웃시 토큰 제거 예시 
+            // function logout() {
+            //     localStorage.removeItem("accessToken");
+            //     window.location.href = "/login"; // 로그인 페이지로 이동
+            // }
         },
         (error) => {
             const [key, { message }] = Object.entries(error)[0];
-
             alert(message);
         }
     );
 
     return (
         <div className={cx("Wrapper")}>
-            <form className={cx("Form")} onSubmit={handleSubmit}>
+            <form className={cx("Form")}>
                 <Controller
                     control={form.control}
                     name={"id"}
@@ -101,7 +139,13 @@ const LoginView = () => {
                     }}
                 />
                 <div className={cx("InnerContainer")}>
-                    <Button type="submit" variants="solid"><span>로그인</span></Button>
+                    <Button 
+                        type="submit" 
+                        variants="solid"
+                        onClick={handleSubmit}
+                    >
+                        <span>로그인</span>
+                    </Button>
                     <Button 
                         type="button" 
                         variants="outline"
