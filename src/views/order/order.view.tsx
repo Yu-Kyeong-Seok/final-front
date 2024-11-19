@@ -310,7 +310,7 @@ export default function OrderView(props: OrderViewProps) {
                     // text={"주문 상세보기"}
                     disabled={false}
                     variants={"outline"}
-                    onClick={() => handleClick("/order/[detail]")}
+                    onClick={() => handleClick("/order/detail")}
                   >
                     <span>주문 상세보기</span>
                   </Button>
