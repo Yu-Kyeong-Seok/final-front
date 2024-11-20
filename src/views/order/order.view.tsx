@@ -1,154 +1,177 @@
 "use client";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import styles from "./order.module.scss";
 import cn from "classnames/bind";
-import { LuChevronDown, LuChevronUp, LuCheckCircle } from "react-icons/lu";
+import { LuChevronDown, LuChevronUp } from "react-icons/lu";
 import Image from "next/image";
 import Button from "@/src/components/Button/Button";
-import Input from "@/src/components/Input/Input";
 import BottomSheet from "@/src/components/BottomSheet/BottomSheet";
-import { useRouter } from "next/navigation";
 
 const cx = cn.bind(styles);
 
-/** 주문 아이템 */
-type OrderItem = {
-  /** 아이템 id */
-  id: number;
-  /** 아이템 이름 */
-  name: string;
-  /** 수량 */
-  quantity: number;
-  /** 현재가격 */
-  currentPrice: number;
-  /** 원가격 */
-  originalPrice: number;
-  /** 이미지 */
-  image: string;
-};
+interface OrderViewProps {
+  orderData: IOrderResponseDTO;
+  onCreateOrder: (
+    orderRequest: CreateOrderRequest
+  ) => Promise<IOrderResponseDTO>;
+}
 
-/** 주문자 정보 */
-type UserInfo = {
-  id: string;
-  name: string;
-  phone: string;
-  email: string;
-  address: string;
-};
+type BottomSheetState = "PAYMENT" | "SUCCESS" | "CLOSED";
 
-type OrderViewProps = {
-  orderItems: OrderItem[];
-  userInfos: UserInfo[];
-};
-
-export default function OrderView(props: OrderViewProps) {
-  const { orderItems, userInfos } = props;
-
-  /** useState */
+// ordverView
+const OrderView = ({ orderData, onCreateOrder }: OrderViewProps) => {
+  const router = useRouter();
   const [isOrderOpen, setIsOrderOpen] = useState(false);
   const [isUserOpen, setIsUserOpen] = useState(false);
+  const [bottomSheetState, setBottomSheetState] =
+    useState<BottomSheetState>("CLOSED");
+  const [selectedPaymentMethod, setSelectedPaymentMethod] =
+    useState<PaymentMethod>("MOBILE_PAYMENT");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [createdOrderId, setCreatedOrderId] = useState<string | null>(null);
 
-  /** 바텀시트 useState */
-  const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
-  // const [selectedItem, setSelectedItem] = useState<string>();
-
-  /** 주문 상품 목록 아코디언 */
-  const toggleOrderAccordion = () => {
-    setIsOrderOpen(!isOrderOpen);
-  };
-
-  /** 주문자 정보 아코디언 */
-  const toggleUserAccordion = () => {
-    setIsUserOpen(!isUserOpen);
-  };
-
-  /** 현재금액 * 수량 */
-  const totalAmount = orderItems.reduce((sum, item) => {
-    return sum + item.currentPrice * item.quantity;
-  }, 0);
-
-  /** 배송비 계산 */
-  const deliveryFee = totalAmount >= 40000 ? 0 : 3000;
-
-  /** 결제 예정 금액 */
-  const totalPayment = totalAmount + deliveryFee;
-
-  /** 아이템 텍스트 길이 제한 */
+  /** 주문 아이템 텍스트 길이 제한 */
   const truncateText = (text: string, maxLength: number) => {
     if (text.length <= maxLength) return text;
     return text.slice(0, maxLength) + "...";
   };
 
-  /** 바텀시트 items */
-  // const items = [
-  //   { id: "1", label: "메뉴 1" },
-  //   { id: "2", label: "메뉴 2" },
-  // ];
-
-  /** 바텀시트 핸들러 */
-  const handleOpenBottomSheet = () => {
-    setIsBottomSheetOpen(true);
+  // 토글 아코디언
+  const toggleOrderAccordion = () => {
+    setIsOrderOpen(!isOrderOpen);
   };
 
-  const handleCloseBottomSheet = () => {
-    setIsBottomSheetOpen(false);
+  const toggleUserAccordion = () => {
+    setIsUserOpen(!isUserOpen);
   };
 
-  /** 버튼 클릭 시 페이지 이동 */
-  const router = useRouter();
-  const handleClick = (path: string) => {
-    router.push(path);
+  const handleOpenPaymentSheet = () => {
+    setBottomSheetState("PAYMENT");
+  };
+
+  const handleCreateOrder = async () => {
+    try {
+      setIsSubmitting(true);
+      const orderRequest: CreateOrderRequest = {
+        deliveryAddress: orderData.deliveryAddress,
+        deliveryRequest: orderData.deliveryRequest,
+        paymentMethod: selectedPaymentMethod,
+        orderItem: orderData.orderItem.map((item) => ({
+          product: item.product.id,
+          quantity: item.quantity,
+          totalPrice: item.totalPrice,
+        })),
+        totalProductPrice: orderData.totalProductPrice,
+        shippingFee: orderData.shippingFee,
+        totalPaymentAmount: orderData.totalPaymentAmount,
+      };
+
+      const response = await onCreateOrder(orderRequest);
+      setCreatedOrderId(response.orderId);
+      // 주문 생성 성공 후 성공 바텀시트로 전환
+      setBottomSheetState("SUCCESS");
+    } catch (error) {
+      console.error("주문 생성 실패:", error);
+      // TODO: 에러 처리 (토스트 메시지 등)
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleViewOrderDetail = () => {
+    setBottomSheetState("CLOSED");
+    router.push("/orders"); // 주문 목록 페이지로 이동
+  };
+
+  const handleContinueShopping = () => {
+    setBottomSheetState("CLOSED");
+    router.push("/"); // 홈으로 이동
+  };
+
+  const renderBottomSheetContent = () => {
+    switch (bottomSheetState) {
+      case "PAYMENT":
+        return (
+          <div className={cx("PaymentSheet")}>
+            <h3>결제 진행</h3>
+            <p>
+              총 결제금액: {orderData.totalPaymentAmount.toLocaleString()}원
+            </p>
+            <Button
+              onClick={handleCreateOrder}
+              disabled={isSubmitting}
+              className={cx("PaymentButton")}
+            >
+              {isSubmitting ? "결제 처리중..." : "결제하기"}
+            </Button>
+          </div>
+        );
+      case "SUCCESS":
+        return (
+          <div className={cx("SuccessSheet")}>
+            <h3>주문이 완료되었습니다!</h3>
+            <p>주문번호: {createdOrderId}</p>
+            <div className={cx("ButtonGroup")}>
+              <Button onClick={handleViewOrderDetail}>주문 상세보기</Button>
+              <Button onClick={handleContinueShopping} variants="outline">
+                계속 쇼핑하기
+              </Button>
+            </div>
+          </div>
+        );
+      default:
+        return null;
+    }
   };
 
   return (
     <div className={cx("PageContainer")}>
       <div className={cx("Inner")}>
-        <div className={cx("PageHeader")}>
-          {/* <h3>
-          <LuFileCheck2 />
-          &nbsp; 주문서
-        </h3> */}
-        </div>
+        {/* <div className={cx("PageHeader")}></div> */}
         <div className={cx("Contents")}>
-          {/* 주문상품 아코디언 */}
+          {/* 주문상품 - 펼치기 전 */}
           <div className={cx("Item")}>
             <div className={cx("ItemHeader")} onClick={toggleOrderAccordion}>
               <span className={cx("ItemTitle")}>주문상품</span>
               <div>
                 <span className="ItemText">
-                  {orderItems.length === 1
-                    ? truncateText(orderItems[0].name, 20)
-                    : `${truncateText(orderItems[0].name, 20)} 외 ${orderItems.length - 1}건`}
+                  {orderData.results[0].orderItem.length === 1
+                    ? truncateText(
+                        orderData.results[0].orderItem[0].product.productName,
+                        20
+                      )
+                    : `${truncateText(orderData.results[0].orderItem[0].product.productName, 20)} 외 ${orderData.results[0].orderItem.length - 1}건`}
                 </span>
                 <span className={cx("ItemIcon")}>
                   {isOrderOpen ? <LuChevronUp /> : <LuChevronDown />}
                 </span>
               </div>
             </div>
+
+            {/*  주문상품 - 펼쳤을 때 */}
             {isOrderOpen && (
               <div className={cx("ItemContent", { open: isOrderOpen })}>
-                {orderItems.map((item) => (
+                {orderData.results[0].orderItem.map((item) => (
                   <div key={item.id} className={cx("ItemDetail")}>
                     <Image
-                      src={item.image}
-                      alt={item.name}
+                      src={item.product.thumbnail}
+                      alt={item.product.productName}
                       width={70}
                       height={70}
                       className={cx("ProductImage")}
                     />
                     <div className={cx("OrderInfo")}>
-                      {/* 상품 이름 */}
-                      <h4 className={cx("InfoTitle")}>{item.name}</h4>
+                      <h4 className={cx("InfoTitle")}>
+                        {item.product.productName}
+                      </h4>
                       <div className={cx("ItemInfo")}>
                         <span className={cx("ItemInfoDetail")}>
-                          {/* 결제 가격 */}
-                          {item.currentPrice.toLocaleString()}원
+                          {item.product.price.toLocaleString()}원
                         </span>
                         <span className={cx("ItemInfoDetail")}>
-                          {/* 원래 가격 */}
-                          {item.originalPrice.toLocaleString()}원
+                          {item.product.sales.toLocaleString()}원
                         </span>
-                        {/* 수량 */}
                         <span>{item.quantity}개</span>
                       </div>
                     </div>
@@ -157,176 +180,79 @@ export default function OrderView(props: OrderViewProps) {
               </div>
             )}
           </div>
+        </div>
 
-          {/* 주문자 정보 아코디언 */}
-          <div className={cx("Item")}>
-            <div className={cx("ItemHeader")} onClick={toggleUserAccordion}>
-              <span className={cx("ItemTitle")}>주문자 정보</span>
-              <span className={cx("ItemIcon")}>
-                {isUserOpen ? <LuChevronUp /> : <LuChevronDown />}
-              </span>
-            </div>
-            {isUserOpen && (
-              <div className={cx("ItemContent", { open: isUserOpen })}>
-                {userInfos.map((info) => (
-                  <div key={info.id} className={cx("UserDetail")}>
-                    <div className={cx("UserInfo")}>
-                      <ul className={cx("UserInfoDetail", "InfoText")}>
-                        <li>보내는 분</li>
-                        <li>휴대폰</li>
-                        <li>이메일</li>
-                      </ul>
-                      <ul className={cx("UserInfoDetail")}>
-                        <li>{info.name}</li>
-                        <li>{info.phone}</li>
-                        <li>{info.email}</li>
-                      </ul>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
+        {/* 주문자 정보 */}
+        <div className={cx("Item")}>
+          <div className={cx("ItemHeader")} onClick={toggleUserAccordion}>
+            <span className={cx("ItemTitle")}>주문자 정보</span>
+            <span className={cx("ItemIcon")}>
+              {isUserOpen ? <LuChevronUp /> : <LuChevronDown />}
+            </span>
           </div>
-
-          {/* 배송지 */}
-          <div className={cx("Item")}>
-            <div className={cx("ItemHeader")}>
-              <span className={cx("ItemTitle")}>배송지</span>
-            </div>
-            <div className={cx("Address")}>
-              <ul>
-                <li className={cx("AddressInfo")}>{userInfos[0].address}</li>
-                <li className={cx("AddressBtn")}>
-                  <Button disabled={false} variants={"outline"}>
-                    <span>변경</span>
-                  </Button>
-                </li>
-              </ul>
-            </div>
-          </div>
-
-          {/* 배송 요청사항 */}
-          <div className={cx("Item")}>
-            <div className={cx("ItemHeader")}>
-              <span className={cx("ItemTitle")}>배송 요청사항</span>
-            </div>
-            <div className={cx("Address")}>
-              <Input placeholder={"배송 요청사항을 입력해주세요."} />
-            </div>
-          </div>
-
-          {/* 결제 수단 */}
-          <div className={cx("Item")}>
-            <div className={cx("ItemHeader")}>
-              <span className={cx("ItemTitle")}>결제 수단</span>
-            </div>
-            <div className={cx("Payment")}>
-              <div className={cx("Kakao")}>
-                <Button disabled={false} variants={"solid"}>
-                  <span>카카오페이</span>
-                </Button>
-              </div>
-
-              <div className={cx("PaymentType")}>
-                <Button disabled={false} variants={"outline"}>
-                  {" "}
-                  <span>신용카드</span>
-                </Button>
-                <Button disabled={false} variants={"outline"}>
-                  <span>간편결제</span>
-                </Button>
-                <Button disabled={false} variants={"outline"}>
-                  <span>휴대폰</span>
-                </Button>
+          {isUserOpen && (
+            <div className={cx("ItemContent", { open: isUserOpen })}>
+              <div className={cx("UserDetail")}>
+                <div className={cx("UserInfo")}>
+                  <ul className={cx("UserInfoDetail", "InfoText")}>
+                    <li>보내는 분</li>
+                    <li>휴대폰</li>
+                  </ul>
+                  {/* <ul className={cx("UserInfoDetail")}>
+                      <li>{orderData.userInfo.firstName}</li>
+                      <li>{orderData.userInfo.phoneNum}</li>
+                    </ul> */}
+                </div>
               </div>
             </div>
-          </div>
-          {/* 상품 계산 금액 */}
-          <div className={cx("Item")}>
-            <div className={cx("ItemHeader")}>
-              <span className={cx("ItemTitle")}>상품 금액</span>
-              <span className={cx("ItemTitle")}>
-                {totalAmount.toLocaleString()}원
-              </span>
-            </div>
-            <div className={cx("Total")}>
-              {/* <ul>
-              <li>상품할인금액</li>
-              <li>3,300원</li>
-            </ul> */}
-              <ul className={cx("DeliveryFee")}>
-                <li>배송비</li>
-                <li>{deliveryFee.toString()}원</li>
-              </ul>
-              <div className={cx("ItemHeader")}>
-                <span className={cx("ItemTitle")}>결제예정금액</span>
-                <span className={cx("TotalAmout")}>
-                  {totalPayment.toLocaleString()}원
-                </span>
-              </div>
-            </div>
-          </div>
-          {/* 결제 동의 및 결제하기 버튼 */}
-          <div className={cx("Item")}>
-            <div>
-              <span className={cx("PaymentTitle")}>
-                위 내용을 확인 하였으며 결제에 동의합니다.
-              </span>
-            </div>
+          )}
+        </div>
 
-            <div className={cx("PaymentButton")}>
+        {/* 결제 수단 선택 */}
+        <div className={cx("Item")}>
+          <div className={cx("ItemHeader")}>
+            <span className={cx("ItemTitle")}>결제 수단</span>
+          </div>
+          <div className={cx("Payment")}>
+            {(
+              [
+                ["KAKAO_PAY", "카카오페이"],
+                ["CREDIT_CARD", "신용카드"],
+                ["SIMPLE_PAY", "간편결제"],
+                ["MOBILE_PAYMENT", "모바일결제"],
+              ] as const
+            ).map(([method, label]) => (
               <Button
-                disabled={false}
-                variants={"solid"}
-                onClick={handleOpenBottomSheet}
+                key={method}
+                disabled={isSubmitting}
+                variants={
+                  selectedPaymentMethod === method ? "solid" : "outline"
+                }
+                onClick={() => setSelectedPaymentMethod(method)}
               >
-                <span>{`${totalPayment.toLocaleString()}원 결제하기`}</span>
+                <span>{label}</span>
               </Button>
-            </div>
-            <BottomSheet
-              // items={items}
-              // selectedItem={selectedItem}
-              isOpen={isBottomSheetOpen}
-              onClose={handleCloseBottomSheet}
-              // title="주문완료"
-              className={cx("PayBottomSheet")}
-            >
-              <div className={cx("BottomSheetContent")}>
-                <span className={cx("BottomSheetIcon")}>
-                  <LuCheckCircle />
-                </span>
-                <div className={cx("BottomSheetText")}>
-                  <h3>{userInfos[0].name}님의 주문이 완료되었습니다.</h3>
-                  <b>내일 아침에 만나요!</b>
-                </div>
-                <div className={cx("ItemHeader")}>
-                  <span className={cx("ItemTitle")}>결제금액</span>
-                  <span className={cx("TotalAmout")}>
-                    {totalPayment.toLocaleString()}원
-                  </span>
-                </div>
-                <div className={cx("ItemHeader", "BottomSheetBtns")}>
-                  <Button
-                    // text={"주문 상세보기"}
-                    disabled={false}
-                    variants={"outline"}
-                    onClick={() => handleClick("/order/detail")}
-                  >
-                    <span>주문 상세보기</span>
-                  </Button>
-                  <Button
-                    disabled={false}
-                    variants={"solid"}
-                    onClick={() => handleClick("/")}
-                  >
-                    <span>쇼핑 계속하기</span>
-                  </Button>
-                </div>
-              </div>
-            </BottomSheet>
+            ))}
           </div>
         </div>
+
+        {/* 주문하기 버튼 */}
+        <div className={cx("OrderBtn")}>
+          <Button onClick={handleOpenPaymentSheet} disabled={isSubmitting}>
+            결제하기
+          </Button>
+        </div>
+
+        {/* 바텀시트 */}
+        <BottomSheet
+          isOpen={bottomSheetState !== "CLOSED"}
+          onClose={() => !isSubmitting && setBottomSheetState("CLOSED")}
+        >
+          {renderBottomSheetContent()}
+        </BottomSheet>
       </div>
     </div>
   );
-}
+};
+
+export default OrderView;

@@ -1,51 +1,59 @@
-import OrderView from "@/src/views/order/order.view";
+// import React from "react";
+// import OrderView from "@/src/views/order/order.view";
 
-/** props로 내려줄 것 => view 컴포넌트로 */
-/** 데이터관리를 page에서. "use client" 사용X  */
+import OrderService from "@/src/api/services/order.service";
 
-/** 주문 아이템 */
-const orderItems = [
-  {
-    id: 1,
-    name: "칠레산 생 블루베리 125g",
-    quantity: 1,
-    currentPrice: 6980,
-    originalPrice: 9980,
-    image:
-      "https://img-cf.kurly.com/hdims/resize/%5E%3E720x%3E936/cropcenter/720x936/quality/85/src/shop/data/goods/1637923286553l0.jpeg",
-  },
-  {
-    id: 2,
-    name: "[Dole] 뉴질랜드 아보카도 1kg (4~7입)",
-    quantity: 1,
-    currentPrice: 10900,
-    originalPrice: 15900,
-    image:
-      "https://product-image.kurly.com/hdims/resize/%5E%3E360x%3E468/cropcenter/360x468/quality/85/src/product/image/1cef6b73-3e91-4a7a-8024-58b5d8cf5010.jpg",
-  },
-  {
-    id: 3,
-    name: "베키아에누보 이탈리안 올리브 치아바타",
-    quantity: 2,
-    currentPrice: 20900,
-    originalPrice: 12300,
-    image:
-      "https://product-image.kurly.com/hdims/resize/%5E%3E720x%3E936/cropcenter/720x936/quality/85/src/product/image/e971445b-df76-482b-9502-88a64f62041f.jpg",
-  },
-];
-
-/** 주문자 정보 */
-const userInfos = [
-  {
-    id: "random1",
-    name: "황다영",
-    phone: "010-0000-0000",
-    email: "1234@gmail.com",
-    address: "서울특별시 강남구 테헤란로 133 한국타이어빌딩 18층 (역삼동)",
-  },
-];
-
-/** 주문서 페이지 */
 export default function OrderPage() {
-  return <OrderView orderItems={orderItems} userInfos={userInfos} />;
+  return <OrderService />;
 }
+
+// async function fetchOrderData(): Promise<IOrderResponseDTO> {
+//   try {
+//     // API URL이 undefined가 아닌지,,
+//     const apiUrl = process.env.NEXT_PUBLIC_SERVER_URL;
+//     if (!apiUrl) {
+//       throw new Error("API URL이 설정되지 않았습니다.");
+//     }
+
+//     const accessToken = localStorage.getItem("accessToken");
+//     if (!accessToken) {
+//       throw new Error("토큰이 없습니다");
+//     }
+
+//     const response = await fetch(`${apiUrl}api/orders`, {
+//       method: "GET",
+//       headers: {
+//         "Content-Type": "application/json",
+//         Authorization: `Bearer ${accessToken}`,
+//       },
+//     });
+
+//     if (!response.ok) {
+//       throw new Error(`주문 데이터 로드 실패. 상태 코드: ${response.status}`);
+//     }
+
+//     const data: IOrderResponseDTO = await response.json();
+//     return data;
+//   } catch (error) {
+//     console.error("주문 데이터 가져오기 중 오류 발생:", error);
+//     throw error;
+//   }
+// }
+
+// export default async function OrderPage() {
+//   try {
+//     const orderData = await fetchOrderData();
+//     return (
+//       <div>
+//         <OrderView orderData={orderData} />
+//       </div>
+//     );
+//   } catch (error) {
+//     return (
+//       <div className="error-container">
+//         <h2>주문 데이터를 불러오는데 실패했습니다.</h2>
+//         <p>잠시 후 다시 시도해주세요</p>
+//       </div>
+//     );
+//   }
+// }
