@@ -8,6 +8,7 @@ import Image from "next/image";
 import Button from "@/src/components/Button/Button";
 import BottomSheet from "@/src/components/BottomSheet/BottomSheet";
 import Input from "@/src/components/Input/Input";
+import { CreateOrderRequest } from "@/src/api/services/order.service";
 
 const cx = cn.bind(styles);
 
@@ -18,7 +19,7 @@ interface OrderViewProps {
   ) => Promise<IOrderResponseDTO>;
 }
 
-type BottomSheetState = "PAYMENT" | "SUCCESS" | "CLOSED";
+type BottomSheetState = "SUCCESS" | "CLOSED";
 
 // ordverView
 const OrderView = ({ orderData, onCreateOrder }: OrderViewProps) => {
@@ -52,34 +53,40 @@ const OrderView = ({ orderData, onCreateOrder }: OrderViewProps) => {
     setIsUserOpen(!isUserOpen);
   };
 
-  const handleOpenPaymentSheet = () => {
-    setBottomSheetState("PAYMENT");
-  };
-
+  // 주문생성 핸들러
   const handleCreateOrder = async () => {
     try {
       setIsSubmitting(true);
+
       const orderRequest: CreateOrderRequest = {
-        deliveryAddress: orderData.deliveryAddress,
-        deliveryRequest: orderData.deliveryRequest,
+        deliveryAddress: orderData.results[0].deliveryAddress,
+        deliveryRequest: orderData.results[0].deliveryRequest,
         paymentMethod: selectedPaymentMethod,
-        orderItem: orderData.orderItem.map((item) => ({
+        orderItem: orderData.results[0].orderItem.map((item) => ({
           product: item.product.id,
           quantity: item.quantity,
           totalPrice: item.totalPrice,
         })),
-        totalProductPrice: orderData.totalProductPrice,
-        shippingFee: orderData.shippingFee,
-        totalPaymentAmount: orderData.totalPaymentAmount,
+        totalProductPrice: orderData.results[0].totalProductPrice,
+        shippingFee: orderData.results[0].shippingFee,
+        totalPaymentAmount: orderData.results[0].totalPaymentAmount,
       };
 
+      // 주문 생성 API 호출
       const response = await onCreateOrder(orderRequest);
+
+      // API 응답이 없거나 실패 시
+      if (!response || !response.orderId) {
+        throw new Error("주문 생성 실패");
+      }
+
       setCreatedOrderId(response.orderId);
+
       // 주문 생성 성공 후 성공 바텀시트로 전환
       setBottomSheetState("SUCCESS");
     } catch (error) {
-      console.error("주문 생성 실패:", error);
-      // TODO: 에러 처리 (토스트 메시지 등)
+      console.log("주문 생성 실패:", error);
+      setBottomSheetState("CLOSED");
     } finally {
       setIsSubmitting(false);
     }
@@ -87,7 +94,7 @@ const OrderView = ({ orderData, onCreateOrder }: OrderViewProps) => {
 
   const handleViewOrderDetail = () => {
     setBottomSheetState("CLOSED");
-    router.push("/orders"); // 주문 목록 페이지로 이동
+    router.push("/order/detail"); // 주문 상세 페이지로 이동
   };
 
   const handleContinueShopping = () => {
@@ -97,20 +104,6 @@ const OrderView = ({ orderData, onCreateOrder }: OrderViewProps) => {
 
   const renderBottomSheetContent = () => {
     switch (bottomSheetState) {
-      case "PAYMENT":
-        return (
-          <div className={cx("PaymentSheet")}>
-            <h3>결제 진행</h3>
-            <p>총 결제금액: {totalPayment.toLocaleString()}원</p>
-            <Button
-              onClick={handleCreateOrder}
-              disabled={isSubmitting}
-              className={cx("PaymentButton")}
-            >
-              {isSubmitting ? "결제 처리중..." : "결제하기"}
-            </Button>
-          </div>
-        );
       case "SUCCESS":
         return (
           <div className={cx("SuccessSheet")}>
@@ -124,6 +117,8 @@ const OrderView = ({ orderData, onCreateOrder }: OrderViewProps) => {
             </div>
           </div>
         );
+      case "CLOSED":
+        return null; // 바텀시트가 닫힌 상태일 때 아무것도 표시하지 않음
       default:
         return null;
     }
@@ -330,8 +325,8 @@ const OrderView = ({ orderData, onCreateOrder }: OrderViewProps) => {
 
           {/* 주문하기 버튼 */}
           <div className={cx("OrderBtn")}>
-            <Button onClick={handleOpenPaymentSheet} disabled={isSubmitting}>
-              결제하기
+            <Button onClick={handleCreateOrder} disabled={isSubmitting}>
+              {totalPayment.toLocaleString()}원 결제하기
             </Button>
           </div>
         </div>
@@ -340,6 +335,7 @@ const OrderView = ({ orderData, onCreateOrder }: OrderViewProps) => {
         {/* 바텀시트 */}
         <BottomSheet
           isOpen={bottomSheetState !== "CLOSED"}
+          // isOpen={bottomSheetState == "CLOSED"}
           onClose={() => !isSubmitting && setBottomSheetState("CLOSED")}
         >
           {renderBottomSheetContent()}

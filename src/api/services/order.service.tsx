@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import OrderView from "@/src/views/order/order.view";
 
-type CreateOrderRequest = Omit<
+export type CreateOrderRequest = Omit<
   IOrder,
   "id" | "userId" | "userInfo" | "createdAt" | "orderStatus"
 >;
