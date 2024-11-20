@@ -5,8 +5,9 @@ import cn from "classnames/bind";
 import Button from "@/src/components/Button/Button";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
+import { useRouter } from "next/navigation";
 
 const cx = cn.bind(styles);
 
@@ -16,13 +17,16 @@ type InfoFormType = {
 };
 
 const InfoView = () => {
+    const router = useRouter();
+    const [userId, setUserId] = useState<string | null>(null);
+    const [loading, setLoading] = useState<boolean>(true);
     
     const form = useForm<InfoFormType>({
         mode: "onSubmit",
         reValidateMode: "onSubmit",
         defaultValues: {
-            id: "TestId",
-            password : "12341234",
+            id: userId || "",
+            password : "",
         },
         resolver: yupResolver(
             yup.object().shape({
@@ -40,14 +44,70 @@ const InfoView = () => {
         ),
     });
 
-    const handleSubmit = form.handleSubmit(
-        (data) => {
+    // 사용자 정보를 가져오는 함수
+    const fetchUserInfo = async () => {
+        try {
+            const accessToken = document.cookie.split("; ").find((cookie) => cookie.startsWith("accessToken="))?.split("=")[1];
 
-            console.log(data);
+            const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/users`, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${accessToken}`,
+                },
+            });
+
+            if (response.ok) {
+                const res = await response.json();
+                setUserId(res.data.loginId); // 유저 ID 설정
+                form.setValue("id", res.data.loginId);
+            } else {
+                throw new Error("사용자 정보를 가져오는 데 실패했습니다.");
+            }
+        } catch (err) {
+            console.log(err);
+        } finally {
+            setLoading(false); // 로딩 상태 종료
+        }
+    };
+
+    useEffect(() => {
+        fetchUserInfo(); // 컴포넌트가 마운트될 때 사용자 정보 가져오기
+    }, []);
+
+
+    const handleSubmit = form.handleSubmit(
+        async (data) => {
+            try {
+                const response = await fetch( process.env.NEXT_PUBLIC_SERVER_URL + "/api/auth/login", {
+                    method: "POST",
+                    headers: {
+                    "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        loginId: data.id,
+                        password: data.password,
+                    }),
+                });
+
+                if (response.status === 200) {
+                    const res = await response.json();
+                    
+                    alert("비밀번호 확인 성공!");
+                    router.push("/mypage/info/modify"); 
+                } else {
+                    alert("비밀번호 확인에 실패했습니다.");
+                }
+            } catch (error: any) {
+                if (error.response && error.response.data.message) {
+                    alert(error.response.data.message); // 서버에서 보낸 에러 메시지
+                } else {
+                    alert("비밀번호 확인 중 문제가 발생했습니다.");
+                }
+            }
         },
         (error) => {
             const [key, { message }] = Object.entries(error)[0];
-
             alert(message);
         }
     );
@@ -71,7 +131,8 @@ const InfoView = () => {
                                         id={field.name}
                                         name={field.name}
                                         onChange={field.onChange}
-                                        value={field.value}
+                                        value={userId ||field.value}
+                                        readonly={true}
                                     ></Input>
                                 </div>
                             </React.Fragment>

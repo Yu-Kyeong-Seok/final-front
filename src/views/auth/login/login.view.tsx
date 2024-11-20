@@ -51,10 +51,6 @@ const LoginView = () => {
                 const response = await fetch( process.env.NEXT_PUBLIC_SERVER_URL + "/api/auth/login", {
                     method: "POST",
                     headers: {
-                    // 인증이 필요한 요청 예시 
-                    // 헤더에 아래 코드를 추가해준다 
-                    // const accessToken = localStorage.getItem("accessToken");                        
-                    // "Authorization": `Bearer ${accessToken}`, // 토큰을 Authorization 헤더에 추가
                     "Content-Type": "application/json",
                     },
                     body: JSON.stringify({
@@ -65,14 +61,10 @@ const LoginView = () => {
 
                 if (response.status === 200) {
                     const res = await response.json();
-
-                    console.log(res);
-                    console.log(res.data);
+                    document.cookie = `accessToken=${res.data}; path=/`;
                     
-                    localStorage.setItem("accessToken", res.data); // 토큰을 로컬 스토리지에 저장
-
                     alert("로그인 성공!");
-                    // router.push("/"); // 로그인 성공 시 대시보드로 이동
+                    router.push("/"); // 로그인 성공 시 대시보드로 이동
                 } else {
                     alert("로그인에 실패했습니다.");
                 }
@@ -81,6 +73,7 @@ const LoginView = () => {
                     alert(error.response.data.message); // 서버에서 보낸 에러 메시지
                 } else {
                     alert("로그인 중 문제가 발생했습니다.");
+                    // alert(error)
                 }
             }
             // 로그아웃시 토큰 제거 예시 
