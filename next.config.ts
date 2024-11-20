@@ -1,13 +1,15 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
   images: {
-    domains: [
-      "img-cf.kurly.com",
-      "product-image.kurly.com",
-      "firebasestorage.googleapis.com",
-    ], // 외부 도메인 추가(컬리 이미지 불러오기)/ api 연결 시 firebasestorage불러오기
+    remotePatterns: [
+      {
+        protocol: "https", // 이미지 URL이 https로 시작하는 경우
+        hostname: "firebasestorage.googleapis.com", // 세 번째 도메인
+        port: "", // 기본 포트(https인 경우 기본적으로 443 포트 사용)
+        pathname: "/**", // 이미지 경로
+      },
+    ],
   },
 };
 

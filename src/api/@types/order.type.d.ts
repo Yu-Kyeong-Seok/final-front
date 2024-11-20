@@ -47,45 +47,35 @@ interface IOrder {
 }
 
 interface IOrderResponseDTO {
-  /** 주문 ID */
-  orderId: string;
-  userId: string;
-  /** 주문 회원정보 */
-  userInfo: {
-    firstName: string;
-    phoneNum: string;
-  };
-  deliveryAddress: string;
-  /** 배송요청사항 */
-  deliveryRequest?: string;
-  /** 주문날짜 */
-  orderDate: string;
-  /** 결제수단 */
-  paymentMethod: PaymentMethod;
-  /** 주문 상품 정보 (상품 정보, 가격정보) */
-  orderItem: {
-    product: {
-      id: string;
-      productName: string;
-      sales: number;
-      price: number;
-      thumbnail: File | Blob | null;
+  results: {
+    orderId: string;
+    userId: string;
+    userInfo: {
+      firstName: string;
+      phoneNum: string;
     };
-    /** 주문 수량 */
-    quantity: number;
-    /** 주문 총 가격 */
-    totalPrice: number;
-    /** 주문 상태 (주문상품별) */
-    orderItemStatus: OrderItemStatus;
-  };
-  /** 총 상품 가격 */
-  totalProductPrice: number;
-  /** 배송비 */
-  shippingFee: number;
-  /** 결제예정금액 */
-  totalPaymentAmount: number;
-  /** 주문상태 */
-  orderStatus: OrderStatus;
+    deliveryAddress: string;
+    deliveryRequest?: string;
+    orderDate: string;
+    paymentMethod: PaymentMethod;
+    orderItem: {
+      id: string;
+      product: {
+        id: string;
+        productName: string;
+        sales: number;
+        price: number;
+        thumbnail: File | Blob | null;
+      };
+      quantity: number;
+      totalPrice: number;
+      orderItemStatus: OrderItemStatus;
+    }[];
+    totalProductPrice: number;
+    shippingFee: number;
+    totalPaymentAmount: number;
+    orderStatus: OrderStatus;
+  }[];
 }
 
 type OrderItemStatus =

@@ -61,26 +61,29 @@ const OrderView = ({ orderData, onCreateOrder }: OrderViewProps) => {
       const orderRequest: CreateOrderRequest = {
         deliveryAddress: orderData.results[0].deliveryAddress,
         deliveryRequest: orderData.results[0].deliveryRequest,
-        paymentMethod: selectedPaymentMethod,
+        paymentMethod: selectedPaymentMethod ?? "KAKAO_PAY",
         orderItem: orderData.results[0].orderItem.map((item) => ({
-          product: item.product.id,
+          id: item.id,
+          product: item.product,
           quantity: item.quantity,
           totalPrice: item.totalPrice,
+          orderItemStatus: item.orderItemStatus,
         })),
         totalProductPrice: orderData.results[0].totalProductPrice,
         shippingFee: orderData.results[0].shippingFee,
         totalPaymentAmount: orderData.results[0].totalPaymentAmount,
+        // orderStatus: "PAYMENT_PENDING",
       };
 
       // 주문 생성 API 호출
       const response = await onCreateOrder(orderRequest);
 
       // API 응답이 없거나 실패 시
-      if (!response || !response.orderId) {
+      if (!response || !response.results[0].orderId) {
         throw new Error("주문 생성 실패");
       }
 
-      setCreatedOrderId(response.orderId);
+      setCreatedOrderId(response.results[0].orderId);
 
       // 주문 생성 성공 후 성공 바텀시트로 전환
       setBottomSheetState("SUCCESS");
@@ -288,7 +291,9 @@ const OrderView = ({ orderData, onCreateOrder }: OrderViewProps) => {
                               ? "solid"
                               : "outline"
                           }
-                          onClick={() => setSelectedPaymentMethod(method)}
+                          onClick={() =>
+                            setSelectedPaymentMethod(method as PaymentMethod)
+                          }
                         >
                           <span>{label}</span>
                         </Button>
