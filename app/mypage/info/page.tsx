@@ -1,10 +1,11 @@
-import React from "react";
 import InfoView from "@/src/views/mypage/info/info.view";
+import React, { useEffect } from "react";
 
 export default async function Home() {
     return (
     <React.Fragment>
-        <InfoView />
+        <InfoView/>
     </React.Fragment>
     );
 }
+
