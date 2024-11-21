@@ -28,7 +28,7 @@ const BottomTab = () => {
     {
       icon: <IoIosMenu size={24} />,
       label: "Menu",
-      path: "/order",
+      path: "/category",
     },
     {
       icon: <LuSearch size={24} />,

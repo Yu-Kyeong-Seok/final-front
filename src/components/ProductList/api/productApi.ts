@@ -10,25 +10,25 @@ export interface Product {
     seller: string;
     description: string | null;
     packageType: string | null;
+    category:string;
     detail: string;
     __v: number;
 }
 
-export interface TransformedProduct {
-    id: string;
-    name: string;
-    price: number;
-    salePrice: number;
+export interface TransformedProduct extends Omit<Product, '_id' | 'productName' | 'sales'> {
+    id: string;          // _id를 id로 변환
+    name: string;        // productName을 name으로 변환
+    salePrice: number;   // sales를 salePrice로 변환
 }
 
 export const fetchProducts = async () => {
     try {
-        const response = await fetch('http://localhost:4000/api/products');
+        const response = await fetch(process.env.NEXT_PUBLIC_SERVER_URL + '/api/products');
         const data = await response.json();
         const transformedData = data.map((item: Product): TransformedProduct => ({
+            ...item,
             id: item._id,
             name: item.productName,
-            price: item.price,
             salePrice: item.sales,
         }));
         return transformedData;

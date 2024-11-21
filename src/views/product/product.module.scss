@@ -1,1 +1,9 @@
 .product-list{padding:2rem;}
+.list-wrap{
+    display:flex; 
+    flex-direction: row; 
+    flex-wrap: wrap; 
+    gap:1rem;
+    > div{
+    }
+}

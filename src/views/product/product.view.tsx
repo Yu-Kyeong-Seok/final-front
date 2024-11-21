@@ -40,18 +40,20 @@ export default function ProductList(props:ProductListProps) {
         router.push(path);
     };
 
+    const productsWithDefaultImage = products.map(product => ({
+        ...product,
+        img: product.img || 'assets/images/sample.jpg'  // product.img가 없으면 기본 이미지 사용
+    }));
+
     return (
         <div className={cx("product-list")}>
-            <TopTabList tabs={tabs} selectedTab={selectedTab} onTabClick={handleTabChange}/>
-            <Chips labels={labels} onClick={handleOpenBottomSheet} className={cx()}/>
             <div className={cx("list-wrap")}>
-                {products.map((product, index) => {
-                    return(
-                        <div key={product.id || `${product.name}-${index}`} className={cx("list-item")}>
-                            <ProductItem product={product}/>
-                        </div>
-                    )
-                })}
+                {productsWithDefaultImage.map((product, index) => (
+                    <ProductItem 
+                        key={index}
+                        product={product}
+                    />
+                ))}
             </div>
             <BottomSheet isOpen={isBottomSheetOpen} onClose={handleCloseBottomSheet} title="필터">
 

@@ -26,6 +26,11 @@ export default function HomeView(props:HomeProps) {
         setSelectedTab(tab);
     };
 
+    const productDefaultImage = products.map((product) => ({
+        ...product,
+        img:product.img || 'assets/images/sample.jpg'
+    }));
+
     return (
         <div>
             <TopTabList tabs={tabs} selectedTab={selectedTab} onTabClick={handleTabChange}/>
@@ -39,7 +44,7 @@ export default function HomeView(props:HomeProps) {
                     </Link>
                 </div>
                 <div className={cx("list-wrap")}>
-                {products.slice(0, 8).map((product, index) => {
+                {productDefaultImage.slice(0, 8).map((product, index) => {
                     return(
                         <div key={product.id || `${product.name}-${index}`} className={cx("list-item")}>
                             <ProductItem product={product}/>
@@ -59,7 +64,7 @@ export default function HomeView(props:HomeProps) {
                     <CountdownTimer className={cx("timer-text")}/>
                 </div>
                 <div className={cx("list-wrap")}>
-                {products.slice(0,3).map((product, index) => {
+                {productDefaultImage.slice(0,3).map((product, index) => {
                     return(
                         <div key={product.id || `${product.name}-${index}`} className={cx("list-item")}>
                         <ProductItem product={product}/>
@@ -78,7 +83,7 @@ export default function HomeView(props:HomeProps) {
                     </Link>
                 </div>
                 <div className={cx("list-wrap")}>
-                {products.slice(0, 8).map((product, index) => {
+                {productDefaultImage.slice(0, 8).map((product, index) => {
                     return(
                         <div key={product.id || `${product.name}-${index}`} className={cx("list-item")}>
                         <ProductItem product={product}/>

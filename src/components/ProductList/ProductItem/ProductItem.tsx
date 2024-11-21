@@ -17,7 +17,7 @@ const ProductItem = ({ product }: ProductItemProps) => (
     <div className={cx("product")}>
         <Link href={`/products/${product.id}`} className={cx("productLink")}>
             <div className={cx("img")}>
-                <img src="assets/images/sample.png" alt={product.name} />
+                <img src={product.img} alt={product.name} />
                 {/* cart 버튼은 Link 밖으로 빼서 독립적으로 클릭 가능하게 함 */}
                 <button 
                     className={cx("cart")} 
