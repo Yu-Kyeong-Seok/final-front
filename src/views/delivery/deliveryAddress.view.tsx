@@ -55,12 +55,12 @@ export default function DeliveryAddressView(props: DeliveryAddressViewProps) {
                 </li>
                 <li className={cx("DeliveryType")}>샛별배송</li>
               </ul>
-              <span>
-                <LuPencil
-                  onClick={() =>
-                    handleClick("/deliveryAddress/edit/[deliveryId]")
-                  }
-                />
+              <span
+                onClick={() =>
+                  handleClick(`/deliveryAddress/edit/${address.id}`)
+                }
+              >
+                <LuPencil />
               </span>
             </div>
           ))
