@@ -64,6 +64,9 @@ const LoginView = () => {
                     document.cookie = `accessToken=${res.data}; path=/`;
                     
                     alert("로그인 성공!");
+
+                    fetchUserInfo();
+
                     router.push("/"); // 로그인 성공 시 대시보드로 이동
                 } else {
                     alert("로그인에 실패했습니다.");
@@ -87,6 +90,36 @@ const LoginView = () => {
             alert(message);
         }
     );
+
+    
+    const fetchUserInfo = async () => {
+        try {
+            const accessToken = document.cookie.split("; ").find((cookie) => cookie.startsWith("accessToken="))?.split("=")[1];
+
+            const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/users`, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${accessToken}`,
+                },
+            });
+
+            if (response.ok) {
+                const res = await response.json();
+
+                console.log("AA");
+                document.cookie = `cartId=${res.data.cart.id}; path=/`;
+
+            } else {
+                throw new Error("사용자 정보를 가져오는 데 실패했습니다.");
+            }
+        } catch (err) {
+            console.log(err);
+        } finally {
+        }
+    };
+
+
 
     return (
         <div className={cx("Wrapper")}>
