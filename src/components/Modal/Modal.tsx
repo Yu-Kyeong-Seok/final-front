@@ -5,25 +5,24 @@ import cn from 'classnames/bind';
 const cx = cn.bind(styles);
 
 type ModalWrapProps = React.PropsWithChildren<{
-    onCancel?: (...args: any) => void;
-    onConfirm?: (...args: any) => void;
+    isOpen:boolean;
+    onClose: () => void;
+    onConfirm?: () => void;
 }>;
 
 export default function ModalWrap(props:ModalWrapProps) {
-    const {children} = props;
-    const [isOpen, setIsOpen] = useState(false);
-
-    const openModal = () => setIsOpen(true);
-    const closeModal = () => setIsOpen(false);
+    const {children, isOpen, onClose, onConfirm} = props;
 
     const handleCancel = () => {
-        props.onCancel?.();
-        closeModal();
+        onClose();
     }
+    
     const handleConfirm = () => {
-        props.onConfirm?.();
-        closeModal();
+        onConfirm?.();
+        onClose();
     }
+
+    if (!isOpen) return null;
     
     return(
         <div>
@@ -31,7 +30,7 @@ export default function ModalWrap(props:ModalWrapProps) {
             {/* <button onClick={openModal}>모달 열기</button> */}
 
             {isOpen && (
-                <div className={cx('modalOverlay')} onClick={closeModal}>
+                <div className={cx('modalOverlay')} onClick={onClose}>
                     <div className={cx('modalContent')} onClick={(e) => e.stopPropagation()}>
                         {children}
                         <div className={cx('button-box')}>
