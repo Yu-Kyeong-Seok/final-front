@@ -81,6 +81,27 @@ export default function DeliveryAddressView(props: OrderViewProps) {
             <LuPencil />
           </span>
         </div>
+        <div className={cx("AddressList")}>
+          <CheckBox
+            onChange={handleChange}
+            value={selectedValues}
+            id="checkbox1"
+            name="checkbox"
+          />
+          <ul>
+            <li className={cx("AddressItem")}>{userInfos[0].address}</li>
+            <li>
+              <ul className={cx("AddressUser")}>
+                <li>{userInfos[0].name}</li>
+                <li>{userInfos[0].phone}</li>
+              </ul>
+            </li>
+            <li className={cx("DeliveryType")}>샛별배송</li>
+          </ul>
+          <span>
+            <LuPencil />
+          </span>
+        </div>
       </section>
     </div>
   );
