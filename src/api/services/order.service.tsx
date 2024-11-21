@@ -17,10 +17,14 @@ const OrderService = () => {
       const apiUrl = process.env.NEXT_PUBLIC_SERVER_URL;
       if (!apiUrl) throw new Error("API URL이 설정되지 않았습니다.");
 
-      const accessToken = localStorage.getItem("accessToken");
+      const accessToken = document.cookie
+        .split("; ")
+        .find((cookie) => cookie.startsWith("accessToken="))
+        ?.split("=")[1];
       if (!accessToken) throw new Error("토큰이 없습니다");
 
       const response = await fetch(`${apiUrl}/api/orders`, {
+        method: "GET",
         headers: {
           Authorization: `Bearer ${accessToken}`,
           "Content-Type": "application/json",
@@ -48,7 +52,10 @@ const OrderService = () => {
     const apiUrl = process.env.NEXT_PUBLIC_SERVER_URL;
     if (!apiUrl) throw new Error("API URL이 설정되지 않았습니다.");
 
-    const accessToken = localStorage.getItem("accessToken");
+    const accessToken = document.cookie
+      .split("; ")
+      .find((cookie) => cookie.startsWith("accessToken="))
+      ?.split("=")[1];
     if (!accessToken) throw new Error("토큰이 없습니다");
 
     const response = await fetch(`${apiUrl}/api/orders`, {

@@ -6,6 +6,7 @@ import cn from "classnames/bind";
 import Input from "@/src/components/Input/Input";
 import Button from "@/src/components/Button/Button";
 import CheckBox from "@/src/components/CheckBox/CheckBox";
+import { useRouter } from "next/navigation";
 
 const cx = cn.bind(styles);
 
@@ -13,21 +14,28 @@ const DeliveryView: React.FC = () => {
   const [address, setAddress] = useState({
     zonecode: "", // 우편번호
     fullAddress: "", // 전체 주소
+    detailAddress: "", // 상세 주소
   });
 
   const [isPostcodeOpen, setIsPostcodeOpen] = useState(true);
-
   const [isScriptLoaded, setIsScriptLoaded] = useState(false);
+  const [selectedValues, setSelectedValues] = useState<string[]>([]);
+  const [name, setName] = useState("");
+  const [phone, setPhone] = useState("");
+
+  /** 페이지 이동 */
+  const router = useRouter();
+  // const handleClick = (path: string) => {
+  //   router.push(path);
+  // };
 
   const handleComplete = (data: any) => {
     const fullAddress = data.address;
     const zonecode = data.zonecode;
 
-    setAddress({ fullAddress, zonecode });
+    setAddress({ ...address, fullAddress, zonecode });
     setIsPostcodeOpen(false);
   };
-
-  const [selectedValues, setSelectedValues] = useState<string[]>([]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { id, checked } = e.target;
@@ -35,6 +43,51 @@ const DeliveryView: React.FC = () => {
     setSelectedValues((prev) =>
       checked ? [...prev, id] : prev.filter((value) => value !== id)
     );
+  };
+
+  const handleSubmit = async () => {
+    const { zonecode, fullAddress, detailAddress } = address;
+    const isDefault = selectedValues.includes("checkbox1");
+
+    const requestData = {
+      postalCode: zonecode,
+      defaultAddress: fullAddress,
+      detailAddress,
+      number: phone,
+      isDefault,
+      name,
+    };
+
+    try {
+      const apiUrl = process.env.NEXT_PUBLIC_SERVER_URL;
+      if (!apiUrl) throw new Error("API URL이 설정되지 않았습니다.");
+
+      const accessToken = document.cookie
+        .split("; ")
+        .find((cookie) => cookie.startsWith("accessToken="))
+        ?.split("=")[1];
+      if (!accessToken) throw new Error("토큰이 없습니다");
+
+      const response = await fetch("http://localhost:4000/api/deliveries", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(requestData),
+      });
+
+      if (response.ok) {
+        // 성공적으로 데이터가 저장됨
+        alert("배송지가 저장되었습니다.");
+        router.push("/deliveryAddress");
+      } else {
+        alert("배송지 저장에 실패했습니다.");
+      }
+    } catch (error) {
+      console.error("배송지 생성 실패:", error);
+      alert("서버와의 연결에 문제가 발생했습니다.");
+    }
   };
 
   return (
@@ -80,7 +133,13 @@ const DeliveryView: React.FC = () => {
               <dd>{address.fullAddress}</dd>
             </dl>
 
-            <Input placeholder={"나머지 주소를 입력해주세요"} />
+            <Input
+              placeholder={"나머지 주소를 입력해주세요"}
+              value={address.detailAddress}
+              onChange={(e) =>
+                setAddress({ ...address, detailAddress: e.target.value })
+              }
+            />
 
             <div className={cx("Check")}>
               <CheckBox
@@ -91,11 +150,33 @@ const DeliveryView: React.FC = () => {
                 label={"기본 배송지로 저장"}
               />
             </div>
+
+            <div className={cx("CustomerInput")}>
+              <span>받으실 분</span>
+              <Input
+                placeholder={"이름을 입력해주세요"}
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                className={cx("NameInput")}
+              />
+
+              <span>휴대폰</span>
+              <Input
+                placeholder={"전화번호를 입력해주세요"}
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+              />
+            </div>
           </div>
         )}
 
         <div className={cx("SaveButton")}>
-          <Button disabled={false} variants={"solid"} type={"submit"}>
+          <Button
+            disabled={false}
+            variants={"solid"}
+            type={"submit"}
+            onClick={handleSubmit}
+          >
             <span>저장</span>
           </Button>
         </div>
