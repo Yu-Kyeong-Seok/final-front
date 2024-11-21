@@ -1,20 +1,15 @@
-import { Suspense } from "react";
-import { notFound } from "next/navigation";
-import DeliveryAddressEditView from "@/src/views/delivery/deliveryAddrssEdit.view";
+import DeliveryAddressEditService from "@/src/api/services/deliveryAddressEdit.service";
 
-type PageProps = {
+export default function DeliveryAddressEditPage({
+  params,
+}: {
   params: { id: string };
-};
-
-export default function DeliveryAddressEditPage({ params }: PageProps) {
-  // id가 undefined나 빈 문자열인 경우 처리
-  if (!params.id || params.id === "undefined") {
-    notFound();
-  }
+}) {
+  const deliveryId = params.id;
 
   return (
-    <Suspense fallback={<div>로딩 중...</div>}>
-      <DeliveryAddressEditView deliveryAddressId={params.id} />
-    </Suspense>
+    <div>
+      <DeliveryAddressEditService deliveryId={deliveryId} />
+    </div>
   );
 }

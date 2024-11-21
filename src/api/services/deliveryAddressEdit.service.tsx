@@ -1,91 +1,137 @@
+"use client";
+
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { DeliveryAddress } from "@/src/api/@types/delivery.type";
+import DeliveryAddressEditView from "@/src/views/delivery/deliveryAddrssEdit.view";
 
-const API_URL = process.env.NEXT_PUBLIC_SERVER_URL || "http://localhost:4000";
+const DeliveryAddressEditService = ({ deliveryId }: { deliveryId: string }) => {
+  const [deliveryData, setDeliveryData] = useState<DeliveryAddress | null>(
+    null
+  );
+  const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const router = useRouter();
 
-const getAccessToken = (): string | null => {
-  const accessToken = document.cookie
-    .split("; ")
-    .find((cookie) => cookie.startsWith("accessToken="))
-    ?.split("=")[1];
-  if (!accessToken) {
-    throw new Error("토큰이 없습니다");
-  }
-  return accessToken;
-};
+  const apiUrl = process.env.NEXT_PUBLIC_SERVER_URL;
 
-// 배송지 상세 조회
-export const fetchDeliveryAddress = async (
-  id: string
-): Promise<DeliveryAddress> => {
-  console.log("배송지 조회 id:", id);
-  const response = await fetch(`${API_URL}/api/deliveries/${id}`, {
-    method: "GET",
-    headers: {
-      Authorization: `Bearer ${getAccessToken()}`,
-      "Content-Type": "application/json",
-    },
-  });
+  // Fetch 배송지 데이터
+  const fetchDeliveryAddress = async () => {
+    try {
+      if (!apiUrl) throw new Error("API URL이 설정되지 않았습니다.");
 
-  if (!response.ok) {
-    throw new Error("배송지 정보를 불러오지 못했습니다.");
-  }
+      const accessToken = document.cookie
+        .split("; ")
+        .find((cookie) => cookie.startsWith("accessToken="))
+        ?.split("=")[1];
+      if (!accessToken) throw new Error("토큰이 없습니다");
 
-  const data = await response.json();
+      const response = await fetch(`${apiUrl}/api/deliveries/${deliveryId}`, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          "Content-Type": "application/json",
+        },
+      });
 
-  // 데이터 확인용 console.log
-  console.log("배송지 상세 조회 응답:", data);
+      if (!response.ok) throw new Error("배송지 정보를 가져올 수 없습니다.");
 
-  // _id를 id로 매핑
-  const mappedData: DeliveryAddress = {
-    id: data._id, // _id -> id로 변경
-    userId: data.userId,
-    name: data.name,
-    postalCode: data.postalCode,
-    defaultAddress: data.defaultAddress,
-    detailAddress: data.detailAddress,
-    number: data.number,
-    isDefault: data.isDefault,
+      const data: DeliveryAddress = await response.json();
+      setDeliveryData(data);
+    } catch (error) {
+      console.error(error);
+      setError(
+        error instanceof Error
+          ? error.message
+          : "알 수 없는 에러가 발생했습니다."
+      );
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  return mappedData;
-};
+  // Update 배송지 데이터
+  const updateDeliveryAddress = async (updatedData: DeliveryAddress) => {
+    try {
+      if (!apiUrl) throw new Error("API URL이 설정되지 않았습니다.");
 
-// 배송지 수정
-export const updateDeliveryAddress = async (
-  id: string,
-  updatedData: Partial<DeliveryAddress>
-): Promise<void> => {
-  console.log("배송지 조회 id - PUT:", id);
+      const accessToken = document.cookie
+        .split("; ")
+        .find((cookie) => cookie.startsWith("accessToken="))
+        ?.split("=")[1];
+      if (!accessToken) throw new Error("토큰이 없습니다");
 
-  const response = await fetch(`${API_URL}/api/deliveries/${id}`, {
-    method: "PUT",
-    headers: {
-      Authorization: `Bearer ${getAccessToken()}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(updatedData),
-  });
+      const response = await fetch(`${apiUrl}/api/deliveries/${deliveryId}`, {
+        method: "PUT",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(updatedData),
+      });
 
-  if (!response.ok) {
-    throw new Error(
-      `배송지 수정에 실패했습니다. 상태 코드: ${response.status}`
+      if (!response.ok) throw new Error("배송지 수정에 실패했습니다.");
+      alert("배송지가 수정되었습니다.");
+      router.push("/deliveryAddress");
+    } catch (error) {
+      console.error(error);
+      alert("배송지 수정 중 문제가 발생했습니다.");
+    }
+  };
+
+  // Delete 배송지 데이터
+  const deleteDeliveryAddress = async () => {
+    if (!confirm("이 배송지를 삭제하시겠습니까?")) return;
+
+    try {
+      if (!apiUrl) throw new Error("API URL이 설정되지 않았습니다.");
+
+      const accessToken = document.cookie
+        .split("; ")
+        .find((cookie) => cookie.startsWith("accessToken="))
+        ?.split("=")[1];
+      if (!accessToken) throw new Error("토큰이 없습니다");
+
+      const response = await fetch(`${apiUrl}/api/deliveries/${deliveryId}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (!response.ok) throw new Error("배송지 삭제에 실패했습니다.");
+      alert("배송지가 삭제되었습니다.");
+      router.push("/deliveryAddress");
+    } catch (error) {
+      console.error(error);
+      alert("배송지 삭제 중 문제가 발생했습니다.");
+    }
+  };
+
+  useEffect(() => {
+    fetchDeliveryAddress();
+  }, [deliveryId]);
+
+  if (isLoading) return <div>로딩 중...</div>;
+  if (error)
+    return (
+      <div>
+        <p>{error}</p>
+        <button onClick={fetchDeliveryAddress}>다시 시도</button>
+      </div>
     );
-  }
+
+  if (!deliveryData) return <div>배송지 정보를 가져올 수 없습니다.</div>;
+
+  return (
+    <DeliveryAddressEditView
+      deliveryData={deliveryData}
+      onUpdate={updateDeliveryAddress}
+      onDelete={deleteDeliveryAddress}
+      onBack={() => router.push("/deliveryAddress")}
+    />
+  );
 };
 
-// 배송지 삭제
-export const deleteDeliveryAddress = async (id: string): Promise<void> => {
-  console.log("배송지 조회 id - DELETE:", id);
-
-  const response = await fetch(`${API_URL}/api/deliveries/${id}`, {
-    method: "DELETE",
-    headers: {
-      Authorization: `Bearer ${getAccessToken()}`,
-      "Content-Type": "application/json",
-    },
-  });
-
-  if (!response.ok) {
-    throw new Error("배송지 삭제에 실패했습니다.");
-  }
-};
+export default DeliveryAddressEditService;

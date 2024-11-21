@@ -32,17 +32,17 @@ const DeliveryAddressService = () => {
       });
 
       if (!response.ok)
-        throw new Error(`주문 데이터 로드 실패. 상태 코드: ${response.status}`);
+        throw new Error(`배송지 로드 실패. 상태 코드: ${response.status}`);
 
       const data: DeliveryAddress[] = await response.json();
 
       // 콘솔에 데이터 출력
-      console.log("Fetched Delivery Addresses:", data);
+      console.log("fetched ㅇdata:", data);
 
       // 데이터 상태 업뎃
       setDeliveryAddressData(data);
     } catch (error) {
-      console.error("장바구니 아이템 가져오기 중 오류 발생:", error);
+      console.error("배송지 가져오기 중 오류 발생:", error);
       setError(
         error instanceof Error
           ? error.message
@@ -64,7 +64,7 @@ const DeliveryAddressService = () => {
   if (error) {
     return (
       <div>
-        <h2>장바구니 아이템 데이터를 불러오는데 실패했습니다</h2>
+        <h2>배송지 데이터를 불러오는데 실패했습니다</h2>
         <p>{error}</p>
         <button
           onClick={() => {

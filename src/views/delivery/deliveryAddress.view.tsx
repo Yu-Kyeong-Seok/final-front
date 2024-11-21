@@ -29,7 +29,7 @@ export default function DeliveryAddressView(props: DeliveryAddressViewProps) {
         <a>
           <LuChevronLeft />
         </a>
-        <h3>배송지 관리</h3>
+        <h3>배송지 목록</h3>
         <a className={cx("AddAdress")} onClick={() => handleClick("/delivery")}>
           추가
         </a>
@@ -42,7 +42,7 @@ export default function DeliveryAddressView(props: DeliveryAddressViewProps) {
       <section>
         {deliveryAddresses.length > 0 ? (
           deliveryAddresses.map((address) => (
-            <div key={address.id} className={cx("AddressList")}>
+            <div key={address._id} className={cx("AddressList")}>
               <ul>
                 <li className={cx("AddressItem")}>
                   {address.defaultAddress} {address.detailAddress}
@@ -57,7 +57,7 @@ export default function DeliveryAddressView(props: DeliveryAddressViewProps) {
               </ul>
               <span
                 onClick={() =>
-                  handleClick(`/deliveryAddress/edit/${address.id}`)
+                  handleClick(`/deliveryAddress/edit/${address._id}`)
                 }
               >
                 <LuPencil />

@@ -1,137 +1,122 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
-import { DeliveryAddress } from "@/src/api/@types/delivery.type";
-import {
-  fetchDeliveryAddress,
-  updateDeliveryAddress,
-  deleteDeliveryAddress,
-} from "@/src/api/services/deliveryAddressEdit.service";
-import Input from "@/src/components/Input/Input";
-import Button from "@/src/components/Button/Button";
-import { LuChevronLeft } from "react-icons/lu";
 import styles from "./deliveryAddressEdit.module.scss";
 import cn from "classnames/bind";
+import Button from "@/src/components/Button/Button";
+import Input from "@/src/components/Input/Input";
+import { LuChevronLeft } from "react-icons/lu";
+import { DeliveryAddress } from "@/src/api/@types/delivery.type";
+import { useState } from "react";
+import CheckBox from "@/src/components/CheckBox/CheckBox";
 
 const cx = cn.bind(styles);
 
 type DeliveryAddressEditViewProps = {
-  deliveryAddressId: string;
+  deliveryData: DeliveryAddress;
+  onUpdate: (updatedData: DeliveryAddress) => void;
+  onDelete: () => void;
+  onBack: () => void;
 };
 
 export default function DeliveryAddressEditView({
-  deliveryAddressId,
+  deliveryData,
+  onUpdate,
+  onDelete,
+  onBack,
 }: DeliveryAddressEditViewProps) {
-  const router = useRouter();
-
-  const [formData, setFormData] = useState<Partial<DeliveryAddress>>({
-    name: "",
-    postalCode: 0,
-    defaultAddress: "",
-    detailAddress: "",
-    number: "",
-    isDefault: false,
+  // 로컬 데이터관리 (입력값을 임시로 관리함!)
+  const [localData, setLocalData] = useState<DeliveryAddress>({
+    ...deliveryData,
   });
-  const [error, setError] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(() => {
-    const loadDeliveryAddressData = async () => {
-      try {
-        const data = await fetchDeliveryAddress(deliveryAddressId);
-        setFormData(data);
-        setIsLoading(false);
-      } catch (err) {
-        setError(
-          err instanceof Error ? err.message : "서버 오류가 발생했습니다."
-        );
-        setIsLoading(false);
-      }
-    };
-
-    loadDeliveryAddressData();
-  }, [deliveryAddressId]);
-
-  const handleUpdate = async () => {
-    try {
-      await updateDeliveryAddress(deliveryAddressId, formData);
-      alert("배송지가 수정되었습니다.");
-      router.push("/deliveryAddress");
-    } catch (err) {
-      setError(
-        err instanceof Error ? err.message : "배송지 수정에 실패했습니다."
-      );
-    }
+  // input 입력값 변경 핸들러
+  const handleInputChange = (field: keyof DeliveryAddress, value: any) => {
+    setLocalData((prev) => ({
+      ...prev,
+      [field]: value,
+    }));
   };
 
-  const handleDelete = async () => {
-    if (confirm("정말로 이 배송지를 삭제하시겠습니까?")) {
-      try {
-        await deleteDeliveryAddress(deliveryAddressId);
-        alert("배송지가 삭제되었습니다.");
-        router.push("/deliveryAddress");
-      } catch (err) {
-        setError(
-          err instanceof Error ? err.message : "배송지 삭제에 실패했습니다."
-        );
-      }
-    }
+  // 체크박스 변경 핸들러
+  const handleCheckBoxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const isChecked = e.target.checked;
+    // isDefault가 true일 때는 배열에 "isDefault"를 넣고, 아니면 배열에서 제거
+    const updatedIsDefault = isChecked ? ["isDefault"] : [];
+    setLocalData((prev) => ({
+      ...prev,
+      isDefault: updatedIsDefault.length > 0,
+    }));
   };
-
-  if (isLoading) return <div>로딩 중...</div>;
-  if (error) return <div>{error}</div>;
 
   return (
     <div className={cx("PageContainer")}>
       <div className={cx("PageHeader")}>
-        <a onClick={() => router.push("/deliveryAddress")}>
+        <a onClick={onBack}>
           <LuChevronLeft />
         </a>
-        <h3>배송지 수정</h3>
+        <h3>배송지 관리</h3>
       </div>
 
       <div className={cx("Form")}>
-        <Input
-          value={formData.name || ""}
-          onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-        />
-        <Input
-          value={formData.postalCode?.toString() || ""}
-          onChange={(e) =>
-            setFormData({ ...formData, postalCode: Number(e.target.value) })
-          }
-        />
-        <Input
-          value={formData.defaultAddress || ""}
-          onChange={(e) =>
-            setFormData({ ...formData, defaultAddress: e.target.value })
-          }
-        />
-        <Input
-          value={formData.detailAddress || ""}
-          onChange={(e) =>
-            setFormData({ ...formData, detailAddress: e.target.value })
-          }
-        />
-        <Input
-          value={formData.number || ""}
-          onChange={(e) => setFormData({ ...formData, number: e.target.value })}
-        />
-        <label>
-          <input
-            type="checkbox"
-            checked={formData.isDefault || false}
+        <div>
+          <span className={cx("LabelTxt")}>받으실 분</span>
+          <Input
+            value={localData.name || ""}
+            onChange={(e) => handleInputChange("name", e.target.value)}
+          />
+        </div>
+
+        <div>
+          <span className={cx("LabelTxt")}>우편번호</span>
+          <Input
+            value={localData.postalCode?.toString() || ""}
             onChange={(e) =>
-              setFormData({ ...formData, isDefault: e.target.checked })
+              handleInputChange("postalCode", Number(e.target.value))
             }
           />
-          기본 배송지로 설정
-        </label>
+        </div>
+
+        <div>
+          <span className={cx("LabelTxt")}>주소</span>
+          <Input
+            value={localData.defaultAddress || ""}
+            onChange={(e) =>
+              handleInputChange("defaultAddress", e.target.value)
+            }
+          />
+        </div>
+
+        <div>
+          <span className={cx("LabelTxt")}>상세주소</span>
+          <Input
+            value={localData.detailAddress || ""}
+            onChange={(e) => handleInputChange("detailAddress", e.target.value)}
+          />
+        </div>
+
+        <div>
+          <span className={cx("LabelTxt")}>휴대폰</span>
+          <Input
+            value={localData.number || ""}
+            onChange={(e) => handleInputChange("number", e.target.value)}
+          />
+        </div>
+
+        <CheckBox
+          id="isDefault"
+          label="기본 배송지로 설정"
+          value={localData.isDefault ? ["isDefault"] : []} // 배열로 전달
+          checked={localData.isDefault || false}
+          onChange={(e) => handleInputChange("isDefault", e.target.checked)}
+        />
 
         <div className={cx("Buttons")}>
-          <Button onClick={handleUpdate}>수정 완료</Button>
-          <Button onClick={handleDelete} variants="outline">
+          <Button onClick={() => onUpdate(localData)}>수정 완료</Button>
+          <Button
+            onClick={onDelete}
+            variants="outline"
+            className={cx("DeleteBtn")}
+          >
             삭제
           </Button>
         </div>

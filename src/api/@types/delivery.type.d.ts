@@ -1,6 +1,6 @@
 // 배송지 타입 정의
 export interface DeliveryAddress {
-  id: string; // 배송지 ID
+  _id: string; // 배송지 ID
   userId: string; // 유저 ID
   name?: string; // 배송지와 연결된 유저명
   postalCode: number; // 우편번호
