@@ -11,14 +11,11 @@
     flex-direction: column;
     width: 100%;
     margin: 0;
-}
 
-.RequiredLabel {
-    padding: 18px 0px 7px;
-    font-size: 14px;
-        span {
-            color: var(--color-red);
-        }
+    label {
+        padding: 18px 0px 7px;
+    }
+
 }
 
 .InputContainer {
@@ -29,22 +26,17 @@
         width: 122px;
         height: 46px;
         margin-left: 8px;
+        
     }
 }
 
-.Padding {
-    padding: 20px;
+.RequiredLabel {
+    // padding: 18px 0px 7px;
+        span {
+            color: var(--color-red);
+        }
 }
 
-.VerificationNumberWrapper {
-    position: relative;
-    width: 100%;
-}
-
-.VerificationNumber {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    right: 12px;
-    color: red;
+.ButtonWrapper {
+    margin-top: 20px;
 }

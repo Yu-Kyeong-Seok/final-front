@@ -1,0 +1,42 @@
+.Wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0 20px;
+    font-size: 14px;
+}
+
+.Form {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    margin: 0;
+
+    label {
+        padding: 18px 0px 7px;
+    }
+
+    h4 {
+        padding-bottom: 8px;
+        font-weight: 500;
+    }
+
+    p {
+        padding-bottom: 0px;
+        font-size: 14px;
+        line-height: 1.5;
+        // color: rgb(102, 102, 102);
+        color: var(--color-700)
+    }
+}
+
+.RequiredLabel {
+    // padding: 18px 0px 7px;
+        span {
+            color: var(--color-red);
+        }
+}
+
+.ButtonWrapper {
+    margin-top: 20px;
+}

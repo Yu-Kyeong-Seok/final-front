@@ -11,18 +11,21 @@ type InputProps = {
     name?: string;
     onChange?: any;
     value?: any;
+    className?: string;
+    readonly?: boolean;
 }
 
 const Input = (props: InputProps) => {
-    const { placeholder, type, id, name, onChange, value } = props;
+    const { placeholder, type, id, name, onChange, value, className, readonly } = props;
     return (
-        <input className={cx("Input")} 
+        <input className={cx("Input", className)} 
             placeholder={placeholder}
             type={type}
             id={id}
             name={name}
             onChange={onChange}
             value={value}
+            readOnly={readonly}
         />
     );
 };

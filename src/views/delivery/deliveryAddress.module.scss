@@ -24,6 +24,7 @@
       padding: 5px 10px;
       border-radius: 5px;
       text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.1);
+      cursor: pointer;
     }
   }
 
@@ -91,6 +92,7 @@
       span {
         color: var(--color-300);
         font-size: 19px;
+        cursor: pointer;
       }
     }
   }
