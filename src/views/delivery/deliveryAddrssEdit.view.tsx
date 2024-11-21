@@ -1,5 +1,6 @@
 "use client";
 
+import { useRouter } from "next/navigation"; // useRouter import
 import styles from "./deliveryAddressEdit.module.scss";
 import cn from "classnames/bind";
 import Button from "@/src/components/Button/Button";
@@ -13,17 +14,19 @@ const cx = cn.bind(styles);
 
 type DeliveryAddressEditViewProps = {
   deliveryData: DeliveryAddress;
+  deliveryAddresses: DeliveryAddress[]; // 전체 배송지 목록
   onUpdate: (updatedData: DeliveryAddress) => void;
   onDelete: () => void;
-  onBack: () => void;
 };
 
 export default function DeliveryAddressEditView({
   deliveryData,
+  deliveryAddresses,
   onUpdate,
   onDelete,
-  onBack,
 }: DeliveryAddressEditViewProps) {
+  const router = useRouter(); // useRouter 사용
+
   // 로컬 데이터관리 (입력값을 임시로 관리함!)
   const [localData, setLocalData] = useState<DeliveryAddress>({
     ...deliveryData,
@@ -48,10 +51,17 @@ export default function DeliveryAddressEditView({
     }));
   };
 
+  // 뒤로가기 함수
+  const handleBack = () => {
+    router.back(); //이전 페이지로 이동
+  };
+
   return (
     <div className={cx("PageContainer")}>
       <div className={cx("PageHeader")}>
-        <a onClick={onBack}>
+        <a onClick={handleBack}>
+          {" "}
+          {/* handleBack으로 뒤로가기 기능 구현 */}
           <LuChevronLeft />
         </a>
         <h3>배송지 관리</h3>
@@ -102,13 +112,40 @@ export default function DeliveryAddressEditView({
           />
         </div>
 
-        <CheckBox
-          id="isDefault"
-          label="기본 배송지로 설정"
-          value={localData.isDefault ? ["isDefault"] : []} // 배열로 전달
-          checked={localData.isDefault || false}
-          onChange={(e) => handleInputChange("isDefault", e.target.checked)}
-        />
+        <div className={cx("CheckBoxWrap")}>
+          <CheckBox
+            id="isDefault"
+            label={
+              <span style={{ fontSize: "14px", fontWeight: 500 }}>
+                기본 배송지로 저장
+              </span>
+            }
+            value={localData.isDefault ? ["isDefault"] : []}
+            checked={localData.isDefault || false}
+            onChange={(e) => {
+              const isChecked = e.target.checked;
+
+              // 이미 기본 배송지가 설정되어 있는 경우, 해제하려고 할 때 경고 표시
+              if (!isChecked && localData.isDefault) {
+                const confirmUnset =
+                  window.confirm("기본 배송지를 해제하시겠습니까?");
+                if (confirmUnset) {
+                  setLocalData((prev) => ({
+                    ...prev,
+                    isDefault: false,
+                  }));
+                }
+                return;
+              }
+
+              // 상태 업데이트
+              setLocalData((prev) => ({
+                ...prev,
+                isDefault: isChecked,
+              }));
+            }}
+          />
+        </div>
 
         <div className={cx("Buttons")}>
           <Button onClick={() => onUpdate(localData)}>수정 완료</Button>

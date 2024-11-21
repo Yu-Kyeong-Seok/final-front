@@ -19,15 +19,11 @@ const DeliveryView: React.FC = () => {
 
   const [isPostcodeOpen, setIsPostcodeOpen] = useState(true);
   const [isScriptLoaded, setIsScriptLoaded] = useState(false);
-  const [selectedValues, setSelectedValues] = useState<string[]>([]);
+  const [selectedValues, setSelectedValues] = useState<string[]>([]); // 기본 배송지 관리 배열
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
 
-  /** 페이지 이동 */
   const router = useRouter();
-  // const handleClick = (path: string) => {
-  //   router.push(path);
-  // };
 
   const handleComplete = (data: any) => {
     const fullAddress = data.address;
@@ -35,14 +31,6 @@ const DeliveryView: React.FC = () => {
 
     setAddress({ ...address, fullAddress, zonecode });
     setIsPostcodeOpen(false);
-  };
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { id, checked } = e.target;
-
-    setSelectedValues((prev) =>
-      checked ? [...prev, id] : prev.filter((value) => value !== id)
-    );
   };
 
   const handleSubmit = async () => {
@@ -68,7 +56,7 @@ const DeliveryView: React.FC = () => {
         ?.split("=")[1];
       if (!accessToken) throw new Error("토큰이 없습니다");
 
-      const response = await fetch("http://localhost:4000/api/deliveries", {
+      const response = await fetch(`${apiUrl}/api/deliveries`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${accessToken}`,
@@ -78,7 +66,6 @@ const DeliveryView: React.FC = () => {
       });
 
       if (response.ok) {
-        // 성공적으로 데이터가 저장됨
         alert("배송지가 저장되었습니다.");
         router.push("/deliveryAddress");
       } else {
@@ -92,10 +79,9 @@ const DeliveryView: React.FC = () => {
 
   return (
     <div className={cx("AddressContainer")}>
-      {/* Daum Postcode Script */}
       <Script
         src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"
-        strategy="lazyOnload" // 페이지 로드 후 script 로드
+        strategy="lazyOnload"
         onLoad={() => setIsScriptLoaded(true)}
       />
 
@@ -126,6 +112,7 @@ const DeliveryView: React.FC = () => {
           <span>오늘 주문하면 다음 날 바로 도착해요.</span>
           <b>지역별 배송 휴무 정책은 배송안내를 참고해주세요.</b>
         </div>
+
         {address.fullAddress && (
           <div className={cx("AddressResult")}>
             <dl>
@@ -143,11 +130,17 @@ const DeliveryView: React.FC = () => {
 
             <div className={cx("Check")}>
               <CheckBox
-                onChange={handleChange}
-                value={selectedValues}
                 id="checkbox1"
                 name="checkbox-group"
                 label={"기본 배송지로 저장"}
+                value={selectedValues} // 배열을 value로 전달
+                onChange={(e) => {
+                  setSelectedValues((prev) =>
+                    e.target.checked
+                      ? [...prev, e.target.id]
+                      : prev.filter((id) => id !== e.target.id)
+                  );
+                }}
               />
             </div>
 
@@ -172,7 +165,7 @@ const DeliveryView: React.FC = () => {
 
         <div className={cx("SaveButton")}>
           <Button
-            disabled={false}
+            disabled={!address.fullAddress || !name || !phone}
             variants={"solid"}
             type={"submit"}
             onClick={handleSubmit}

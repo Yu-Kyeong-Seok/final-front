@@ -23,10 +23,15 @@ export default function DeliveryAddressView(props: DeliveryAddressViewProps) {
     router.push(path);
   };
 
+  // 뒤로가기 함수
+  const handleBack = () => {
+    router.back(); // 이전 페이지로 이동
+  };
+
   return (
     <div className={cx("PageContainer")}>
       <div className={cx("PageHeader")}>
-        <a>
+        <a onClick={handleBack}>
           <LuChevronLeft />
         </a>
         <h3>배송지 목록</h3>
@@ -44,6 +49,9 @@ export default function DeliveryAddressView(props: DeliveryAddressViewProps) {
           deliveryAddresses.map((address) => (
             <div key={address._id} className={cx("AddressList")}>
               <ul>
+                <li className={address.isDefault ? cx("DefaultAddress") : ""}>
+                  {address.isDefault ? "기본배송지" : null}
+                </li>
                 <li className={cx("AddressItem")}>
                   {address.defaultAddress} {address.detailAddress}
                 </li>

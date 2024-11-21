@@ -37,7 +37,7 @@ const DeliveryAddressService = () => {
       const data: DeliveryAddress[] = await response.json();
 
       // 콘솔에 데이터 출력
-      console.log("fetched ㅇdata:", data);
+      console.log("fetched data:::::", data);
 
       // 데이터 상태 업뎃
       setDeliveryAddressData(data);
