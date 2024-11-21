@@ -11,7 +11,7 @@ const cx = cn.bind(styles);
 
 type HeaderProps = {
   backgroundColor: string;
-  title: string;
+  title?: string;
   color: string;
   canGoBack: boolean;
 };

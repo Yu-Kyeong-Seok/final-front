@@ -1,11 +1,16 @@
-import { fetchProducts } from "@/src/components/ProductList/api/productApi";
 import ProductList from "@/src/views/product/product.view";
 
 
-export default async function Products() {
+type ProductListPageProps = {
+    params:Promise<{categories:string[]}>;
+}
 
-    const products = await fetchProducts();
-        
+export default async function ProductListPage(props:ProductListPageProps){
+    const {params} = props;
+
+    const categories = await params;
+    console.log(categories);
+
     const tabs = [
         "전체보기",
         "친환경",
@@ -25,6 +30,6 @@ export default async function Products() {
     ]
 
     return (
-        <ProductList tabs={tabs} products={products} labels={labels}/>
+        <ProductList tabs={tabs} products={[]} labels={labels}/>
     );
 }

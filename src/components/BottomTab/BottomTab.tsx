@@ -20,26 +20,26 @@ const BottomTab = () => {
   const pathname = usePathname();
 
   const tabs: TabItem[] = [
-      {
-          icon: <FiHome size={24} />,
-          label: 'Home',
-          path: '/'
-      },
-      {
-          icon: <IoIosMenu size={24} />,
-          label: 'Menu',
-          path: '/order'
-      },
-      {
-          icon: <LuSearch size={24} />,
-          label: 'Search',
-          path: '/search'
-      },
-      {
-          icon: <FiUser  size={24} />,
-          label: 'Profile',
-          path: '/auth/login'
-      }
+    {
+      icon: <FiHome size={24} />,
+      label: "Home",
+      path: "/",
+    },
+    {
+      icon: <IoIosMenu size={24} />,
+      label: "Menu",
+      path: "/category",
+    },
+    {
+      icon: <LuSearch size={24} />,
+      label: "Search",
+      path: "/search",
+    },
+    {
+      icon: <FiUser size={24} />,
+      label: "Mypage",
+      path: "/mypage",
+    },
   ];
 
   return (

@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import styles from './home.view.module.scss';
 import cn from 'classnames/bind';
-import { Product } from "@/src/components/ProductList/api/productApi";
+import { TransformedProduct } from "@/src/components/ProductList/api/productApi";
 import ProductItem from "@/src/components/ProductList/ProductItem/ProductItem";
 import CountdownTimer from "@/src/components/Countdown/Countdown";
 import Link from "next/link";
@@ -15,7 +15,7 @@ const cx = cn.bind(styles);
 
 type HomeProps = {
     tabs:string[];
-    products:Product[];
+    products:TransformedProduct[];
 }
 
 
@@ -25,6 +25,11 @@ export default function HomeView(props:HomeProps) {
     const handleTabChange = (tab: string) => {
         setSelectedTab(tab);
     };
+
+    const productDefaultImage = products.map((product) => ({
+        ...product,
+        img:product.img || 'assets/images/sample.jpg'
+    }));
 
     return (
         <div>
@@ -39,7 +44,7 @@ export default function HomeView(props:HomeProps) {
                     </Link>
                 </div>
                 <div className={cx("list-wrap")}>
-                {products.slice(0, 8).map((product, index) => {
+                {productDefaultImage.slice(0, 8).map((product, index) => {
                     return(
                         <div key={product.id || `${product.name}-${index}`} className={cx("list-item")}>
                             <ProductItem product={product}/>
@@ -59,7 +64,7 @@ export default function HomeView(props:HomeProps) {
                     <CountdownTimer className={cx("timer-text")}/>
                 </div>
                 <div className={cx("list-wrap")}>
-                {products.slice(0,3).map((product, index) => {
+                {productDefaultImage.slice(0,3).map((product, index) => {
                     return(
                         <div key={product.id || `${product.name}-${index}`} className={cx("list-item")}>
                         <ProductItem product={product}/>
@@ -78,7 +83,7 @@ export default function HomeView(props:HomeProps) {
                     </Link>
                 </div>
                 <div className={cx("list-wrap")}>
-                {products.slice(0, 8).map((product, index) => {
+                {productDefaultImage.slice(0, 8).map((product, index) => {
                     return(
                         <div key={product.id || `${product.name}-${index}`} className={cx("list-item")}>
                         <ProductItem product={product}/>
