@@ -25,13 +25,13 @@ const ProductDetailView = (props : ProductDetailProps) => {
     // 사용자 정보를 가져오는 함수
     const fetchUserInfo = async () => {
         try {
-            const accessToken = document.cookie.split("; ").find((cookie) => cookie.startsWith("accessToken="))?.split("=")[1];
+            // const accessToken = document.cookie.split("; ").find((cookie) => cookie.startsWith("accessToken="))?.split("=")[1];
 
             const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/products/${productId}`, {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json",
-                    "Authorization": `Bearer ${accessToken}`,
+                    // "Authorization": `Bearer ${accessToken}`,
                 },
             });
 
@@ -45,9 +45,6 @@ const ProductDetailView = (props : ProductDetailProps) => {
             } else {
                 throw new Error("사용자 정보를 가져오는 데 실패했습니다.");
             }
-
-
-
         } catch (err) {
             console.log(err);
         } finally {

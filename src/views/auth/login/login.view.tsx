@@ -90,7 +90,6 @@ const LoginView = () => {
             alert(message);
         }
     );
-
     
     const fetchUserInfo = async () => {
         try {
@@ -107,7 +106,6 @@ const LoginView = () => {
             if (response.ok) {
                 const res = await response.json();
 
-                console.log("AA");
                 document.cookie = `cartId=${res.data.cart.id}; path=/`;
 
             } else {
@@ -118,8 +116,6 @@ const LoginView = () => {
         } finally {
         }
     };
-
-
 
     return (
         <div className={cx("Wrapper")}>
