@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import ProductDetailView from "@/src/views/product/productDetail.view";
 
 type PageProps = {
@@ -15,4 +15,3 @@ export default function Home({ params }: PageProps) {
     </React.Fragment>
     );
 }
-

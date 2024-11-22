@@ -1,5 +1,10 @@
-import React, { useState } from "react";
+"use client";
+import { useState } from "react";
 import CartService from "@/src/api/services/cart.service";
+import styles from "./cart.module.scss";
+import cn from "classnames/bind";
+
+const cx = cn.bind(styles);
 
 const CartView = () => {
   const { cartList, updateCartItem, removeCartItem } = CartService();

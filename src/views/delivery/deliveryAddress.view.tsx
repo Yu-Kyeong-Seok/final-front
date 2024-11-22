@@ -1,41 +1,21 @@
 "use client";
 
-import CheckBox from "@/src/components/CheckBox/CheckBox";
+// import CheckBox from "@/src/components/CheckBox/CheckBox";
 import styles from "./deliveryAddress.module.scss";
 import cn from "classnames/bind";
-// import { useState } from "react";
 import { LuChevronLeft, LuAlertCircle, LuPencil } from "react-icons/lu";
-import { useState } from "react";
+// import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { DeliveryAddress } from "@/src/api/@types/delivery.type";
 
 const cx = cn.bind(styles);
 
-/** 주문자 정보 */
-type UserInfo = {
-  id: string;
-  name: string;
-  phone: string;
-  email: string;
-  address: string;
+type DeliveryAddressViewProps = {
+  deliveryAddresses: DeliveryAddress[];
 };
 
-type OrderViewProps = {
-  // orderItems: OrderItem[];
-  userInfos: UserInfo[];
-};
-
-export default function DeliveryAddressView(props: OrderViewProps) {
-  const { userInfos } = props;
-
-  const [selectedValues, setSelectedValues] = useState<string[]>([]);
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { id, checked } = e.target;
-
-    setSelectedValues((prev) =>
-      checked ? [...prev, id] : prev.filter((value) => value !== id)
-    );
-  };
+export default function DeliveryAddressView(props: DeliveryAddressViewProps) {
+  const { deliveryAddresses } = props;
 
   /** 버튼 클릭 시 페이지 이동 */
   const router = useRouter();
@@ -43,13 +23,18 @@ export default function DeliveryAddressView(props: OrderViewProps) {
     router.push(path);
   };
 
+  /** 뒤로가기 */
+  const handleBack = () => {
+    router.back();
+  };
+
   return (
     <div className={cx("PageContainer")}>
       <div className={cx("PageHeader")}>
-        <a>
+        <a onClick={handleBack}>
           <LuChevronLeft />
         </a>
-        <h3>배송지 관리</h3>
+        <h3>배송지 목록</h3>
         <a className={cx("AddAdress")} onClick={() => handleClick("/delivery")}>
           추가
         </a>
@@ -60,48 +45,36 @@ export default function DeliveryAddressView(props: OrderViewProps) {
       </span>
 
       <section>
-        <div className={cx("AddressList")}>
-          <CheckBox
-            onChange={handleChange}
-            value={selectedValues}
-            id="checkbox1"
-            name="checkbox"
-          />
-          <ul>
-            <li className={cx("AddressItem")}>{userInfos[0].address}</li>
-            <li>
-              <ul className={cx("AddressUser")}>
-                <li>{userInfos[0].name}</li>
-                <li>{userInfos[0].phone}</li>
+        {deliveryAddresses.length > 0 ? (
+          deliveryAddresses.map((address) => (
+            <div key={address._id} className={cx("AddressList")}>
+              <ul>
+                <li className={address.isDefault ? cx("DefaultAddress") : ""}>
+                  {address.isDefault ? "기본배송지" : null}
+                </li>
+                <li className={cx("AddressItem")}>
+                  {address.defaultAddress} {address.detailAddress}
+                </li>
+                <li>
+                  <ul className={cx("AddressUser")}>
+                    <li>{address.name}</li>
+                    <li>{address.number}</li>
+                  </ul>
+                </li>
+                <li className={cx("DeliveryType")}>샛별배송</li>
               </ul>
-            </li>
-            <li className={cx("DeliveryType")}>샛별배송</li>
-          </ul>
-          <span>
-            <LuPencil />
-          </span>
-        </div>
-        <div className={cx("AddressList")}>
-          <CheckBox
-            onChange={handleChange}
-            value={selectedValues}
-            id="checkbox1"
-            name="checkbox"
-          />
-          <ul>
-            <li className={cx("AddressItem")}>{userInfos[0].address}</li>
-            <li>
-              <ul className={cx("AddressUser")}>
-                <li>{userInfos[0].name}</li>
-                <li>{userInfos[0].phone}</li>
-              </ul>
-            </li>
-            <li className={cx("DeliveryType")}>샛별배송</li>
-          </ul>
-          <span>
-            <LuPencil />
-          </span>
-        </div>
+              <span
+                onClick={() =>
+                  handleClick(`/deliveryAddress/edit/${address._id}`)
+                }
+              >
+                <LuPencil />
+              </span>
+            </div>
+          ))
+        ) : (
+          <p>등록된 배송지가 없습니다.</p>
+        )}
       </section>
     </div>
   );
