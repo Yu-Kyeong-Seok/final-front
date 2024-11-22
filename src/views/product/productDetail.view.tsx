@@ -95,19 +95,20 @@ const ProductDetailView = (props : ProductDetailProps) => {
     return ( 
         <>
             {productData ? (
-                <div className={cx("product-detail")}>
-                    <h1>{productData._id}</h1>
-                    <h1>{productData.productName}</h1>
-                    <p>{productData.description}</p>
-                    <p>가격: {productData.price}원</p>
-                    <p>sales: {productData.sales}원</p>
-                    <img src={productData.img}></img>
+                <div className={cx("product-container")}>
+                    <img className={cx("product-image")} src={productData.img}></img>
+                    {/* <h1>{productData._id}</h1> */}
+                    <p className={cx("product-description")}>{productData.delivery}</p>
+                    <h1 className={cx("product-title")}>[{productData.seller}]{productData.productName}</h1>
+                    <p className={cx("product-description")}>{productData.description}</p>
+                    <p className={cx("product-sales")}>{productData.sales}원</p>
+                    <p className={cx("product-price")}>{productData.price}원</p>
+                    <Button type="button" onClick={handlePay}><span>구매하기</span></Button>
                 </div>
             ) : (
                 <div>제품 정보를 가져올 수 없습니다.</div>
             )}
 
-            <Button type="button" onClick={handlePay}><span>구매하기</span></Button>
         </>
     )
 }
