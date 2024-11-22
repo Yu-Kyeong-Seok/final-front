@@ -13,9 +13,10 @@ type InquiryListViewProps = {
 
 /** 문의 유형 매핑 */
 const inquiryTypeMap: Record<IInquiry["inquiryType"], string> = {
-  Cancel: "주문취소",
+  Cancel: "주문",
   Refund: "환불",
   Exchange: "교환",
+  etc: "기타",
 };
 
 /** 상태 매핑 */
@@ -59,14 +60,14 @@ export default function InquiryListView(props: InquiryListViewProps) {
                   >
                     {inquiry.title}
                   </dd>
+                </dl>
+
+                <dl className={cx("InquiryDateStatus")}>
+                  <dt>{new Date(inquiry.createdAt).toLocaleString()}</dt>
+                  {/* <dd>작성자: {inquiry.author.userName}</dd> */}
                   <dd className={cx("InquiryStatus")}>
                     {statusMap[inquiry.status]}
                   </dd>
-                </dl>
-
-                <dl className={cx("InquiryAuthor")}>
-                  <dt>{new Date(inquiry.createdAt).toLocaleString()}</dt>
-                  <dd>작성자: {inquiry.author.userName}</dd>
                 </dl>
               </div>
             </div>

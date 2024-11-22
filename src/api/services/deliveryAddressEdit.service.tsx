@@ -36,8 +36,8 @@ const DeliveryAddressEditService = ({ deliveryId }: { deliveryId: string }) => {
 
       if (!response.ok) throw new Error("배송지 정보를 가져올 수 없습니다.");
 
-      const data: DeliveryAddress = await response.json();
-      setDeliveryData(data);
+      const data = await response.json();
+      setDeliveryData(data || null);
     } catch (error) {
       console.error(error);
       setError(
@@ -129,7 +129,7 @@ const DeliveryAddressEditService = ({ deliveryId }: { deliveryId: string }) => {
       deliveryData={deliveryData}
       onUpdate={updateDeliveryAddress}
       onDelete={deleteDeliveryAddress}
-      onBack={() => router.push("/deliveryAddress")}
+      // onBack={() => router.push("/deliveryAddress")}
     />
   );
 };

@@ -1,4 +1,4 @@
-import InquiryListService from "@/src/api/services/inquiry.service";
+import InquiryListService from "@/src/api/services/inquiryList.service";
 
 export default function InquiryListPage() {
   return <InquiryListService />;

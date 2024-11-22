@@ -14,14 +14,14 @@ const cx = cn.bind(styles);
 
 type DeliveryAddressEditViewProps = {
   deliveryData: DeliveryAddress;
-  deliveryAddresses: DeliveryAddress[]; // 전체 배송지 목록
+  // deliveryAddresses: DeliveryAddress[]; // 전체 배송지 목록
   onUpdate: (updatedData: DeliveryAddress) => void;
   onDelete: () => void;
 };
 
 export default function DeliveryAddressEditView({
   deliveryData,
-  deliveryAddresses,
+  // deliveryAddresses,
   onUpdate,
   onDelete,
 }: DeliveryAddressEditViewProps) {
@@ -54,7 +54,7 @@ export default function DeliveryAddressEditView({
   //   }));
   // };
 
-  // 뒤로가기 함수
+  // 뒤로가기
   const handleBack = () => {
     router.back(); //이전 페이지로 이동
   };
@@ -63,7 +63,6 @@ export default function DeliveryAddressEditView({
     <div className={cx("PageContainer")}>
       <div className={cx("PageHeader")}>
         <a onClick={handleBack}>
-          {/* handleBack으로 뒤로가기 */}
           <LuChevronLeft />
         </a>
         <h3>배송지 관리</h3>

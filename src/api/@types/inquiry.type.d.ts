@@ -1,6 +1,6 @@
 type Status = "Processing" | "completed";
-// type InquiryType = "Cancel" | "Refund" | "Exchange" | "etc.";
-type InquiryType = "Cancel" | "Refund" | "Exchange";
+type InquiryType = "Cancel" | "Refund" | "Exchange" | "etc";
+// type InquiryType = "Cancel" | "Refund" | "Exchange";
 
 export interface IInquiry {
   /** 1:1문의 ID */
