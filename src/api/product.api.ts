@@ -21,19 +21,26 @@ export interface TransformedProduct extends Omit<Product, '_id' | 'productName' 
     salePrice: number;   // sales를 salePrice로 변환
 }
 
-export const fetchProducts = async () => {
+export const fetchProductsByCategory = async (mainCategory: string, subCategory: string) => {
     try {
         const response = await fetch(process.env.NEXT_PUBLIC_SERVER_URL + '/api/products');
         const data = await response.json();
-        const transformedData = data.map((item: Product): TransformedProduct => ({
+        
+        // 카테고리로 필터링
+        const filteredData = data.filter((item: Product) => {
+            return item.category === `${mainCategory}/${subCategory}`;
+        });
+
+        const transformedData = filteredData.map((item: Product): TransformedProduct => ({
             ...item,
             id: item._id,
             name: item.productName,
             salePrice: item.sales,
         }));
+        
         return transformedData;
     } catch (error) {
-        console.error("Error fetching product data:", error);
+        console.error("Error fetching category products:", error);
         throw error;
     }
 };

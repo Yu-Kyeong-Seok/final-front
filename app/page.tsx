@@ -1,5 +1,5 @@
 import HomeView from "@/src/views/home/home.view";
-import { fetchProducts } from "@/src/components/ProductList/api/productApi";
+import { fetchProducts } from "@/src/api/product.api";
 
 
 export default async function Home() {

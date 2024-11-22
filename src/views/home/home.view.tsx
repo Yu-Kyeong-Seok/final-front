@@ -3,8 +3,8 @@
 import React, { useState } from "react";
 import styles from './home.view.module.scss';
 import cn from 'classnames/bind';
-import { TransformedProduct } from "@/src/components/ProductList/api/productApi";
-import ProductItem from "@/src/components/ProductList/ProductItem/ProductItem";
+import { TransformedProduct } from "@/src/api/product.api";
+import ProductItem from "@/src/components/ProductItem/ProductItem";
 import CountdownTimer from "@/src/components/Countdown/Countdown";
 import Link from "next/link";
 import TopTabList from "@/src/components/TopTab/TopTabList";

@@ -1,4 +1,4 @@
-import { fetchProducts } from "@/src/components/ProductList/api/productApi";
+import { fetchProducts } from "@/src/api/product.api";
 import ProductList from "@/src/views/product/product.view";
 
 

@@ -1,10 +1,10 @@
-// src/views/category/category.tsx
 'use client'
 import React, { useState } from 'react';
 import { ChevronDown } from 'lucide-react';
 import styles from "./category.module.scss";
 import cn from "classnames/bind";
 import Link from 'next/link';
+import { useRouter, useSearchParams } from 'next/navigation';
 
 const cx = cn.bind(styles);
 
@@ -13,7 +13,6 @@ interface CategoryType {
     sub: string[];
 }
 
-// 카테고리 데이터
 const categories: CategoryType[] = [
     {
         main: "채소",
@@ -35,11 +34,11 @@ const categories: CategoryType[] = [
         main: "국·반찬·메인요리",
         sub: ["전체보기", "국·탕·찌개", "밑반찬", "김치·젓갈·장류", "두부·어묵·부침개", "메인요리"]
     },
-    
-    // 필요한 만큼 카테고리 추가
 ];
 
 export default function CategoryMenu() {
+    const router = useRouter();
+    const searchParams = useSearchParams();
     const [openCategory, setOpenCategory] = useState<string | null>(null);
 
     const handleCategoryClick = (category: string) => {
@@ -48,6 +47,13 @@ export default function CategoryMenu() {
         } else {
             setOpenCategory(category);
         }
+    };
+
+    const createQueryString = (main: string, sub: string) => {
+        const params = new URLSearchParams(searchParams.toString());
+        params.set('main', main);
+        params.set('sub', sub);
+        return params.toString();
     };
 
     return (
@@ -69,7 +75,7 @@ export default function CategoryMenu() {
                             {category.sub.map((subCategory) => (
                                 <Link
                                     key={subCategory}
-                                    href={`/category/${encodeURIComponent(category.main)}/${encodeURIComponent(subCategory)}`}
+                                    href={`/category?${createQueryString(category.main, subCategory)}`}
                                     className={cx('subCategory')}
                                 >
                                     {subCategory}
