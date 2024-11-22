@@ -4,7 +4,7 @@ import React from "react";
 import Link from 'next/link';
 import styles from "./ProductItem.module.scss";
 import cn from 'classnames/bind';
-import { TransformedProduct } from "../api/productApi";
+import { TransformedProduct } from "@/src/api/product.api";
 import { MdOutlineShoppingBag } from "react-icons/md";
 
 const cx = cn.bind(styles);
