@@ -2,8 +2,8 @@
 import React, { useState } from "react";
 import styles from './product.module.scss';
 import cn from 'classnames/bind';
-import { TransformedProduct } from "@/src/components/ProductList/api/productApi";
-import ProductItem from '@/src/components/ProductList/ProductItem/ProductItem';
+import { TransformedProduct } from "@/src/api/product.api";
+import ProductItem from '@/src/components/ProductItem/ProductItem';
 import TopTabList from '@/src/components/TopTab/TopTabList';
 import Chips from "@/src/components/Chips/Chips";
 import BottomSheet from "@/src/components/BottomSheet/BottomSheet";

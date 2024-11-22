@@ -12,28 +12,83 @@ const cx = cn.bind(styles);
 // };
 
 type ProductDetailProps = {
-  id?: string;
-};
+    id?: string;
+}
 
-const ProductDetailView = (props: ProductDetailProps) => {
-  const [loading, setLoading] = useState<boolean>(true);
-  const [productData, setProductData] = useState<any>(null);
-  const productId = props.id;
-  // const productId = "673d8339f40719294a4fb07e";
+const ProductDetailView = (props : ProductDetailProps) => {
+    
+    const [loading, setLoading] = useState<boolean>(true);
+    const [productData, setProductData] = useState<any>(null);
+    const productId = props.id;
+    // const productId = "673d8339f40719294a4fb07e";
 
-  // 사용자 정보를 가져오는 함수
-  const fetchUserInfo = async () => {
-    try {
-      // const accessToken = document.cookie.split("; ").find((cookie) => cookie.startsWith("accessToken="))?.split("=")[1];
+    // 사용자 정보를 가져오는 함수
+    const fetchUserInfo = async () => {
+        try {
+            // const accessToken = document.cookie.split("; ").find((cookie) => cookie.startsWith("accessToken="))?.split("=")[1];
 
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_SERVER_URL}/api/products/${productId}`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            // "Authorization": `Bearer ${accessToken}`,
-          },
+            const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/products/${productId}`, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                    // "Authorization": `Bearer ${accessToken}`,
+                },
+            });
+
+            if (response.ok) {
+                const res = await response.json();
+                
+                setProductData(res); // 가져온 데이터를 상태에 저장
+
+                console.log(res);
+
+            } else {
+                throw new Error("사용자 정보를 가져오는 데 실패했습니다.");
+            }
+        } catch (err) {
+            console.log(err);
+        } finally {
+            setLoading(false); // 로딩 상태 종료
+        }
+    };
+
+    useEffect(() => {
+        fetchUserInfo(); // 컴포넌트가 마운트될 때 사용자 정보 가져오기
+    }, []);
+
+    const handlePay = async () => {
+        try {
+            const accessToken = document.cookie.split("; ").find((cookie) => cookie.startsWith("accessToken="))?.split("=")[1];
+
+            const cartId = document.cookie.split("; ").find((cookie) => cookie.startsWith("cartId="))?.split("=")[1];
+
+            const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/cartItems/`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${accessToken}`,
+                },
+                body: JSON.stringify({
+                    product: productData._id,
+                    quantity: "1",
+                    totalPrice: productData.price,
+                    cartId: cartId,
+                }),
+            });
+
+            if (response.ok) {
+                const res = await response.json();
+                
+                setProductData(res); 
+
+                console.log(res);
+            } else {
+                throw new Error("구매하기 실패");
+            }
+        } catch (err) {
+            console.log(err);
+        } finally {
+            setLoading(false); // 로딩 상태 종료
         }
       );
 

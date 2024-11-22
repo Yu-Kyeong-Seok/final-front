@@ -8,6 +8,7 @@ import * as yup from "yup";
 import React, { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
+import ModalWrap from "@/src/components/Modal/Modal";
 
 const cx = cn.bind(styles);
 
@@ -93,24 +94,32 @@ const InfoView = () => {
                 if (response.status === 200) {
                     const res = await response.json();
                     
-                    alert("비밀번호 확인 성공!");
+                    setModalMessage("비밀번호 확인 성공!");
                     router.push("/mypage/info/modify"); 
                 } else {
-                    alert("비밀번호 확인에 실패했습니다.");
+                    setModalMessage("비밀번호 확인에 실패했습니다.");
                 }
             } catch (error: any) {
-                if (error.response && error.response.data.message) {
-                    alert(error.response.data.message); // 서버에서 보낸 에러 메시지
-                } else {
-                    alert("비밀번호 확인 중 문제가 발생했습니다.");
-                }
+                console.error(error);
+                setModalMessage("비밀번호 확인 중 문제가 발생했습니다.");
+            } finally {
+                openModal();
             }
         },
         (error) => {
             const [key, { message }] = Object.entries(error)[0];
-            alert(message);
+            console.log(message);
         }
     );
+
+    // 모달
+    const [modalMessage, setModalMessage] = useState<string | null>(null);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
+    const openModal = () => setIsModalOpen(true);
+    const closeModal = () => setIsModalOpen(false);
+    const handleConfirm = () => {
+    };
 
     return ( 
         <div className={cx("Wrapper")}>
@@ -165,6 +174,13 @@ const InfoView = () => {
                 <Button type="submit">확인<span></span></Button>
                 </div>
             </form>
+        <ModalWrap 
+            isOpen={isModalOpen} 
+            onClose={closeModal} 
+            onConfirm={handleConfirm}
+        >
+            <p>{modalMessage}</p>
+        </ModalWrap>
         </div>
     );
 };
