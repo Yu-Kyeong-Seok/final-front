@@ -1,0 +1,97 @@
+.PageContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+
+  // padding: 0 15px;
+
+  .PageHeader {
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    // line-height: 40px;
+    font-size: 16px;
+    padding: 10px;
+
+    a {
+      cursor: pointer;
+    }
+
+    h3 {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+  }
+
+  section {
+    .InquiryList {
+      padding: 0 15px;
+      .InquiryItemWrap {
+        display: flex;
+        flex-direction: column;
+        border-bottom: 1px solid var(--color-200);
+
+        .InquiryStatus {
+          display: block;
+          flex-grow: 0;
+          flex-shrink: 0;
+          align-self: flex-start;
+          padding: 2px 5px;
+          font-size: 12px;
+          background-color: var(--color-100);
+          padding: 2.5px 10px;
+          border-radius: 50px;
+          font-weight: 600;
+        }
+
+        .InquiryItem {
+          display: flex;
+          font-size: 15px;
+          padding: 10px 0;
+          flex-wrap: wrap;
+
+          dt {
+            padding-right: 5px;
+          }
+
+          .InquiryTitle {
+            font-weight: 500;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            overflow: hidden;
+            max-width: 80%;
+
+            @media (min-width: 768px) {
+              max-width: 100%;
+            }
+          }
+
+          .InquiryAuthor {
+            font-size: 14px;
+            color: var(--color-800);
+            padding-top: 10px;
+
+            @media (min-width: 768px) {
+              margin-left: auto;
+              padding-top: 0;
+            }
+          }
+        }
+
+        .InquiryDateStatus {
+          font-size: 12px;
+          color: var(--color-400);
+          padding: 10px 0;
+        }
+      }
+
+      p {
+        padding-top: 20px;
+        font-size: 14px;
+      }
+    }
+  }
+}
