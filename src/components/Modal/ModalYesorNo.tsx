@@ -1,16 +1,16 @@
 import { useState } from 'react';
-import styles from './Modal.module.scss';
+import styles from './ModalYesorNo.module.scss';
 import cn from 'classnames/bind';
 
 const cx = cn.bind(styles);
 
-type ModalWrapProps = React.PropsWithChildren<{
+type ModalYesorNoWrapProps = React.PropsWithChildren<{
     isOpen:boolean;
     onClose: () => void;
-    onConfirm?: () => void;
+    onConfirm?: (() => void) | null;
 }>;
 
-export default function ModalWrap(props:ModalWrapProps) {
+export default function ModalYesorNoWrap(props:ModalYesorNoWrapProps) {
     const {children, isOpen, onClose, onConfirm} = props;
 
     const handleCancel = () => {
@@ -26,16 +26,13 @@ export default function ModalWrap(props:ModalWrapProps) {
     
     return(
         <div>
-            {/* 모달 예시버튼 */}
-            {/* <button onClick={openModal}>모달 열기</button> */}
-
             {isOpen && (
                 <div className={cx('modalOverlay')} onClick={onClose}>
                     <div className={cx('modalContent')} onClick={(e) => e.stopPropagation()}>
                         {children}
                         <div className={cx('button-box')}>
-                            {/* <button className={cx('closeButton')} onClick={handleCancel}>취소</button> */}
-                            <button className={cx('closeButton')} onClick={handleConfirm} >확인</button>
+                            <button className={cx('closeButton')} onClick={handleCancel}>취소</button>
+                            <button className={cx('confirmButton')} onClick={handleConfirm}>확인</button>
                         </div>
                     </div>
                 </div>

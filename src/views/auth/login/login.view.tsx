@@ -6,8 +6,9 @@ import { Controller, useForm } from "react-hook-form";
 import Button from "@/src/components/Button/Button";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import React from "react";
+import React, { useState } from "react";
 import { useRouter } from "next/navigation";
+import ModalWrap from "@/src/components/Modal/Modal";
 
 const cx = cn.bind(styles);
 
@@ -63,31 +64,24 @@ const LoginView = () => {
                     const res = await response.json();
                     document.cookie = `accessToken=${res.data}; path=/`;
                     
-                    alert("로그인 성공!");
+                    setModalMessage("로그인 성공!");
 
                     fetchUserInfo();
 
                     router.push("/"); // 로그인 성공 시 대시보드로 이동
                 } else {
-                    alert("로그인에 실패했습니다.");
+                    setModalMessage("로그인에 실패했습니다.");
                 }
             } catch (error: any) {
-                if (error.response && error.response.data.message) {
-                    alert(error.response.data.message); // 서버에서 보낸 에러 메시지
-                } else {
-                    alert("로그인 중 문제가 발생했습니다.");
-                    // alert(error)
-                }
+                console.error(error);
+                setModalMessage("로그인 중 문제가 발생했습니다.");
+            } finally {
+                openModal();
             }
-            // 로그아웃시 토큰 제거 예시 
-            // function logout() {
-            //     localStorage.removeItem("accessToken");
-            //     window.location.href = "/login"; // 로그인 페이지로 이동
-            // }
         },
         (error) => {
             const [key, { message }] = Object.entries(error)[0];
-            alert(message);
+            console.log(message);
         }
     );
     
@@ -117,6 +111,15 @@ const LoginView = () => {
         }
     };
 
+    // 모달
+    const [modalMessage, setModalMessage] = useState<string | null>(null);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
+    const openModal = () => setIsModalOpen(true);
+    const closeModal = () => setIsModalOpen(false);
+    const handleConfirm = () => {
+    };
+    
     return (
         <div className={cx("Wrapper")}>
             <form className={cx("Form")}>
@@ -180,6 +183,14 @@ const LoginView = () => {
                     <a >비밀번호 찾기</a>
                 </div>
             </form>
+        
+        <ModalWrap 
+            isOpen={isModalOpen} 
+            onClose={closeModal} 
+            onConfirm={handleConfirm}
+        >
+            <p>{modalMessage}</p>
+        </ModalWrap>
         </div>
     );
 };

@@ -3,6 +3,13 @@
   padding: 15px;
   height: 100%;
 
+  .ModalMessage {
+    margin: 40px 0;
+    font-size: 20px;
+    font-weight: bold;
+    // color: red;
+  }
+  
   @media (min-width: 767px) {
     padding: 30px;
   }
