@@ -23,9 +23,9 @@ export default function DeliveryAddressView(props: DeliveryAddressViewProps) {
     router.push(path);
   };
 
-  // 뒤로가기 함수
+  /** 뒤로가기 */
   const handleBack = () => {
-    router.back(); // 이전 페이지로 이동
+    router.back();
   };
 
   return (

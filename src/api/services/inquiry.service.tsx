@@ -1,18 +1,14 @@
 "use client";
 import { useState, useEffect } from "react";
-import { DeliveryAddress } from "@/src/api/@types/delivery.type";
-import DeliveryAddressView from "@/src/views/delivery/deliveryAddress.view";
+import { IInquiry } from "@/src/api/@types/inquiry.type";
+import InquiryListView from "@/src/views/inquiry/inquiryList.view";
 
-// 배송지 API 서비스
-
-const DeliveryAddressService = () => {
-  const [deliveryAddressData, setDeliveryAddressData] = useState<
-    DeliveryAddress[]
-  >([]);
+const InquiryListService = () => {
+  const [inquiryListData, setInquiryListData] = useState<IInquiry[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  const fetchDeliveryAddressData = async () => {
+  const fetchInquiryListData = async () => {
     try {
       const apiUrl = process.env.NEXT_PUBLIC_SERVER_URL;
       if (!apiUrl) throw new Error("API URL이 설정되지 않았습니다.");
@@ -23,7 +19,9 @@ const DeliveryAddressService = () => {
         ?.split("=")[1];
       if (!accessToken) throw new Error("토큰이 없습니다");
 
-      const response = await fetch(`${apiUrl}/api/deliveries`, {
+      console.log(`${apiUrl}/api/inquiries`);
+
+      const response = await fetch(`${apiUrl}/api/inquiries`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${accessToken}`,
@@ -32,17 +30,17 @@ const DeliveryAddressService = () => {
       });
 
       if (!response.ok)
-        throw new Error(`배송지 로드 실패. 상태 코드: ${response.status}`);
+        throw new Error(
+          `1:1 문의내역 로드 실패. 상태 코드: ${response.status}`
+        );
 
-      const data: DeliveryAddress[] = await response.json();
+      const data = await response.json();
 
-      // 콘솔에 데이터 출력
-      console.log("fetched data:::::", data);
+      console.log("fetched inquiry data:: 문의내역", data);
 
-      // 데이터 상태 업뎃
-      setDeliveryAddressData(data);
+      setInquiryListData(data.results);
     } catch (error) {
-      console.error("배송지 가져오기 중 오류 발생:", error);
+      console.error("1:1 문의내역 가져오기 중 오류 발생:", error);
       setError(
         error instanceof Error
           ? error.message
@@ -54,23 +52,21 @@ const DeliveryAddressService = () => {
   };
 
   useEffect(() => {
-    fetchDeliveryAddressData();
+    fetchInquiryListData();
   }, []);
 
-  // 로딩 상태 렌더링
   if (isLoading) return <h2>로딩 중...</h2>;
 
-  // 에러 상태 렌더링
   if (error) {
     return (
       <div>
-        <h2>배송지 데이터를 불러오는데 실패했습니다</h2>
+        <h2>1:1문의 데이터를 불러오는데 실패했습니다</h2>
         <p>{error}</p>
         <button
           onClick={() => {
             setError(null);
             setIsLoading(true);
-            fetchDeliveryAddressData();
+            fetchInquiryListData();
           }}
         >
           다시 시도
@@ -79,10 +75,9 @@ const DeliveryAddressService = () => {
     );
   }
 
-  if (deliveryAddressData.length === 0)
-    return <h2>등록된 배송지가 없습니다.</h2>;
+  if (inquiryListData.length === 0) return <h2>등록된 1:1문의가 없습니다.</h2>;
 
-  return <DeliveryAddressView deliveryAddresses={deliveryAddressData} />;
+  return <InquiryListView inquiries={inquiryListData} />;
 };
 
-export default DeliveryAddressService;
+export default InquiryListService;

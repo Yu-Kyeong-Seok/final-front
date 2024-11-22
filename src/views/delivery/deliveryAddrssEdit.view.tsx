@@ -1,6 +1,6 @@
 "use client";
 
-import { useRouter } from "next/navigation"; // useRouter import
+import { useRouter } from "next/navigation";
 import styles from "./deliveryAddressEdit.module.scss";
 import cn from "classnames/bind";
 import Button from "@/src/components/Button/Button";
@@ -25,7 +25,7 @@ export default function DeliveryAddressEditView({
   onUpdate,
   onDelete,
 }: DeliveryAddressEditViewProps) {
-  const router = useRouter(); // useRouter 사용
+  const router = useRouter();
 
   // 로컬 데이터관리 (입력값을 임시로 관리함!)
   const [localData, setLocalData] = useState<DeliveryAddress>({
@@ -33,7 +33,10 @@ export default function DeliveryAddressEditView({
   });
 
   // input 입력값 변경 핸들러
-  const handleInputChange = (field: keyof DeliveryAddress, value: any) => {
+  const handleInputChange = (
+    field: keyof DeliveryAddress,
+    value: string | number
+  ) => {
     setLocalData((prev) => ({
       ...prev,
       [field]: value,
@@ -41,15 +44,15 @@ export default function DeliveryAddressEditView({
   };
 
   // 체크박스 변경 핸들러
-  const handleCheckBoxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const isChecked = e.target.checked;
-    // isDefault가 true일 때는 배열에 "isDefault"를 넣고, 아니면 배열에서 제거
-    const updatedIsDefault = isChecked ? ["isDefault"] : [];
-    setLocalData((prev) => ({
-      ...prev,
-      isDefault: updatedIsDefault.length > 0,
-    }));
-  };
+  // const handleCheckBoxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   const isChecked = e.target.checked;
+
+  //   const updatedIsDefault = isChecked ? ["isDefault"] : [];
+  //   setLocalData((prev) => ({
+  //     ...prev,
+  //     isDefault: updatedIsDefault.length > 0,
+  //   }));
+  // };
 
   // 뒤로가기 함수
   const handleBack = () => {
@@ -60,8 +63,7 @@ export default function DeliveryAddressEditView({
     <div className={cx("PageContainer")}>
       <div className={cx("PageHeader")}>
         <a onClick={handleBack}>
-          {" "}
-          {/* handleBack으로 뒤로가기 기능 구현 */}
+          {/* handleBack으로 뒤로가기 */}
           <LuChevronLeft />
         </a>
         <h3>배송지 관리</h3>
@@ -121,11 +123,10 @@ export default function DeliveryAddressEditView({
               </span>
             }
             value={localData.isDefault ? ["isDefault"] : []}
-            checked={localData.isDefault || false}
+            // checked={localData.isDefault || false}
             onChange={(e) => {
               const isChecked = e.target.checked;
 
-              // 이미 기본 배송지가 설정되어 있는 경우, 해제하려고 할 때 경고 표시
               if (!isChecked && localData.isDefault) {
                 const confirmUnset =
                   window.confirm("기본 배송지를 해제하시겠습니까?");

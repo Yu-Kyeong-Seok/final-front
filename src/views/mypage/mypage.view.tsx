@@ -53,6 +53,12 @@ export default function MypageView(props: OrderViewProps) {
               <LuChevronRight />
             </span>
           </li>
+          <li onClick={() => handleClick("/inquiry")}>
+            1:1 문의
+            <span>
+              <LuChevronRight />
+            </span>
+          </li>
           <li>
             개인 정보 수정
             <span>
