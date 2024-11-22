@@ -25,4 +25,56 @@
       transform: translate(-50%, -50%);
     }
   }
+
+  section {
+    padding: 15px 0;
+
+    .InquiryList {
+      // display: flex;
+      // align-items: center;
+      // justify-content: space-between;
+      font-size: 14px;
+      padding: 10px 15px 10px 10px;
+      color: var(--color-700);
+      border-bottom: 1px solid var(--color-100);
+
+      .InquiryItemWrap {
+        display: flex;
+        justify-content: space-between;
+
+        .InquiryItem {
+          display: flex;
+          line-height: 1.2;
+          text-overflow: ellipsis;
+          white-space: wrap;
+          overflow: hidden;
+          width: 100%;
+          align-items: center;
+          cursor: pointer;
+
+          .InquiryTitle {
+            padding-left: 2px;
+          }
+        }
+
+        .InquiryAuthor {
+          display: flex;
+          flex-wrap: wrap;
+          font-size: 12px;
+          color: var(--color-500);
+          gap: 2.5px;
+        }
+
+        .InquiryStatus {
+          display: block;
+          margin-left: 6px;
+          font-size: 12px;
+          background-color: var(--color-100);
+          padding: 0 5px;
+          border-radius: 50px;
+          font-weight: 600;
+        }
+      }
+    }
+  }
 }

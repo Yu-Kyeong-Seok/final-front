@@ -13,7 +13,7 @@ type InquiryListViewProps = {
 
 /** 문의 유형 매핑 */
 const inquiryTypeMap: Record<IInquiry["inquiryType"], string> = {
-  Cancel: "취소",
+  Cancel: "주문취소",
   Refund: "환불",
   Exchange: "교환",
 };
@@ -27,8 +27,12 @@ const statusMap: Record<IInquiry["status"], string> = {
 export default function InquiryListView(props: InquiryListViewProps) {
   const { inquiries } = props;
 
-  /** 뒤로가기 router */
   const router = useRouter();
+  /** 버튼 클릭 시 페이지 이동 */
+  const handleClick = (path: string) => {
+    router.push(path);
+  };
+  /** 뒤로가기 router */
   const handleBack = () => {
     router.back();
   };
@@ -45,14 +49,26 @@ export default function InquiryListView(props: InquiryListViewProps) {
       <section>
         {inquiries.length > 0 ? (
           inquiries.map((inquiry) => (
-            <div key={inquiry.inquiryId} className={cx("AddressList")}>
-              <ul>
-                <li>문의유형: {inquiryTypeMap[inquiry.inquiryType]}</li>
-                <li>제목: {inquiry.title}</li>
-                <li>진행결과: {statusMap[inquiry.status]}</li>
-                <li>작성일: {new Date(inquiry.createdAt).toLocaleString()}</li>
-                <li>작성자: {inquiry.author.name}</li>
-              </ul>
+            <div key={inquiry.inquiryId} className={cx("InquiryList")}>
+              <div className={cx("InquiryItemWrap")}>
+                <dl className={cx("InquiryItem")}>
+                  <dt>[{inquiryTypeMap[inquiry.inquiryType]}]</dt>
+                  <dd
+                    className={cx("InquiryTitle")}
+                    onClick={() => handleClick(`/inquiry/${inquiry.inquiryId}`)}
+                  >
+                    {inquiry.title}
+                  </dd>
+                  <dd className={cx("InquiryStatus")}>
+                    {statusMap[inquiry.status]}
+                  </dd>
+                </dl>
+
+                <dl className={cx("InquiryAuthor")}>
+                  <dt>{new Date(inquiry.createdAt).toLocaleString()}</dt>
+                  <dd>작성자: {inquiry.author.userName}</dd>
+                </dl>
+              </div>
             </div>
           ))
         ) : (

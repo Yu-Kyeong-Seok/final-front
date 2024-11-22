@@ -19,26 +19,26 @@ export interface IInquiry {
   createdAt: Date;
 }
 
-interface IUser {
-  /** ID */
-  id: string;
-  name?: string;
-  /** 아이디 */
-  loginId: string;
-  /** 비밀번호 */
-  password?: string;
-  /** 이메일  (unique) */
-  email: string;
-  /** 역할 */
-  role: RoleType;
-  /** salt */
-  salt?: string;
-  /** 프로필 */
-  profile: IProfile;
-  /** 카트 */
-  cart: ICart;
-  /** 주문 목록 */
-  orders?: IOrder[];
-  /** 1:1 문의 목록 */
-  inquiries?: IInquiry[];
-}
+// interface IUser {
+//   /** ID */
+//   id: string;
+//   userName?: string;
+//   /** 아이디 */
+//   loginId: string;
+//   /** 비밀번호 */
+//   password?: string;
+//   /** 이메일  (unique) */
+//   email: string;
+//   /** 역할 */
+//   role: RoleType;
+//   /** salt */
+//   salt?: string;
+//   /** 프로필 */
+//   profile: IProfile;
+//   /** 카트 */
+//   cart: ICart;
+//   /** 주문 목록 */
+//   orders?: IOrder[];
+//   /** 1:1 문의 목록 */
+//   inquiries?: IInquiry[];
+// }
