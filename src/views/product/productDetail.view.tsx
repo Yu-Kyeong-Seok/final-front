@@ -45,9 +45,6 @@ const ProductDetailView = (props : ProductDetailProps) => {
             } else {
                 throw new Error("사용자 정보를 가져오는 데 실패했습니다.");
             }
-
-
-
         } catch (err) {
             console.log(err);
         } finally {

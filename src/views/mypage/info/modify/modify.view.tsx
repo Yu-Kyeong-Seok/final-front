@@ -8,6 +8,7 @@ import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import ModalWrap from "@/src/components/Modal/Modal";
 
 const cx = cn.bind(styles);
 
@@ -160,28 +161,31 @@ const ModifyView = () => {
                 });
 
                 if (response.status === 200) {
-                    alert("회원가입 성공!");
+                    setModalMessage("회원가입 성공!");
                     router.push("/"); // 회원가입 성공 시 로그인으로 이동
                 } else {
-                    alert("회원가입에 실패했습니다.");
+                    setModalMessage("회원가입에 실패했습니다.");
                 }
             } catch (error: any) {
                 if (error.response && error.response.data.message) {
-                    alert(error.response.data.message); // 서버에서 보낸 에러 메시지
+                    setModalMessage(error.response.data.message); // 서버에서 보낸 에러 메시지
                 } else {
-                    alert("회원가입 중 문제가 발생했습니다.");
+                    setModalMessage("회원가입 중 문제가 발생했습니다.");
                 }
+            } finally {
+                openModal();
             }
         },
         (error) => {
             const [key, { message }] = Object.entries(error)[0];
-            alert(message);
+            console.log(message);
         }
     );
     // 중복확인
     const handleCheckDuplicate = async (type: "loginId" | "email", value: string) => {
         if (!value) {
-            alert(`${type === "loginId" ? "아이디" : "이메일"}을 입력해주세요.`);
+            setModalMessage(`${type === "loginId" ? "아이디" : "이메일"}을 입력해주세요.`);
+            openModal();
             return;
         }
 
@@ -202,9 +206,9 @@ const ModifyView = () => {
                 const res = await response.json();
 
                 if (res.exists) {
-                    alert(`${type === "loginId" ? "아이디" : "이메일"}이 이미 사용 중입니다.`);
+                    setModalMessage(`${type === "loginId" ? "아이디" : "이메일"}이 이미 사용 중입니다.`);
                 } else {
-                    alert(`사용 가능한 ${type === "loginId" ? "아이디" : "이메일"}입니다.`);
+                    setModalMessage(`사용 가능한 ${type === "loginId" ? "아이디" : "이메일"}입니다.`);
 
                     switch (type) {
                         case 'email':
@@ -212,17 +216,24 @@ const ModifyView = () => {
                             break;
                     }
                 }
-
             } else {
-                alert("서버와 통신에 실패했습니다.");
+                setModalMessage("서버와 통신에 실패했습니다.");
             }
 
         } catch (error) {
             console.error(error);
-            alert("중복 확인 중 오류가 발생했습니다.");
+            setModalMessage("중복 확인 중 오류가 발생했습니다.");
         } finally {
-
+            openModal();
         }
+    };
+    // 모달
+    const [modalMessage, setModalMessage] = useState<string | null>(null);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
+    const openModal = () => setIsModalOpen(true);
+    const closeModal = () => setIsModalOpen(false);
+    const handleConfirm = () => {
     };
 
     return ( 
@@ -385,6 +396,13 @@ const ModifyView = () => {
                     <Button type="submit" ><span>수정하기</span></Button>
                 </div>
             </form>
+        <ModalWrap 
+            isOpen={isModalOpen} 
+            onClose={closeModal} 
+            onConfirm={handleConfirm}
+        >
+            <p>{modalMessage}</p>
+        </ModalWrap>
         </div>
     );
 };
