@@ -9,6 +9,7 @@ import { LuChevronLeft } from "react-icons/lu";
 import { DeliveryAddress } from "@/src/api/@types/delivery.type";
 import { useState } from "react";
 import CheckBox from "@/src/components/CheckBox/CheckBox";
+import ModalWrap from "@/src/components/Modal/Modal";
 
 const cx = cn.bind(styles);
 
@@ -25,7 +26,20 @@ export default function DeliveryAddressEditView({
   onUpdate,
   onDelete,
 }: DeliveryAddressEditViewProps) {
+  // 뒤로가기
   const router = useRouter();
+  const handleBack = () => {
+    router.back(); //이전 페이지로 이동
+  };
+
+  // 모달
+  const [modalMessage, setModalMessage] = useState<string | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const openModal = () => setIsModalOpen(true);
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
 
   // 로컬 데이터관리 (입력값을 임시로 관리함!)
   const [localData, setLocalData] = useState<DeliveryAddress>({
@@ -43,20 +57,29 @@ export default function DeliveryAddressEditView({
     }));
   };
 
+  const handleModalConfirm = () => {
+    setLocalData((prev) => ({
+      ...prev,
+      isDefault: false,
+    }));
+    closeModal();
+  };
+
   // 체크박스 변경 핸들러
-  // const handleCheckBoxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-  //   const isChecked = e.target.checked;
+  const handleCheckBoxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const isChecked = e.target.checked;
 
-  //   const updatedIsDefault = isChecked ? ["isDefault"] : [];
-  //   setLocalData((prev) => ({
-  //     ...prev,
-  //     isDefault: updatedIsDefault.length > 0,
-  //   }));
-  // };
+    if (!isChecked && localData.isDefault) {
+      setModalMessage("기본 배송지를 해제하시겠습니까?");
+      openModal();
+      return;
+    }
 
-  // 뒤로가기
-  const handleBack = () => {
-    router.back(); //이전 페이지로 이동
+    // 상태 업데이트
+    setLocalData((prev) => ({
+      ...prev,
+      isDefault: isChecked,
+    }));
   };
 
   return (
@@ -121,29 +144,8 @@ export default function DeliveryAddressEditView({
                 기본 배송지로 저장
               </span>
             }
-            value={localData.isDefault ? ["isDefault"] : []}
-            // checked={localData.isDefault || false}
-            onChange={(e) => {
-              const isChecked = e.target.checked;
-
-              if (!isChecked && localData.isDefault) {
-                const confirmUnset =
-                  window.confirm("기본 배송지를 해제하시겠습니까?");
-                if (confirmUnset) {
-                  setLocalData((prev) => ({
-                    ...prev,
-                    isDefault: false,
-                  }));
-                }
-                return;
-              }
-
-              // 상태 업데이트
-              setLocalData((prev) => ({
-                ...prev,
-                isDefault: isChecked,
-              }));
-            }}
+            checked={localData.isDefault}
+            onChange={handleCheckBoxChange}
           />
         </div>
 
@@ -158,6 +160,14 @@ export default function DeliveryAddressEditView({
           </Button>
         </div>
       </div>
+
+      <ModalWrap
+        isOpen={isModalOpen}
+        onClose={closeModal}
+        onConfirm={handleModalConfirm}
+      >
+        <p>{modalMessage}</p>
+      </ModalWrap>
     </div>
   );
 }
