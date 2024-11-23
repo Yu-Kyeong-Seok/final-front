@@ -4,6 +4,7 @@ import cn from "classnames/bind";
 import { IInquiry } from "@/src/api/@types/inquiry.type";
 import { useRouter } from "next/navigation";
 import { LuChevronLeft } from "react-icons/lu";
+import Button from "@/src/components/Button/Button";
 
 const cx = cn.bind(styles);
 
@@ -75,6 +76,20 @@ export default function InquiryListView(props: InquiryListViewProps) {
         ) : (
           <p>등록된 1:1 문의가 없습니다.</p>
         )}
+
+        <div className={cx("Buttons")}>
+          <Button disabled={false} variants={"outline"}>
+            카카오톡 문의
+          </Button>
+          <Button
+            disabled={false}
+            variants={"solid"}
+            className={cx("InquiryBtn")}
+            onClick={() => handleClick("/inquiry/write")}
+          >
+            1:1 문의
+          </Button>
+        </div>
       </section>
     </div>
   );

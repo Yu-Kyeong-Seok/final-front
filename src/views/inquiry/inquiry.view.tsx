@@ -4,7 +4,6 @@ import cn from "classnames/bind";
 import { IInquiry } from "@/src/api/@types/inquiry.type";
 import { useRouter } from "next/navigation";
 import { LuChevronLeft } from "react-icons/lu";
-import Button from "@/src/components/Button/Button";
 
 const cx = cn.bind(styles);
 
@@ -50,11 +49,13 @@ export default function InquiryView(props: InquiryViewProps) {
           <div className={cx("InquiryItemWrap")}>
             <dd className={cx("InquiryStatus")}>{statusMap[inquiry.status]}</dd>
             <dl className={cx("InquiryItem")}>
-              <dt>[{inquiryTypeMap[inquiry.inquiryType]}]</dt>
-              <dd className={cx("InquiryTitle")}>{inquiry.title}</dd>
-              <dd className={cx("InquiryAuthor")}>
+              <dt>
+                [{inquiryTypeMap[inquiry.inquiryType]}]&nbsp;{inquiry.title}
+              </dt>
+              {/* <dd className={cx("InquiryTitle")}></dd> */}
+              {/* <dd className={cx("InquiryAuthor")}>
                 작성자: {inquiry.author.userName}
-              </dd>
+              </dd> */}
             </dl>
             <dl className={cx("InquiryDateStatus")}>
               <dt>{new Date(inquiry.createdAt).toLocaleString()}</dt>
@@ -62,10 +63,6 @@ export default function InquiryView(props: InquiryViewProps) {
           </div>
 
           <p>{inquiry.content}</p>
-        </div>
-        <div>
-          <Button>수정</Button>
-          <Button>삭제</Button>
         </div>
       </section>
     </div>

@@ -99,4 +99,29 @@
       }
     }
   }
+
+  .Buttons {
+    display: flex;
+    gap: 5px;
+    justify-content: center;
+    position: fixed;
+    bottom: 5%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    max-width: 76.8rem;
+    width: 100%;
+    padding: 10px;
+
+    button {
+      border: 2px solid var(--color-100);
+      color: var(--color-700);
+      font-weight: 600;
+    }
+
+    .InquiryBtn {
+      border: none;
+      color: var(--color-white);
+      background-color: var(--color-main);
+    }
+  }
 }
