@@ -12,18 +12,12 @@ type CheckBoxProps = {
   name?: string;
   // label?: string;
   label?: React.ReactNode;
-  checked?: boolean;
 };
 
 const CheckBox = (props: CheckBoxProps) => {
-  const { onChange, value, id, name, label, checked: propChecked } = props;
+  const { onChange, value, id, name, label } = props;
 
-  const checked = React.useMemo(() => {
-    if (propChecked !== undefined) {
-      return propChecked;
-    }
-    return value.includes(id);
-  }, [value, id, propChecked]);
+  const checked = React.useMemo(() => value.includes(id), [value, id]);
 
   return (
     <label htmlFor={id} className={cx("CheckBox")}>

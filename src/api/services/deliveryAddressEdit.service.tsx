@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
 import { DeliveryAddress } from "@/src/api/@types/delivery.type";
 import DeliveryAddressEditView from "@/src/views/delivery/deliveryAddrssEdit.view";
 
@@ -11,7 +10,8 @@ const DeliveryAddressEditService = ({ deliveryId }: { deliveryId: string }) => {
   );
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const router = useRouter();
+  const [modalMessage, setModalMessage] = useState<string | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const apiUrl = process.env.NEXT_PUBLIC_SERVER_URL;
 
@@ -70,18 +70,28 @@ const DeliveryAddressEditService = ({ deliveryId }: { deliveryId: string }) => {
         body: JSON.stringify(updatedData),
       });
 
-      if (!response.ok) throw new Error("배송지 수정에 실패했습니다.");
-      alert("배송지가 수정되었습니다.");
-      router.push("/deliveryAddress");
+      if (!response.ok) {
+        setModalMessage("배송지 수정에 실패했습니다.");
+        setIsModalOpen(true);
+        return;
+      }
+
+      setModalMessage("배송지가 수정되었습니다.");
+      setIsModalOpen(true);
     } catch (error) {
       console.error(error);
-      alert("배송지 수정 중 문제가 발생했습니다.");
+      setModalMessage("배송지 수정 중 문제가 발생했습니다.");
+      setIsModalOpen(true);
     }
   };
 
   // Delete 배송지 데이터
   const deleteDeliveryAddress = async () => {
-    if (!confirm("이 배송지를 삭제하시겠습니까?")) return;
+    if (!confirm) {
+      setModalMessage("이 배송지를 삭제하시겠습니까?");
+      setIsModalOpen(true);
+      return;
+    }
 
     try {
       if (!apiUrl) throw new Error("API URL이 설정되지 않았습니다.");
@@ -100,12 +110,19 @@ const DeliveryAddressEditService = ({ deliveryId }: { deliveryId: string }) => {
         },
       });
 
-      if (!response.ok) throw new Error("배송지 삭제에 실패했습니다.");
-      alert("배송지가 삭제되었습니다.");
-      router.push("/deliveryAddress");
+      if (!response.ok) {
+        setModalMessage("배송지 삭제에 실패했습니다.");
+        setIsModalOpen(true);
+        return;
+      }
+
+      setModalMessage("배송지가 삭제되었습니다.");
+      setIsModalOpen(true);
+      // router.push() 제거 - view에서 처리할 예정
     } catch (error) {
       console.error(error);
-      alert("배송지 삭제 중 문제가 발생했습니다.");
+      setModalMessage("배송지 삭제 중 문제가 발생했습니다.");
+      setIsModalOpen(true);
     }
   };
 
@@ -129,6 +146,9 @@ const DeliveryAddressEditService = ({ deliveryId }: { deliveryId: string }) => {
       deliveryData={deliveryData}
       onUpdate={updateDeliveryAddress}
       onDelete={deleteDeliveryAddress}
+      modalMessage={modalMessage}
+      isModalOpen={isModalOpen}
+      setIsModalOpen={setIsModalOpen}
       // onBack={() => router.push("/deliveryAddress")}
     />
   );

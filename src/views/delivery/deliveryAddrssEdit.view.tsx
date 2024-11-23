@@ -15,16 +15,21 @@ const cx = cn.bind(styles);
 
 type DeliveryAddressEditViewProps = {
   deliveryData: DeliveryAddress;
-  // deliveryAddresses: DeliveryAddress[]; // 전체 배송지 목록
+
   onUpdate: (updatedData: DeliveryAddress) => void;
   onDelete: () => void;
+  modalMessage: string | null;
+  isModalOpen: boolean;
+  setIsModalOpen: (isOpen: boolean) => void;
 };
 
 export default function DeliveryAddressEditView({
   deliveryData,
-  // deliveryAddresses,
   onUpdate,
   onDelete,
+  modalMessage,
+  isModalOpen,
+  setIsModalOpen,
 }: DeliveryAddressEditViewProps) {
   // 뒤로가기
   const router = useRouter();
@@ -32,13 +37,16 @@ export default function DeliveryAddressEditView({
     router.back(); //이전 페이지로 이동
   };
 
-  // 모달
-  const [modalMessage, setModalMessage] = useState<string | null>(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-
-  const openModal = () => setIsModalOpen(true);
-  const closeModal = () => {
+  // 모달 닫기 핸들러
+  const handleModalClose = () => {
     setIsModalOpen(false);
+
+    if (
+      modalMessage?.includes("수정되었습니다") ||
+      modalMessage?.includes("삭제되었습니다")
+    ) {
+      router.push("/deliveryAddress");
+    }
   };
 
   // 로컬 데이터관리 (입력값을 임시로 관리함!)
@@ -57,23 +65,9 @@ export default function DeliveryAddressEditView({
     }));
   };
 
-  const handleModalConfirm = () => {
-    setLocalData((prev) => ({
-      ...prev,
-      isDefault: false,
-    }));
-    closeModal();
-  };
-
   // 체크박스 변경 핸들러
   const handleCheckBoxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const isChecked = e.target.checked;
-
-    if (!isChecked && localData.isDefault) {
-      setModalMessage("기본 배송지를 해제하시겠습니까?");
-      openModal();
-      return;
-    }
 
     // 상태 업데이트
     setLocalData((prev) => ({
@@ -144,7 +138,8 @@ export default function DeliveryAddressEditView({
                 기본 배송지로 저장
               </span>
             }
-            checked={localData.isDefault}
+            value={localData.isDefault ? ["isDefault"] : []}
+            // checked={localData.isDefault || false}
             onChange={handleCheckBoxChange}
           />
         </div>
@@ -161,12 +156,8 @@ export default function DeliveryAddressEditView({
         </div>
       </div>
 
-      <ModalWrap
-        isOpen={isModalOpen}
-        onClose={closeModal}
-        onConfirm={handleModalConfirm}
-      >
-        <p>{modalMessage}</p>
+      <ModalWrap isOpen={isModalOpen} onClose={handleModalClose}>
+        <p style={{ fontSize: "15px" }}>{modalMessage}</p>
       </ModalWrap>
     </div>
   );
