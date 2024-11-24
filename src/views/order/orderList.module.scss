@@ -2,94 +2,103 @@
   background-color: #f6f6f6;
   // padding: 20px 0;
   height: 100%;
-}
 
-.Inner {
-  background-color: var(--color-white);
-  max-width: 76.8rem;
-  width: 100%;
-}
-
-.TabAll {
-  display: flex;
-  flex-direction: column;
-
-  padding: 10px 15px;
-}
-
-.TabMenu {
-  display: flex;
-  width: 100%;
-  gap: 5px;
-  padding-bottom: 35px;
-
-  button {
-    // padding: 7px 20px;
-    border: 1px solid var(--color-200);
-    width: 25%;
-    padding: 0.8rem;
-    border-radius: 5px;
-    font-weight: 600;
-    color: var(--color-600);
+  .Inner {
+    // background-color: var(--color-white);
+    max-width: 76.8rem;
+    width: 100%;
   }
 
-  & .active {
-    border: 1px solid var(--color-main);
-    color: var(--color-main);
+  .TabAll {
+    display: flex;
+    flex-direction: column;
+
+    // padding: 10px 15px;
   }
-}
 
-.TabContent {
-  // background-color: var(--color-white);
-  text-align: left;
+  .TabMenu {
+    display: flex;
+    width: 100%;
+    gap: 5px;
+    padding-bottom: 35px;
+    background-color: var(--color-white);
+    padding: 15px 10px;
 
-  // box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.1);
+    button {
+      // padding: 7px 20px;
+      border: 1px solid var(--color-200);
+      width: 25%;
+      padding: 0.8rem;
+      border-radius: 5px;
+      font-weight: 600;
+      color: var(--color-600);
+    }
 
-  section {
-    .OrderItemText {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+    & .active {
+      border: 1px solid var(--color-main);
+      color: var(--color-main);
+    }
+  }
 
-      .DateAndTime {
-        font-size: 16px;
-        font-weight: 500;
+  .TabContent {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    text-align: left;
 
-        span {
-          letter-spacing: 0.03em;
+    // box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.1);
+
+    section {
+      padding: 10px 0;
+      background-color: var(--color-white);
+      padding: 15px 10px;
+      // border-top: 1px solid var(--color-200);
+
+      .OrderItemText {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        .DateAndTime {
+          font-size: 16px;
+          font-weight: 500;
+
+          span {
+            letter-spacing: 0.03em;
+          }
         }
       }
-    }
 
-    .OrderDetail {
-      display: flex;
-      align-items: center;
-      font-size: 14px;
-      cursor: pointer;
-      color: var(--color-600);
-
-      &:hover {
-        color: var(--color--900);
-        font-weight: 600;
-      }
-    }
-
-    .OrderListText {
-      display: flex;
-      padding-top: 20px;
-      font-size: 15px;
-      gap: 30px;
-      flex-wrap: wrap;
-
-      .OrderValue {
-        color: var(--color-600);
-      }
-      ul {
+      .OrderDetail {
         display: flex;
-        flex-direction: column;
+        align-items: center;
+        font-size: 14px;
+        cursor: pointer;
+        color: var(--color-600);
 
-        li {
-          line-height: 1.8;
+        &:hover {
+          color: var(--color--900);
+          font-weight: 600;
+        }
+      }
+
+      .OrderListText {
+        display: flex;
+        padding-top: 20px;
+        font-size: 15px;
+        gap: 30px;
+        flex-wrap: wrap;
+
+        .OrderValue {
+          color: var(--color-600);
+        }
+        ul {
+          display: flex;
+          flex-direction: column;
+
+          li {
+            line-height: 1.8;
+          }
         }
       }
     }

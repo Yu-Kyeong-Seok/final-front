@@ -1,4 +1,4 @@
-type PaymentMethod =
+export type PaymentMethod =
   | "CREDIT_CARD"
   | "SIMPLE_PAY"
   | "MOBILE_PAYMENT"
@@ -46,7 +46,7 @@ export interface IOrder {
   orderStatus?: OrderStatus;
 }
 
-// 주문 생성 응담 DTO
+// 주문 생성 응답 DTO
 export interface IOrderResponseDTO {
   orderId: string;
   userId: string;
@@ -77,9 +77,12 @@ export interface IOrderResponseDTO {
   orderStatus?: OrderStatus;
 }
 
-// 주문 목록 조회 응담 DTO => 응답 확인시 results안에 쌓여있어서 따로 만들어줌
+// 주문 목록 조회 응담 DTO => 응답 확인시 results안에 있어서 따로 만들어줌
 export interface IOrderListResponseDTO {
+  totalCount: number;
+  prev: string | null;
   results: IOrderResponseDTO[];
+  next: string | null;
 }
 
 type OrderItemStatus =

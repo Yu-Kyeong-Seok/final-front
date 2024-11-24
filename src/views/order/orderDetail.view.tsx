@@ -3,7 +3,11 @@ import styles from "./orderDetail.module.scss";
 import cn from "classnames/bind";
 import Image from "next/image";
 import Button from "@/src/components/Button/Button";
-import { IOrderResponseDTO, OrderStatus } from "@/src/api/@types/order.type";
+import {
+  IOrderResponseDTO,
+  OrderStatus,
+  PaymentMethod,
+} from "@/src/api/@types/order.type";
 import { useRouter } from "next/navigation";
 import ModalWrap from "@/src/components/Modal/Modal";
 import { useState } from "react";
@@ -30,6 +34,14 @@ const orderItemStatusMap: Record<OrderStatus, string> = {
   PARTIAL_EXCHANGED: "부분 교환 완료",
   FULL_EXCHANGE_REQUESTED: "전체 교환 요청",
   FULL_EXCHANGED: "전체 교환 완료",
+};
+
+// 결제수단 맵핑
+const paymentMethodMap: Record<PaymentMethod, string> = {
+  CREDIT_CARD: "신용카드",
+  SIMPLE_PAY: "간편결제",
+  MOBILE_PAYMENT: "휴대폰",
+  KAKAO_PAY: "카카오페이",
 };
 
 export default function OrderDetailView(props: OrderDetailProps) {
@@ -220,6 +232,12 @@ export default function OrderDetailView(props: OrderDetailProps) {
               <h3 className={cx("ItemTitle")}>결제정보</h3>
             </div>
             <div className={cx("ItemContent")}>
+              <div className={cx("ItemHeader", "PaymentMethod")}>
+                <span className={cx("ItemTitle")}>결제 수단</span>
+                <span className={cx("ItemTitle")}>
+                  {paymentMethodMap[orderDetail.paymentMethod]}
+                </span>
+              </div>
               <div className={cx("ItemHeader")}>
                 <span className={cx("ItemTitle")}>상품 금액</span>
                 <span className={cx("ItemTitle")}>
@@ -227,6 +245,19 @@ export default function OrderDetailView(props: OrderDetailProps) {
                 </span>
               </div>
             </div>
+          </div>
+
+          <div className={cx("OrderBtns")}>
+            <Button
+              onClick={() => router.push("/order/list")}
+              variants="outline"
+            >
+              {" "}
+              <span>주문내역 전체보기</span>
+            </Button>
+            <Button onClick={() => router.push("/")}>
+              <span>쇼핑 계속하기</span>
+            </Button>
           </div>
         </div>
       </div>
