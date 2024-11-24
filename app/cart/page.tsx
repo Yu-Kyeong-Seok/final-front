@@ -1,12 +1,5 @@
-import React from "react";
-import CartView from "@/src/views/cart/cart.view";
+import CartService from "@/src/api/services/cart.service";
 
-const CartPage = () => {
-  return (
-    <div>
-      <CartView />
-    </div>
-  );
-};
-
-export default CartPage;
+export default function CartPage() {
+  return <CartService />;
+}

@@ -8,21 +8,29 @@ import Image from "next/image";
 import Button from "@/src/components/Button/Button";
 import BottomSheet from "@/src/components/BottomSheet/BottomSheet";
 import Input from "@/src/components/Input/Input";
-import { CreateOrderRequest } from "@/src/api/services/order.service";
+import { CreateOrderRequest } from "@/src/api/@types/order.type";
+import { CartItem } from "@/src/api/@types/cart.type";
+import { DeliveryAddress } from "@/src/api/@types/delivery.type";
+import { IOrderResponseDTO } from "@/src/api/@types/order.type";
 
 const cx = cn.bind(styles);
 
 interface OrderViewProps {
-  orderData: IOrderResponseDTO;
+  cartItemData: CartItem[];
   onCreateOrder: (
     orderRequest: CreateOrderRequest
   ) => Promise<IOrderResponseDTO>;
+  userInfo: DeliveryAddress[];
 }
 
 type BottomSheetState = "SUCCESS" | "CLOSED";
 
 // ordverView
-const OrderView = ({ orderData, onCreateOrder }: OrderViewProps) => {
+const OrderView = ({
+  cartItemData,
+  onCreateOrder,
+  userInfo,
+}: OrderViewProps) => {
   const router = useRouter();
   const [isOrderOpen, setIsOrderOpen] = useState(false);
   const [isUserOpen, setIsUserOpen] = useState(false);
@@ -32,6 +40,7 @@ const OrderView = ({ orderData, onCreateOrder }: OrderViewProps) => {
     useState<PaymentMethod | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [createdOrderId, setCreatedOrderId] = useState<string | null>(null);
+  const [deliveryRequest, setDeliveryRequest] = useState("");
 
   /** 주문 아이템 텍스트 길이 제한 */
   const truncateText = (text: string, maxLength: number) => {
@@ -39,10 +48,17 @@ const OrderView = ({ orderData, onCreateOrder }: OrderViewProps) => {
     return text.slice(0, maxLength) + "...";
   };
 
-  /** 상품금액 + 배송비 */
-  const totalPayment =
-    orderData.results[0].orderItem[0].product.sales +
-    orderData.results[0].shippingFee;
+  // 합산금액계산. 할인가 x 수량
+  const salesPrice = cartItemData.reduce(
+    (sum, item) => sum + item.product.sales * item.quantity,
+    0
+  );
+
+  // 배송비. 4만원 이상은 + 3000
+  const deliveryFee = salesPrice >= 40000 ? 0 : 3000;
+
+  // 총 결제금액. 합산금액 + 배송비
+  const totalPrice = deliveryFee + salesPrice;
 
   // 토글 아코디언
   const toggleOrderAccordion = () => {
@@ -58,34 +74,50 @@ const OrderView = ({ orderData, onCreateOrder }: OrderViewProps) => {
     try {
       setIsSubmitting(true);
 
+      if (!userInfo[0]?.defaultAddress) {
+        throw new Error("배송지 정보가 없습니다.");
+      }
+
+      if (!selectedPaymentMethod) {
+        throw new Error("결제 수단을 선택해주세요.");
+      }
+
       const orderRequest: CreateOrderRequest = {
-        deliveryAddress: orderData.results[0].deliveryAddress,
-        deliveryRequest: orderData.results[0].deliveryRequest,
+        deliveryAddress: userInfo[0]?.defaultAddress,
+        deliveryRequest: deliveryRequest,
         paymentMethod: selectedPaymentMethod ?? "KAKAO_PAY",
-        orderItem: orderData.results[0].orderItem.map((item) => ({
-          id: item.id,
-          product: item.product,
+        orderItem: cartItemData.map((item) => ({
+          productId: item.product.id,
+          // product: {
+          //   ...item.product,
+          //   id: undefined,
+          //   _id: undefined,
+          // },
           quantity: item.quantity,
           totalPrice: item.totalPrice,
-          orderItemStatus: item.orderItemStatus,
+          orderItemStatus: "PAYMENT_PENDING",
         })),
-        totalProductPrice: orderData.results[0].totalProductPrice,
-        shippingFee: orderData.results[0].shippingFee,
-        totalPaymentAmount: orderData.results[0].totalPaymentAmount,
-        // orderStatus: "PAYMENT_PENDING",
+        totalProductPrice: salesPrice,
+        shippingFee: deliveryFee,
+        totalPaymentAmount: totalPrice,
+        orderStatus: "PAYMENT_PENDING",
       };
+
+      console.log("주문 요청 데이터:", JSON.stringify(orderRequest, null, 2));
 
       // 주문 생성 API 호출
       const response = await onCreateOrder(orderRequest);
 
+      console.log("서버 응답 response:::::", response);
+
       // API 응답이 없거나 실패 시
-      if (!response || !response.results[0].orderId) {
+      if (!response || !response || !response.orderId) {
+        console.error("orderId가 없거나 undefined입니다.", response);
         throw new Error("주문 생성 실패");
       }
 
-      setCreatedOrderId(response.results[0].orderId);
-
-      // 주문 생성 성공 후 성공 바텀시트로 전환
+      setCreatedOrderId(response.orderId);
+      // 주문 생성 성공 후 성공 바텀시트로
       setBottomSheetState("SUCCESS");
     } catch (error) {
       console.log("주문 생성 실패:", error);
@@ -103,6 +135,10 @@ const OrderView = ({ orderData, onCreateOrder }: OrderViewProps) => {
   const handleContinueShopping = () => {
     setBottomSheetState("CLOSED");
     router.push("/"); // 홈으로 이동
+  };
+
+  const handleDeliveryPage = () => {
+    router.push("/deliveryAddress");
   };
 
   const renderBottomSheetContent = () => {
@@ -138,12 +174,9 @@ const OrderView = ({ orderData, onCreateOrder }: OrderViewProps) => {
               <span className={cx("ItemTitle")}>주문상품</span>
               <div>
                 <span className="ItemText">
-                  {orderData.results[0].orderItem.length === 1
-                    ? truncateText(
-                        orderData.results[0].orderItem[0].product.productName,
-                        20
-                      )
-                    : `${truncateText(orderData.results[0].orderItem[0].product.productName, 20)} 외 ${orderData.results[0].orderItem.length - 1}건`}
+                  {cartItemData.length === 1
+                    ? truncateText(cartItemData[0].product.productName, 20)
+                    : `${truncateText(cartItemData[0].product.productName, 20)} 외 ${cartItemData.length - 1}건`}
                 </span>
                 <span className={cx("ItemIcon")}>
                   {isOrderOpen ? <LuChevronUp /> : <LuChevronDown />}
@@ -154,8 +187,8 @@ const OrderView = ({ orderData, onCreateOrder }: OrderViewProps) => {
             {/*  주문상품 - 펼쳤을 때 */}
             {isOrderOpen && (
               <div className={cx("ItemContent", { open: isOrderOpen })}>
-                {orderData.results[0].orderItem.map((item) => (
-                  <div key={item.id} className={cx("ItemDetail")}>
+                {cartItemData.map((item) => (
+                  <div key={item.cartItemId} className={cx("ItemDetail")}>
                     <Image
                       src={item.product.thumbnail}
                       alt={item.product.productName}
@@ -169,7 +202,7 @@ const OrderView = ({ orderData, onCreateOrder }: OrderViewProps) => {
                       </h4>
                       <div className={cx("ItemInfo")}>
                         <span className={cx("ItemInfoDetail")}>
-                          {item.product.price.toLocaleString()}원
+                          {item.totalPrice.toLocaleString()}원
                         </span>
                         <span className={cx("ItemInfoDetail")}>
                           {item.product.sales.toLocaleString()}원
@@ -200,8 +233,8 @@ const OrderView = ({ orderData, onCreateOrder }: OrderViewProps) => {
                       <li>휴대폰</li>
                     </ul>
                     <ul className={cx("UserInfoDetail")}>
-                      <li>{orderData.results[0].userInfo.firstName}</li>
-                      <li>{orderData.results[0].userInfo.phoneNum}</li>
+                      <li>{userInfo[0].name}</li>
+                      <li>{userInfo[0].number}</li>
                     </ul>
                   </div>
                 </div>
@@ -217,10 +250,14 @@ const OrderView = ({ orderData, onCreateOrder }: OrderViewProps) => {
             <div className={cx("Address")}>
               <ul>
                 <li className={cx("AddressInfo")}>
-                  {orderData.results[0].deliveryAddress}
+                  {userInfo[0].defaultAddress}
                 </li>
                 <li className={cx("AddressBtn")}>
-                  <Button disabled={false} variants={"outline"}>
+                  <Button
+                    disabled={false}
+                    variants={"outline"}
+                    onClick={handleDeliveryPage}
+                  >
                     <span>변경</span>
                   </Button>
                 </li>
@@ -234,7 +271,11 @@ const OrderView = ({ orderData, onCreateOrder }: OrderViewProps) => {
               <span className={cx("ItemTitle")}>배송 요청사항</span>
             </div>
             <div className={cx("Address")}>
-              <Input placeholder={"배송 요청사항을 입력해주세요."} />
+              <Input
+                placeholder={"배송 요청사항을 입력해주세요."}
+                value={deliveryRequest}
+                onChange={(e) => setDeliveryRequest(e.target.value)}
+              />
             </div>
           </div>
 
@@ -310,19 +351,18 @@ const OrderView = ({ orderData, onCreateOrder }: OrderViewProps) => {
             <div className={cx("ItemHeader")}>
               <span className={cx("ItemTitle")}>상품 금액</span>
               <span className={cx("ItemTitle")}>
-                {orderData.results[0].orderItem[0].product.sales.toLocaleString()}
-                원
+                {salesPrice.toLocaleString()}원
               </span>
             </div>
             <div className={cx("Total")}>
               <ul className={cx("DeliveryFee")}>
                 <li>배송비</li>
-                <li>{orderData.results[0].shippingFee.toLocaleString()}원</li>
+                <li>{deliveryFee.toLocaleString()}원</li>
               </ul>
               <div className={cx("ItemHeader")}>
                 <span className={cx("ItemTitle")}>결제예정금액</span>
                 <span className={cx("TotalAmout")}>
-                  {totalPayment.toLocaleString()}원
+                  {totalPrice.toLocaleString()}원
                 </span>
               </div>
             </div>
@@ -331,7 +371,7 @@ const OrderView = ({ orderData, onCreateOrder }: OrderViewProps) => {
           {/* 주문하기 버튼 */}
           <div className={cx("OrderBtn")}>
             <Button onClick={handleCreateOrder} disabled={isSubmitting}>
-              {totalPayment.toLocaleString()}원 결제하기
+              {totalPrice.toLocaleString()}원 결제하기
             </Button>
           </div>
         </div>

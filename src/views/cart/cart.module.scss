@@ -1,0 +1,112 @@
+.PageContainer {
+  display: flex;
+  flex-direction: column;
+  background-color: #f6f6f6;
+
+  // padding: 0 15px;
+
+  .PageHeader {
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    // line-height: 40px;
+    font-size: 16px;
+    padding: 10px;
+    background-color: var(--color-white);
+
+    a {
+      cursor: pointer;
+    }
+
+    h3 {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+  }
+
+  section {
+    .CartList {
+      display: flex;
+      flex-direction: column;
+      font-size: 14px;
+
+      li {
+        background-color: var(--color-white);
+        padding: 20px;
+        margin-top: 10px;
+
+        .ProductName {
+          font-size: 15px;
+        }
+
+        .ItemInfo {
+          display: flex;
+          // justify-content: flex-end;
+          align-items: flex-start;
+          gap: 10px;
+          padding-top: 20px;
+          // font-size: 16px;
+
+          .PriceAndButtons {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            height: 80px;
+            padding-left: 5px;
+
+            .ItemPrice {
+              font-size: 17px;
+              padding-top: 10px;
+            }
+
+            .QuantityWrapper {
+              padding: 5px;
+              border: 1px solid var(--color-100);
+              border-radius: 5px;
+              display: flex;
+              align-items: center;
+              gap: 20px;
+
+              button {
+                color: var(--color-500);
+              }
+
+              span {
+                font-weight: 500;
+              }
+            }
+          }
+
+          .RemoveButton {
+            font-size: 20px;
+            color: var(--color-400);
+            margin-left: auto;
+          }
+        }
+      }
+    }
+
+    .Summary {
+      display: flex;
+      flex-direction: column;
+      background-color: var(--color-white);
+      margin-top: 10px;
+      padding: 20px;
+      font-size: 15px;
+
+      p {
+        display: flex;
+        justify-content: space-between;
+        padding: 7px 0;
+      }
+
+      .TotalPrice {
+        font-size: 16px;
+        padding-bottom: 15px;
+      }
+    }
+  }
+}

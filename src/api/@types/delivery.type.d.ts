@@ -7,7 +7,7 @@ export interface DeliveryAddress {
   defaultAddress: string; // 기본 주소
   detailAddress: string; // 상세 주소
   number: string; // 폰번호
-  isDefault?: boolean; // 기본 배송지 여부
+  isDefault: boolean; // 기본 배송지 여부
 }
 
 // interface IDelivery {

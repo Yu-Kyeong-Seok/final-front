@@ -20,7 +20,7 @@ type OrderStatus =
   | "FULL_EXCHANGE_REQUESTED"
   | "FULL_EXCHANGED";
 
-interface IOrder {
+export interface IOrder {
   /** 주문 ID */
   id: string;
   userId: string;
@@ -43,39 +43,43 @@ interface IOrder {
   /** 결제예정금액 */
   totalPaymentAmount: number;
   /** 주문상태 */
-  orderStatus: OrderStatus;
+  orderStatus?: OrderStatus;
 }
 
-interface IOrderResponseDTO {
-  results: {
-    orderId: string;
-    userId: string;
-    userInfo: {
-      firstName: string;
-      phoneNum: string;
-    };
-    deliveryAddress: string;
-    deliveryRequest?: string;
-    orderDate: string;
-    paymentMethod: PaymentMethod;
-    orderItem: {
+// 주문 생성 응담 DTO
+export interface IOrderResponseDTO {
+  orderId: string;
+  userId: string;
+  userInfo: {
+    firstName: string;
+    phoneNum: string;
+  };
+  deliveryAddress: string;
+  deliveryRequest?: string;
+  orderDate: string;
+  paymentMethod: PaymentMethod;
+  orderItem: {
+    id: string;
+    product: {
       id: string;
-      product: {
-        id: string;
-        productName: string;
-        sales: number;
-        price: number;
-        thumbnail: File | Blob | null;
-      };
-      quantity: number;
-      totalPrice: number;
-      orderItemStatus: OrderItemStatus;
-    }[];
-    totalProductPrice: number;
-    shippingFee: number;
-    totalPaymentAmount: number;
-    orderStatus: OrderStatus;
+      productName: string;
+      sales: number;
+      price: number;
+      thumbnail: File | Blob | null;
+    };
+    quantity: number;
+    totalPrice: number;
+    orderItemStatus: OrderItemStatus;
   }[];
+  totalProductPrice: number;
+  shippingFee: number;
+  totalPaymentAmount: number;
+  orderStatus?: OrderStatus;
+}
+
+// 주문 목록 조회 응담 DTO => 응답 확인시 results안에 쌓여있어서 따로 만들어줌
+export interface IOrderListResponseDTO {
+  results: IOrderResponseDTO[];
 }
 
 type OrderItemStatus =
@@ -94,7 +98,7 @@ type OrderItemStatus = keyof typeof ORDER_ITEM_STATUS;
 
 interface IOrderItem {
   /** 주문 상품 ID */
-  id: string;
+  productId: string;
   product: IProduct;
   /** 주문 수량 */
   quantity: number;
@@ -120,5 +124,27 @@ interface IOrderItemResponseDTO {
   /** 주문 총 가격 */
   totalPrice: number;
   /** 주문 상태 (주문상품별) */
+  orderItemStatus: OrderItemStatus;
+}
+
+//------------------------------------------------//
+
+// 주문 생성 요청을 위한 타입
+export interface CreateOrderRequest {
+  deliveryAddress: string;
+  deliveryRequest?: string;
+  paymentMethod: PaymentMethod;
+  orderItem: OrderRequestItem[];
+  totalProductPrice: number;
+  shippingFee: number;
+  totalPaymentAmount: number;
+  orderStatus: orderStatus;
+}
+
+// 주문 요청 시 사용할 상품 아이템 타입
+interface OrderRequestItem {
+  productId: string;
+  quantity: number;
+  totalPrice: number;
   orderItemStatus: OrderItemStatus;
 }
