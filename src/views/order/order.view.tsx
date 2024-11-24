@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import styles from "./order.module.scss";
 import cn from "classnames/bind";
-import { LuChevronDown, LuChevronUp } from "react-icons/lu";
+import { LuChevronDown, LuChevronUp, LuCheckCircle } from "react-icons/lu";
 import Image from "next/image";
 import Button from "@/src/components/Button/Button";
 import BottomSheet from "@/src/components/BottomSheet/BottomSheet";
@@ -87,7 +87,7 @@ const OrderView = ({
         deliveryRequest: deliveryRequest,
         paymentMethod: selectedPaymentMethod ?? "KAKAO_PAY",
         orderItem: cartItemData.map((item) => ({
-          productId: item.product.id,
+          product: item.product.id,
           // product: {
           //   ...item.product,
           //   id: undefined,
@@ -112,12 +112,12 @@ const OrderView = ({
 
       // API 응답이 없거나 실패 시
       if (!response || !response || !response.orderId) {
-        console.error("orderId가 없거나 undefined입니다.", response);
+        // console.error(response);
         throw new Error("주문 생성 실패");
       }
 
       setCreatedOrderId(response.orderId);
-      // 주문 생성 성공 후 성공 바텀시트로
+      // 주문 생성 성공 후 성공 바텀시트로 띄워주기.
       setBottomSheetState("SUCCESS");
     } catch (error) {
       console.log("주문 생성 실패:", error);
@@ -127,9 +127,8 @@ const OrderView = ({
     }
   };
 
-  const handleViewOrderDetail = () => {
-    setBottomSheetState("CLOSED");
-    router.push("/order/detail"); // 주문 상세 페이지로 이동
+  const handleViewOrderDetail = (path: string) => {
+    router.push(path); // 주문 상세 페이지로 이동
   };
 
   const handleContinueShopping = () => {
@@ -145,14 +144,36 @@ const OrderView = ({
     switch (bottomSheetState) {
       case "SUCCESS":
         return (
-          <div className={cx("SuccessSheet")}>
-            <h3>주문이 완료되었습니다!</h3>
-            <p>주문번호: {createdOrderId}</p>
-            <div className={cx("ButtonGroup")}>
-              <Button onClick={handleViewOrderDetail}>주문 상세보기</Button>
-              <Button onClick={handleContinueShopping} variants="outline">
-                계속 쇼핑하기
-              </Button>
+          <div className={cx("PayBottomSheet")}>
+            <div className={cx("BottomSheetContent")}>
+              <span className={cx("BottomSheetIcon")}>
+                <LuCheckCircle />
+              </span>
+              <div className={cx("BottomSheetText")}>
+                <h3>{userInfo[0].name}님의 주문이 완료되었습니다.</h3>
+                <b>내일 아침에 만나요!</b>
+              </div>
+              <div className={cx("ItemHeader")}>
+                <span className={cx("ItemTitle")}>결제금액</span>
+                <span className={cx("TotalAmout")}>
+                  {totalPrice.toLocaleString()}원
+                </span>
+              </div>
+              {/* <p>주문번호: {createdOrderId}</p> */}
+              <div className={cx("BottomSheetBtns")}>
+                <Button
+                  onClick={() =>
+                    handleViewOrderDetail(`/order/${createdOrderId}`)
+                  }
+                  variants="outline"
+                >
+                  {" "}
+                  <span>주문 상세보기</span>
+                </Button>
+                <Button onClick={handleContinueShopping}>
+                  <span>쇼핑 계속하기</span>
+                </Button>
+              </div>
             </div>
           </div>
         );
@@ -371,7 +392,9 @@ const OrderView = ({
           {/* 주문하기 버튼 */}
           <div className={cx("OrderBtn")}>
             <Button onClick={handleCreateOrder} disabled={isSubmitting}>
-              {totalPrice.toLocaleString()}원 결제하기
+              <span style={{ fontSize: "15px" }}>
+                {totalPrice.toLocaleString()}원 결제하기
+              </span>
             </Button>
           </div>
         </div>

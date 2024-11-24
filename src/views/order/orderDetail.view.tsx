@@ -1,66 +1,112 @@
 "use client";
-// import { useState } from "react";
-
 import styles from "./orderDetail.module.scss";
 import cn from "classnames/bind";
-// import { LuChevronDown, LuChevronUp, LuCheckCircle } from "react-icons/lu";
 import Image from "next/image";
 import Button from "@/src/components/Button/Button";
-// import ModalWrap from "@/src/components/Modal/Modal";
-
-// import { useRouter } from "next/navigation";
+import { IOrderResponseDTO, OrderStatus } from "@/src/api/@types/order.type";
+import { useRouter } from "next/navigation";
+import ModalWrap from "@/src/components/Modal/Modal";
+import { useState } from "react";
 
 const cx = cn.bind(styles);
 
-/** 주문 아이템 */
-type OrderItem = {
-  /** 아이템 id */
-  id: number;
-  /** 아이템 이름 */
-  name: string;
-  /** 수량 */
-  quantity: number;
-  /** 현재가격 */
-  currentPrice: number;
-  /** 원가격 */
-  originalPrice: number;
-  /** 이미지 */
-  image: string;
+type OrderDetailProps = {
+  orderDetail: IOrderResponseDTO;
 };
 
-type OrderViewProps = {
-  orderItems: OrderItem[];
-
-  /** 주문번호 */
-  orderNumber: string;
-  /** 주문상태 */
-  orderStatus: "주문완료" | "배송중" | "배송완료";
+// 배송상태 맵핑
+const orderItemStatusMap: Record<OrderStatus, string> = {
+  PAYMENT_PENDING: "주문완료",
+  PAYMENT_COMPLETED: "결제완료",
+  ORDER_CANCELED: "주문취소",
+  PREPARING_FOR_SHIPPING: "배송준비중",
+  SHIPPING: "배송중",
+  SHIPPED: "배송완료",
+  PARTIAL_REFUND_REQUESTED: "부분 환불 요청",
+  FULL_REFUND_REQUESTED: "전체 환불 요청",
+  PARTIAL_REFUNDED: "부분 환불 완료",
+  FULL_REFUNDED: "전체 환불 완료",
+  PARTIAL_EXCHANGE_REQUESTED: "부분 교환 요청",
+  PARTIAL_EXCHANGED: "부분 교환 완료",
+  FULL_EXCHANGE_REQUESTED: "전체 교환 요청",
+  FULL_EXCHANGED: "전체 교환 완료",
 };
 
-export default function OrderDetailView(props: OrderViewProps) {
-  const { orderItems, orderNumber, orderStatus } = props;
+export default function OrderDetailView(props: OrderDetailProps) {
+  const { orderDetail } = props;
 
-  /** 현재금액 * 수량 */
-  const totalAmount = orderItems.reduce((sum, item) => {
-    return sum + item.currentPrice * item.quantity;
-  }, 0);
+  const router = useRouter();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalMessage, setModalMessage] = useState("");
 
-  /** 배송비 계산 */
-  const deliveryFee = totalAmount >= 40000 ? 0 : 3000;
-
-  /** 결제 예정 금액 */
-  const totalPayment = totalAmount + deliveryFee;
-
-  /** 버튼 클릭 시 페이지 이동 */
-  // const router = useRouter();
-  // const handleClick = (path: string) => {
-  //   router.push(path);
-  // };
+  /** 뒤로가기 router */
+  const handleBack = () => {
+    router.back();
+  };
 
   /** 아이템 텍스트 길이 제한 */
   const truncateText = (text: string, maxLength: number) => {
     if (text.length <= maxLength) return text;
     return text.slice(0, maxLength) + "...";
+  };
+
+  /** 장바구니 추가 핸들러 */
+  const handleAddToCart = async (item: any) => {
+    try {
+      const accessToken = document.cookie
+        .split("; ")
+        .find((cookie) => cookie.startsWith("accessToken="))
+        ?.split("=")[1];
+
+      const cartId = document.cookie
+        .split("; ")
+        .find((cookie) => cookie.startsWith("cartId="))
+        ?.split("=")[1];
+
+      const cartItemData = {
+        product: item.product.id,
+        quantity: item.quantity,
+        totalPrice: item.totalPrice,
+        cartId: cartId,
+      };
+
+      console.log("전송할 데이터:", cartItemData);
+
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/api/cartItems/`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${accessToken}`,
+          },
+          body: JSON.stringify(cartItemData),
+        }
+      );
+
+      if (response.ok) {
+        setModalMessage("장바구니에 추가되었습니다.");
+        setIsModalOpen(true);
+
+        router.push("/cart");
+      } else {
+        throw new Error("장바구니 추가 실패");
+      }
+    } catch (err) {
+      console.error(err);
+      setModalMessage("장바구니 추가에 실패했습니다.");
+      setIsModalOpen(true);
+    }
+  };
+
+  // 주문완료일때 모달
+  const handleDeliveryCheck = () => {
+    // 주문완료(PAYMENT_PENDING) 상태일 때
+    if (orderDetail.orderStatus === "PAYMENT_PENDING") {
+      setModalMessage("주문완료 상태에서는 배송조회 할 수 없습니다.");
+      setIsModalOpen(true);
+      return;
+    }
   };
 
   return (
@@ -73,29 +119,31 @@ export default function OrderDetailView(props: OrderViewProps) {
               <h3>주문 내역 상세</h3>
             </div>
 
-            <span>주문번호 {orderNumber}</span>
+            <span>주문번호 {orderDetail.orderId}</span>
 
             <div className={cx("ItemContent")}>
-              {orderItems.map((item) => (
+              {orderDetail.orderItem.map((item) => (
                 <div key={item.id} className={cx("ItemDetail")}>
                   <Image
-                    src={item.image}
-                    alt={item.name}
+                    src={item.product.thumbnail}
+                    alt={item.product.productName}
                     width={70}
                     height={70}
                     className={cx("ProductImage")}
                   />
                   <div className={cx("OrderInfo")}>
                     {/* 상품 이름 */}
-                    <h4 className={cx("InfoTitle")}>{item.name}</h4>
+                    <h4 className={cx("InfoTitle")}>
+                      {item.product.productName}
+                    </h4>
                     <div className={cx("ItemInfo")}>
                       <span className={cx("ItemInfoDetail")}>
                         {/* 결제 가격 */}
-                        {item.currentPrice.toLocaleString()}원
+                        {item.totalPrice.toLocaleString()}원
                       </span>
                       <span className={cx("ItemInfoDetail")}>
                         {/* 원래 가격 */}
-                        {item.originalPrice.toLocaleString()}원
+                        {item.totalPrice.toLocaleString()}원
                       </span>
                       {/* 수량 */}
                       <span>{item.quantity}개</span>
@@ -103,11 +151,12 @@ export default function OrderDetailView(props: OrderViewProps) {
                   </div>
                   {/* 주문완료 & 장바구니 버튼 */}
                   <div className={cx("StatusInfo")}>
-                    <span>{orderStatus}</span>
+                    <span>{orderItemStatusMap[item.orderItemStatus]}</span>
                     <Button
                       disabled={false}
                       variants={"outline"}
                       className={cx("CartBtn")}
+                      onClick={() => handleAddToCart(item)}
                     >
                       <span>장바구니</span>
                     </Button>
@@ -116,7 +165,7 @@ export default function OrderDetailView(props: OrderViewProps) {
               ))}
 
               {/* 주문취소 & 다시담기 버튼*/}
-              <div className={cx("OrderCancel")}>
+              {/* <div className={cx("OrderCancel")}>
                 <Button
                   // text={"주문취소"}
                   disabled={false}
@@ -134,7 +183,7 @@ export default function OrderDetailView(props: OrderViewProps) {
                 >
                   <span>전체 상품 다시 담기</span>
                 </Button>
-              </div>
+              </div> */}
             </div>
           </div>
 
@@ -146,13 +195,21 @@ export default function OrderDetailView(props: OrderViewProps) {
 
             <div className={cx("ItemContent", "DeliveryContent")}>
               <span className={cx("DeliverText")}>
-                {orderItems.length === 1
-                  ? truncateText(orderItems[0].name, 20)
-                  : `${truncateText(orderItems[0].name, 20)} 외 ${orderItems.length - 1}건`}
+                {orderDetail.orderItem.length === 1
+                  ? truncateText(
+                      orderDetail.orderItem[0].product.productName,
+                      20
+                    )
+                  : `${truncateText(orderDetail.orderItem[0].product.productName, 20)} 외 ${orderDetail.orderItem.length - 1}건`}
               </span>
               <div className={cx("StatusInfo")}>
-                <span>{orderStatus}</span>
-                <span className={cx("DeliveryInfo")}>배송조회</span>
+                <span>{orderItemStatusMap[orderDetail.orderStatus]}</span>
+                <span
+                  className={cx("DeliveryInfo")}
+                  onClick={handleDeliveryCheck}
+                >
+                  배송조회
+                </span>
               </div>
             </div>
           </div>
@@ -166,13 +223,16 @@ export default function OrderDetailView(props: OrderViewProps) {
               <div className={cx("ItemHeader")}>
                 <span className={cx("ItemTitle")}>상품 금액</span>
                 <span className={cx("ItemTitle")}>
-                  {totalPayment.toLocaleString()}원
+                  {orderDetail.totalPaymentAmount.toLocaleString()}원
                 </span>
               </div>
             </div>
           </div>
         </div>
       </div>
+      <ModalWrap isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
+        <p style={{ fontSize: "16px" }}>{modalMessage}</p>
+      </ModalWrap>
     </div>
   );
 }

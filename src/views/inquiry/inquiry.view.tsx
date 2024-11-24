@@ -11,7 +11,7 @@ type InquiryViewProps = {
   inquiry: IInquiry;
 };
 
-/** 문의 유형 매핑 */
+/** 문의 유형 맵핑 */
 const inquiryTypeMap: Record<IInquiry["inquiryType"], string> = {
   Cancel: "주문취소",
   Refund: "환불문의",
@@ -19,7 +19,7 @@ const inquiryTypeMap: Record<IInquiry["inquiryType"], string> = {
   etc: "기타문의",
 };
 
-/** 상태 매핑 */
+/** 상태  맵핑 */
 const statusMap: Record<IInquiry["status"], string> = {
   Processing: "처리 중",
   completed: "완료",

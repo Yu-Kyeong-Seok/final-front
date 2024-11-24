@@ -4,7 +4,7 @@ type PaymentMethod =
   | "MOBILE_PAYMENT"
   | "KAKAO_PAY";
 
-type OrderStatus =
+export type OrderStatus =
   | "PAYMENT_PENDING"
   | "PAYMENT_COMPLETED"
   | "ORDER_CANCELED"
@@ -143,7 +143,7 @@ export interface CreateOrderRequest {
 
 // 주문 요청 시 사용할 상품 아이템 타입
 interface OrderRequestItem {
-  productId: string;
+  product: string;
   quantity: number;
   totalPrice: number;
   orderItemStatus: OrderItemStatus;

@@ -231,9 +231,9 @@
   .BottomSheetContent {
     display: flex;
     flex-direction: column;
-    gap: 40px;
+    gap: 30px;
     align-items: center;
-    padding: 60px 0 0 0;
+    padding: 30px 0 0 0;
 
     @media (min-width: 768px) {
       padding: 70px 40px 0 40px;
@@ -269,13 +269,14 @@
     }
 
     .BottomSheetBtns {
+      display: flex;
+      width: 100%;
       gap: 10px;
-
       // @media (min-width: 768px) {
       // }
-
       button {
         font-size: 15px;
+        flex-grow: 1;
 
         &:nth-child(1) {
           font-weight: 600;
