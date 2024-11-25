@@ -49,16 +49,14 @@
     background-color: white;
     z-index: 1000;
 
-    .dropdownItemList{
-        list-style: none;
-        
-        padding:20px 0 0 10px;
-        border-bottom: 1px solid #F6F6F6;
-        height: 52px;
-    }
-    .dropdownItem{
-        font-size:15px;
-        color:var(--color-700)
+    .list-wrap{
+        display:flex; 
+        flex-wrap: wrap; 
+        gap:1rem;
+        > div{
+            flex-basis: calc(50% - 0.5rem);
+            margin-bottom:1rem;
+        }
     }
 }
 .searchIcon{

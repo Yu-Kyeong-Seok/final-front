@@ -133,13 +133,15 @@ const SearchView: React.FC = () => {
                         {isLoading ? (
                             <div>검색중 ..</div>
                         ): products.length > 0 ?(
-                            <div className={cx("dropdownList")}>
-                                {products.map((product)=>(
-                                    <li className={cx("dropdownItemList")}key={product.id}>
-                                    <p className={cx("dropdownItem")}>{product.name}</p>
-                                    </li>
-                                ))}
-                                </div>
+                            <div className={cx("list-wrap")}>
+                                {products.map((product, index) => {
+                                    return(
+                                        <div key={product.id || `${product.name}-${index}`} className={cx("list-item")}>
+                                            <ProductItem product={product}/>
+                                        </div>
+                                    )
+                                })}
+                            </div>
                         ):(
                             <div>검색 결과 없습니다.</div>
                         )}
@@ -172,17 +174,17 @@ const SearchView: React.FC = () => {
           <Chip label={"낫또"} onClick={function (label: string): void {} }/>
           <Chip label={"식빵"} onClick={function (label: string): void {} }/>
           <Chip label={"오리고기"} onClick={function (label: string): void {}}/>
-          <Chip label={"곤약밥"}/>
-          <Chip label={"핫도그"}/>
-          <Chip label={"수박"}/>
+          <Chip label={"곤약밥"} onClick={function (label: string): void {}}/>
+          <Chip label={"핫도그"} onClick={function (label: string): void {}}/>
+          <Chip label={"수박"} onClick={function (label: string): void {}}/>
           <Chip label={"기저귀"} onClick={function (label: string): void {} }/>
           <Chip label={"아침식사"} onClick={function (label: string): void {} }/>
           <Chip label={"낫또"} onClick={function (label: string): void {} }/>
           <Chip label={"식빵"} onClick={function (label: string): void {} }/>
           <Chip label={"오리고기"} onClick={function (label: string): void {}}/>
-          <Chip label={"곤약밥"}/>
-          <Chip label={"핫도그"}/>
-          <Chip label={"수박"}/>
+          <Chip label={"곤약밥"} onClick={function (label: string): void {}}/>
+          <Chip label={"핫도그"} onClick={function (label: string): void {}}/>
+          <Chip label={"수박"} onClick={function (label: string): void {}}/>
       </section >
       <section className={cx("upSearchContainer")}>
           <p className={cx("searchTitle")}>급상승 검색어</p>
