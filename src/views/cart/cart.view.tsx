@@ -129,8 +129,8 @@ const CartView = ({
                 <div className={cx("PriceAndButtons")}>
                   <strong className={cx("ItemPrice")}>
                     {/* 제품가격 */}
-                    {item.product.sales.toLocaleString()}원
-                    {item.quantity > 1 && ` * ${item.quantity}`}
+                    {item.product.sales.toLocaleString()}원{item.quantity > 1}
+                    {/* {item.quantity > 1 && ` x ${item.quantity}`} */}
                   </strong>
                   <div className={cx("QuantityWrapper")}>
                     <button
