@@ -12,6 +12,7 @@ import { CreateOrderRequest } from "@/src/api/@types/order.type";
 import { CartItem } from "@/src/api/@types/cart.type";
 import { DeliveryAddress } from "@/src/api/@types/delivery.type";
 import { IOrderResponseDTO } from "@/src/api/@types/order.type";
+import ModalWrap from "@/src/components/Modal/Modal";
 
 const cx = cn.bind(styles);
 
@@ -41,6 +42,8 @@ const OrderView = ({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [createdOrderId, setCreatedOrderId] = useState<string | null>(null);
   const [deliveryRequest, setDeliveryRequest] = useState("");
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalMessage, setModalMessage] = useState<string>("");
 
   /** 주문 아이템 텍스트 길이 제한 */
   const truncateText = (text: string, maxLength: number) => {
@@ -79,7 +82,11 @@ const OrderView = ({
       }
 
       if (!selectedPaymentMethod) {
-        throw new Error("결제 수단을 선택해주세요.");
+        // throw new Error("결제 수단을 선택해주세요.");
+        setModalMessage("결제 수단을 선택해주세요.");
+        setIsModalOpen(true);
+        setIsSubmitting(false);
+        return;
       }
 
       const orderRequest: CreateOrderRequest = {
@@ -121,6 +128,7 @@ const OrderView = ({
       setBottomSheetState("SUCCESS");
     } catch (error) {
       console.log("주문 생성 실패:", error);
+
       setBottomSheetState("CLOSED");
     } finally {
       setIsSubmitting(false);
@@ -333,7 +341,6 @@ const OrderView = ({
                 </div>
               ))}
 
-              {/* 신용카드, 간편결제, 모바일결제 버튼을 하나의 div로 묶기 */}
               <div className={cx("PaymentMethodsContainer")}>
                 {["CREDIT_CARD", "SIMPLE_PAY", "MOBILE_PAYMENT"].map(
                   (method) => {
@@ -409,6 +416,9 @@ const OrderView = ({
           {renderBottomSheetContent()}
         </BottomSheet>
       </div>
+      <ModalWrap isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
+        <p style={{ fontSize: "16px" }}>{modalMessage}</p>
+      </ModalWrap>
     </div>
   );
 };
