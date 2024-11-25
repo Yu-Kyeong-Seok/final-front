@@ -28,6 +28,26 @@
   }
 
   section {
+    position: relative;
+    height: calc(100dvh - 146.333px);
+
+    .EmptyCart {
+      position: absolute;
+      top: 45%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: var(--color-white);
+      font-size: 18px;
+      text-align: center;
+
+      span {
+        display: block;
+        padding-bottom: 15px;
+      }
+
+      button {
+      }
+    }
     .CartList {
       display: flex;
       flex-direction: column;

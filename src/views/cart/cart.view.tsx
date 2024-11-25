@@ -116,7 +116,10 @@ const CartView = ({
 
       <section>
         {cartList.length === 0 ? (
-          <div className={cx("EmptyCart")}>장바구니가 비어있습니다.</div>
+          <div className={cx("EmptyCart")}>
+            <span> 장바구니가 비어있습니다.</span>
+            <Button onClick={() => router.push("/")}>쇼핑하기</Button>
+          </div>
         ) : (
           <>
             <ul className={cx("CartList")}>
