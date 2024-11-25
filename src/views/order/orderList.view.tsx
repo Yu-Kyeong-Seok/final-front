@@ -1,137 +1,106 @@
-"use client";
+import { useState, useMemo } from "react";
 import styles from "./orderList.module.scss";
 import cn from "classnames/bind";
-import { useState } from "react";
 import { HiChevronRight } from "react-icons/hi2";
 import { useRouter } from "next/navigation";
+import { IOrderListResponseDTO } from "@/src/api/@types/order.type";
 
 const cx = cn.bind(styles);
 
-/** 메뉴 id/label */
-type Menu = {
-  id: string;
-  label: string;
-};
+// 메뉴 타입 정의
+const MENU_ITEMS = [
+  { id: "1", label: "3개월" },
+  { id: "2", label: "6개월" },
+  { id: "3", label: "1년" },
+  { id: "4", label: "3년" },
+] as const;
 
-/** 주문 아이템 */
-type OrderItem = {
-  /** 아이템 id */
-  id: number;
-  /** 아이템 이름 */
-  name: string;
-  /** 수량 */
-  quantity: number;
-  /** 현재가격 */
-  currentPrice: number;
-  /** 원가격 */
-  originalPrice: number;
-  /** 이미지 */
-  image: string;
-};
-
-/** 주문자 정보 */
-// type UserInfo = {
-//   id: string;
-//   name: string;
-//   // phone: string;
-//   // email: string;
-//   // address: string;
-// };
-
-type OrderListProps = {
-  menus: Menu[];
-  isOpen: boolean;
-  // onClose: () => void;
-  title?: string;
-  selectedItem?: string;
-  // userInfos: UserInfo[];
-  orderDate?: Date;
-  orderTime?: Date;
-  orderItems: OrderItem[];
-  /** 주문번호 */
-  orderNumber: string;
-  /** 주문상태 */
-  orderStatus: "주문완료" | "배송중" | "배송완료";
-  paymentMethod: "신용카드" | "간편결제" | "휴대폰결제";
-};
-
-/** 날짜 변환 YYYY-MM-DD */
-function formatDate(date: Date | undefined): string {
-  if (!date) return "";
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, "0");
-  const day = String(date.getDate()).padStart(2, "0");
-  return `${year}.${month}.${day}`;
+interface OrderListViewProps {
+  orderList: IOrderListResponseDTO;
 }
 
-/** 시간 변환 HH:MM */
-function formatTime(time: Date | undefined): string {
-  if (!time) return "";
-  const hours = String(time.getHours()).padStart(2, "0");
-  const minutes = String(time.getMinutes()).padStart(2, "0");
-  return `${hours}시 ${minutes}분`;
-}
+export default function OrderListView({ orderList }: OrderListViewProps) {
+  const [activeTab, setActiveTab] = useState<string>(MENU_ITEMS[0].id);
+  const router = useRouter();
 
-// OrderListView
-export default function OrderListView(props: OrderListProps) {
-  const {
-    menus,
-    isOpen,
-    selectedItem,
-    orderDate,
-    orderTime,
-    orderItems,
-    orderNumber,
-    orderStatus,
-    paymentMethod,
-  } = props;
-
-  const [activeTab, setActiveTab] = useState<string>(
-    selectedItem || menus[0].id
-  );
-
-  const handleTabSelect = (id: string) => {
-    setActiveTab(id);
+  // 결제 방법 맵핑하기
+  const getPaymentMethodText = (method: string) => {
+    const methodMap: { [key: string]: string } = {
+      MOBILE_PAYMENT: "휴대폰",
+      KAKAO_PAY: "카카오페이",
+      CREDIT_CARD: "신용카드",
+      SIMPLE_PAY: "간편결제",
+    };
+    return methodMap[method] || method;
   };
 
-  /** 아이템 텍스트 길이 제한 */
+  // 주문 상태 맵핑
+  const getOrderStatusText = (status: string) => {
+    const statusMap: { [key: string]: string } = {
+      PAYMENT_PENDING: "주문완료",
+      PAYMENT_COMPLETED: "결제완료",
+      PREPARING: "상품준비중",
+      SHIPPING: "배송중",
+      DELIVERED: "배송완료",
+    };
+    return statusMap[status] || status;
+  };
+
+  // 날짜 포맷팅
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return {
+      date: `${date.getFullYear()}.${String(date.getMonth() + 1).padStart(2, "0")}.${String(date.getDate()).padStart(2, "0")}`,
+      time: `${String(date.getHours()).padStart(2, "0")}시 ${String(date.getMinutes()).padStart(2, "0")}분`,
+    };
+  };
+
+  // 상품명 텍스트 길이 제한
   const truncateText = (text: string, maxLength: number) => {
     if (text.length <= maxLength) return text;
-    return text.slice(0, maxLength) + "...";
+    return `${text.slice(0, maxLength)}...`;
   };
 
-  /** 버튼 클릭 시 페이지 이동 */
-  const router = useRouter();
-  const handleClick = (path: string) => {
-    router.push(path);
+  // 주문상세 페이지로 이동
+  const handleOrderDetailClick = (orderId: string) => {
+    router.push(`/order/${orderId}`);
   };
 
-  /** 현재금액 * 수량 */
-  const totalAmount = orderItems.reduce((sum, item) => {
-    return sum + item.currentPrice * item.quantity;
-  }, 0);
+  // 기간별 주문 필터링
+  const getFilteredOrders = useMemo(() => {
+    const now = new Date();
+    const monthsAgo = (months: number) => {
+      const date = new Date();
+      date.setMonth(date.getMonth() - months);
+      return date;
+    };
 
-  /** 배송비 계산 */
-  const deliveryFee = totalAmount >= 40000 ? 0 : 3000;
+    const filterMap = {
+      "1": monthsAgo(3),
+      "2": monthsAgo(6),
+      "3": monthsAgo(12),
+      "4": monthsAgo(36),
+    };
 
-  /** 결제 예정 금액 */
-  const totalPayment = totalAmount + deliveryFee;
+    return orderList.results.filter((order) => {
+      const orderDate = new Date(order.orderDate);
+      return orderDate >= filterMap[activeTab as keyof typeof filterMap];
+    });
+  }, [orderList.results, activeTab]);
+
+  // const filteredOrders = getFilteredOrders();
 
   return (
     <div className={cx("PageContainer")}>
       <div className={cx("Inner")}>
-        <div className={cx("TabAll", { opened: isOpen })}>
-          {/* <div className={cx("PageHeader")}>
-              <h3>{userInfos[0].name}님의 주문내역</h3>
-            </div> */}
-
+        <div className={cx("TabAll")}>
           {/* 탭 메뉴 버튼 */}
           <div className={cx("TabMenu")}>
-            {menus.map((menu) => (
+            {MENU_ITEMS.map((menu) => (
               <button
                 key={menu.id}
                 className={cx("TabButton", { active: activeTab === menu.id })}
-                onClick={() => handleTabSelect(menu.id)}
+                onClick={() => setActiveTab(menu.id)}
               >
                 {menu.label}
               </button>
@@ -140,55 +109,57 @@ export default function OrderListView(props: OrderListProps) {
 
           {/* 탭 컨텐츠 */}
           <div className={cx("TabContent")}>
-            {activeTab === "1" && (
-              <section>
-                <div className={cx("OrderItemText")}>
-                  <div className={cx("DateAndTime")}>
-                    <span>{formatDate(orderDate)}</span>
-                    <span> ({formatTime(orderTime)})</span>
-                  </div>
-                  <span
-                    onClick={() => handleClick("/order/detail")}
-                    className={cx("OrderDetail")}
-                  >
-                    주문상세&nbsp; <HiChevronRight />
-                  </span>
-                </div>
+            {getFilteredOrders.map((order) => {
+              const { date, time } = formatDate(order.orderDate);
 
-                <div className={cx("OrderListText")}>
-                  <ul className={cx("OrderValue")}>
-                    <li>상품명</li>
-                    <li>주문번호</li>
-                    <li>결제방법</li>
-                    <li>결제금액</li>
-                    <li>주문상태</li>
-                  </ul>
-                  <ul>
-                    <li>
-                      {orderItems.length === 1
-                        ? truncateText(orderItems[0].name, 20)
-                        : `${truncateText(orderItems[0].name, 20)} 외 ${orderItems.length - 1}건...`}
-                    </li>
-                    <li>{orderNumber}</li>
-                    <li>{paymentMethod}</li>
-                    <li> {totalPayment.toLocaleString()}원</li>
-                    <li>{orderStatus}</li>
-                  </ul>
-                </div>
-              </section>
-            )}
-            {activeTab === "2" && <p>6개월 주문 내역</p>}
-            {activeTab === "3" && <p>1년 주문 내역</p>}
-            {activeTab === "4" && <p>3년 주문 내역</p>}
+              return (
+                <section key={order.orderId}>
+                  <div className={cx("OrderItemText")}>
+                    <div className={cx("DateAndTime")}>
+                      <span>{date}</span>
+                      <span> ({time})</span>
+                    </div>
+                    <span
+                      onClick={() => handleOrderDetailClick(order.orderId)}
+                      className={cx("OrderDetail")}
+                    >
+                      주문상세 <HiChevronRight />
+                    </span>
+                  </div>
+
+                  <div className={cx("OrderListText")}>
+                    <ul className={cx("OrderValue")}>
+                      <li>상품명</li>
+                      <li>주문번호</li>
+                      <li>결제방법</li>
+                      <li>결제금액</li>
+                      <li>주문상태</li>
+                    </ul>
+                    <ul>
+                      <li key={order.orderId}>
+                        <ul>
+                          <li>
+                            {order.orderItem.length === 1
+                              ? truncateText(
+                                  order.orderItem[0].product.productName,
+                                  20
+                                )
+                              : `${truncateText(order.orderItem[0].product.productName, 20)} 외 ${order.orderItem.length - 1}건`}
+                          </li>
+                          <li>{order.orderId}</li>
+                          <li>{getPaymentMethodText(order.paymentMethod)}</li>
+                          <li>{order.totalPaymentAmount.toLocaleString()}원</li>
+                          <li>{getOrderStatusText(order.orderStatus || "")}</li>
+                        </ul>
+                      </li>
+                    </ul>
+                  </div>
+                </section>
+              );
+            })}
           </div>
         </div>
       </div>
     </div>
   );
 }
-
-// const OrderListView = (props: OrderListProps) => {
-
-// };
-
-// export default OrderListView;

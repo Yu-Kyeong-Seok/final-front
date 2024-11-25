@@ -1,0 +1,83 @@
+.PageContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+
+  // padding: 0 15px;
+
+  .PageHeader {
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    // line-height: 40px;
+    font-size: 16px;
+    padding: 10px;
+
+    a {
+      cursor: pointer;
+    }
+
+    h3 {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+  }
+
+  .Form {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+    padding: 15px 10px;
+    font-size: 15px;
+
+    .FormField {
+      div {
+        padding-bottom: 5px;
+
+        .Require {
+          color: rgb(253, 97, 97);
+          font-weight: 600;
+        }
+      }
+
+      select {
+        width: 100%;
+        height: 46px;
+        padding: 0px 15px 1px 15px;
+        border-radius: 4px;
+        border: 1px solid var(--color-100);
+        font-weight: 400;
+        color: var(--color-800);
+
+        &:focus {
+          outline: none;
+          border: 1px solid var(--color-800);
+        }
+      }
+
+      textarea {
+        width: 100%;
+        min-height: 200px;
+        border-radius: 4px;
+        border: 1px solid var(--color-100);
+        font-weight: 400;
+        color: var(--color-800);
+        padding: 10px 15px;
+        font-family: "pretendard", "pretendard Fallback";
+        font-size: 15px;
+
+        &:focus {
+          outline: none;
+          border: 1px solid var(--color-800);
+        }
+
+        &::placeholder {
+          color: var(--color-500);
+        }
+      }
+    }
+  }
+}

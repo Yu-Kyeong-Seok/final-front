@@ -4,6 +4,7 @@ import cn from "classnames/bind";
 import { IInquiry } from "@/src/api/@types/inquiry.type";
 import { useRouter } from "next/navigation";
 import { LuChevronLeft } from "react-icons/lu";
+import Button from "@/src/components/Button/Button";
 
 const cx = cn.bind(styles);
 
@@ -24,6 +25,17 @@ const statusMap: Record<IInquiry["status"], string> = {
   Processing: "처리 중",
   completed: "완료",
 };
+
+/** 시간 매핑 */
+const formatter = new Intl.DateTimeFormat("ko-KR", {
+  year: "numeric",
+  month: "2-digit",
+  day: "2-digit",
+  hour: "2-digit",
+  minute: "2-digit",
+  second: "2-digit",
+  hour12: false,
+});
 
 export default function InquiryListView(props: InquiryListViewProps) {
   const { inquiries } = props;
@@ -63,7 +75,7 @@ export default function InquiryListView(props: InquiryListViewProps) {
                 </dl>
 
                 <dl className={cx("InquiryDateStatus")}>
-                  <dt>{new Date(inquiry.createdAt).toLocaleString()}</dt>
+                  <dt>{formatter.format(new Date(inquiry.createdAt))}</dt>
                   {/* <dd>작성자: {inquiry.author.userName}</dd> */}
                   <dd className={cx("InquiryStatus")}>
                     {statusMap[inquiry.status]}
@@ -75,6 +87,26 @@ export default function InquiryListView(props: InquiryListViewProps) {
         ) : (
           <p>등록된 1:1 문의가 없습니다.</p>
         )}
+
+        <div className={cx("Buttons")}>
+          <Button disabled={false} variants={"outline"}>
+            <a
+              href="https://open.kakao.com/o/sSr9PS1g"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              카카오톡 문의
+            </a>
+          </Button>
+          <Button
+            disabled={false}
+            variants={"solid"}
+            className={cx("InquiryBtn")}
+            onClick={() => handleClick("/inquiry/write")}
+          >
+            1:1 문의
+          </Button>
+        </div>
       </section>
     </div>
   );
