@@ -116,7 +116,7 @@ const ProductDetailView = (props : ProductDetailProps) => {
 
     /** 모달로 로그아웃 요청 */
     const requestAddCart = () => {
-        openYesorNoModal("장바구니로 이동하시겠습니까?", () => handleClick("/order/list"));
+        openYesorNoModal("장바구니로 이동하시겠습니까?", () => handleClick("/cart"));
     };
 
     return ( 

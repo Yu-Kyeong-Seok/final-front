@@ -40,3 +40,18 @@
 .ButtonWrapper {
     margin-top: 20px;
 }
+
+.VerificationNumberWrapper {
+    position: relative;
+    width: 100%;
+}
+
+.VerificationNumber {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    right: 12px;
+    color: red;
+    // display: none;
+    pointer-events: none;
+}

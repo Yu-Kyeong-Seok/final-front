@@ -20,17 +20,23 @@ type ModifyFormType = {
     name: string;
     email: string;
     phoneNumber: string;
+    verificationNumber?: string;
 };
 
 const ModifyView = () => {
     const router = useRouter();
     
     const [userId, setUserId] = useState<string | null>(null);
+    const [loginId, setLoginId] = useState<string | null>(null);
     const [name, setName] = useState<string | null>(null);
     const [email, setEmail] = useState<string | null>(null);
     const [phoneNumber, setPhoneNumber] = useState<string | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
     const [isCheckEmail, setIsCheckEmail] = useState(false);
+
+    const [isCheckVerification, setIsCheckVerification] = useState(false);
+    const [showVerificationInput, setShowVerificationInput] = useState(false); // 인증번호 확인 입력 필드 표시 여부
+    const [timer, setTimer] = useState(0); // 남은 시간 (초 단위)
 
     const [myEmail, setMyEmail] = useState<string | null>(null);
 
@@ -104,7 +110,10 @@ const ModifyView = () => {
             if (response.ok) {
                 const res = await response.json();
 
-                setUserId(res.data.loginId); // 유저 ID 설정
+                setUserId(res.data.userId);
+                setLoginId(res.data.loginId);
+                form.setValue("id", res.data.loginId);
+
                 form.setValue("id", res.data.loginId);
 
                 setName(res.data.profile.firstName); 
@@ -115,7 +124,6 @@ const ModifyView = () => {
                 setMyEmail(res.data.email);
                 setPhoneNumber(res.data.profile.phoneNum); 
                 form.setValue("phoneNumber", res.data.profile.phoneNum);
-
             } else {
                 throw new Error("사용자 정보를 가져오는 데 실패했습니다.");
             }
@@ -138,6 +146,19 @@ const ModifyView = () => {
         }
     }, [watchedEmail]);
 
+    useEffect(() => {
+        if (timer > 0) {
+            const countdown = setInterval(() => {
+                setTimer((prev) => prev - 1);
+            }, 1000);
+            return () => clearInterval(countdown); // 컴포넌트 언마운트 시 클리어
+        }
+        else {
+            setShowVerificationInput(false);
+        }
+
+        }, [timer]);
+
     const handleSubmit = form.handleSubmit(
         async (data) => {
             try {
@@ -150,6 +171,7 @@ const ModifyView = () => {
                     "Authorization": `Bearer ${accessToken}`,
                     },
                     body: JSON.stringify({
+                        id: userId,
                         loginId: data.id,
                         password: data.newPassword,
                         email: data.email,
@@ -161,17 +183,13 @@ const ModifyView = () => {
                 });
 
                 if (response.status === 200) {
-                    setModalMessage("회원가입 성공!");
+                    setModalMessage("개인정보 수정 성공!");
                     router.push("/"); // 회원가입 성공 시 로그인으로 이동
                 } else {
-                    setModalMessage("회원가입에 실패했습니다.");
+                    setModalMessage("개인정보 수정에 실패했습니다.");
                 }
             } catch (error: any) {
-                if (error.response && error.response.data.message) {
-                    setModalMessage(error.response.data.message); // 서버에서 보낸 에러 메시지
-                } else {
-                    setModalMessage("회원가입 중 문제가 발생했습니다.");
-                }
+                console.log(error);
             } finally {
                 openModal();
             }
@@ -234,6 +252,37 @@ const ModifyView = () => {
     const openModal = () => setIsModalOpen(true);
     const closeModal = () => setIsModalOpen(false);
     const handleConfirm = () => {
+    };
+
+    
+    // 인증번호 받기
+    const handleSendVerificationNumber = () => {
+        try {
+            setIsCheckVerification(false);
+            setShowVerificationInput(true); // 클릭 시 인증번호 확인 필드 숨김
+
+            setTimer(180); // 3분 타이머 시작
+            // await new Promise((resolve) => setTimeout(resolve, 5000)); // 1분 = 60,000ms
+        } catch (error) {
+            console.error(error);
+        } finally {
+
+        }
+    }
+    // 인증번호 확인
+    const handlerCheckVerificationNumber = () => {
+        setIsCheckVerification(true);
+        setShowVerificationInput(false);
+        setModalMessage(`확인되었습니다.`);
+        openModal();
+        
+        form.setValue("verificationNumber", "");
+    }
+
+    const formatTime = (seconds: number) => {
+        const minutes = Math.floor(seconds / 60);
+        const secs = seconds % 60;
+        return `${minutes}:${secs < 10 ? '0' : ''}${secs}`;
     };
 
     return ( 
@@ -383,14 +432,41 @@ const ModifyView = () => {
                                         onChange={field.onChange}
                                         value={field.value}
                                     ></Input>
-                                    <Button type="button" variants="outline"><span>다른번호 인증</span></Button>
+                                    <Button type="button" disabled={!field.value}variants="outline" onClick={handleSendVerificationNumber}><span>다른번호 인증</span></Button>
                                 </div>
                                 
                             </React.Fragment>
                         )
                     }}
                 />
-
+                <br></br>
+                {showVerificationInput && (
+                    <Controller
+                    control={form.control}
+                    name={"verificationNumber"}
+                    render={({ field }) => {
+                        return (
+                            <React.Fragment>
+                                <div className={cx("InputContainer")}>
+                                    <div className={cx("VerificationNumberWrapper")}>
+                                        <Input 
+                                            type="tel"
+                                            id={field.name}
+                                            name={field.name}
+                                            onChange={field.onChange}
+                                            value={field.value}
+                                        />
+                                        {timer > 0 ? <span className={cx("VerificationNumber")}>{formatTime(timer)}</span> : ''}
+                                    </div>
+                                    <Button type="button" disabled={!field.value} onClick={handlerCheckVerificationNumber}>
+                                        <span>인증번호 확인</span>
+                                    </Button>
+                                </div>
+                            </React.Fragment>
+                        )
+                    }}
+                    />
+                )}
                 {/* 수정하기 */}
                 <div className={cx("ButtonWrapper")}>
                     <Button type="submit" ><span>수정하기</span></Button>
