@@ -207,16 +207,17 @@ export default function OrderDetailView(props: OrderDetailProps) {
             </div>
 
             <div className={cx("ItemContent", "DeliveryContent")}>
-              <span className={cx("DeliverText")}>
+              <span>{orderDetail.deliveryAddress}</span>
+              {/* <span className={cx("DeliverText")}>
                 {orderDetail.orderItem.length === 1
                   ? truncateText(
                       orderDetail.orderItem[0].product.productName,
                       20
                     )
                   : `${truncateText(orderDetail.orderItem[0].product.productName, 20)} 외 ${orderDetail.orderItem.length - 1}건`}
-              </span>
+              </span> */}
               <div className={cx("StatusInfo")}>
-                <span>{orderItemStatusMap[orderDetail.orderStatus]}</span>
+                {/* <span>{orderItemStatusMap[orderDetail.orderStatus]}</span> */}
                 <span
                   className={cx("DeliveryInfo")}
                   onClick={handleDeliveryCheck}
