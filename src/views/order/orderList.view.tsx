@@ -4,6 +4,7 @@ import cn from "classnames/bind";
 import { HiChevronRight } from "react-icons/hi2";
 import { useRouter } from "next/navigation";
 import { IOrderListResponseDTO } from "@/src/api/@types/order.type";
+import Button from "@/src/components/Button/Button";
 
 const cx = cn.bind(styles);
 
@@ -71,54 +72,67 @@ export default function OrderListView({ orderList }: OrderListViewProps) {
           <div className={cx("TabMenu")}></div>
 
           <div className={cx("TabContent")}>
-            {sortedOrders.map((order) => {
-              const { date, time } = formatDate(order.orderDate);
+            {sortedOrders.length === 0 ? (
+              <div className={cx("EmptyOrderList")}>
+                <span>주문내역이 없습니다.</span>
+                <Button onClick={() => router.push("/")}>쇼핑하기</Button>
+              </div>
+            ) : (
+              sortedOrders.map((order) => {
+                const { date, time } = formatDate(order.orderDate);
 
-              return (
-                <section key={order.orderId}>
-                  <div className={cx("OrderItemText")}>
-                    <div className={cx("DateAndTime")}>
-                      <span>{date}</span>
-                      <span> ({time})</span>
+                return (
+                  <section key={order.orderId}>
+                    <div className={cx("OrderItemText")}>
+                      <div className={cx("DateAndTime")}>
+                        <span>{date}</span>
+                        <span> ({time})</span>
+                      </div>
+                      <span
+                        onClick={() => handleOrderDetailClick(order.orderId)}
+                        className={cx("OrderDetail")}
+                      >
+                        주문상세 <HiChevronRight />
+                      </span>
                     </div>
-                    <span
-                      onClick={() => handleOrderDetailClick(order.orderId)}
-                      className={cx("OrderDetail")}
-                    >
-                      주문상세 <HiChevronRight />
-                    </span>
-                  </div>
 
-                  <div className={cx("OrderListText")}>
-                    <ul className={cx("OrderValue")}>
-                      <li>상품명</li>
-                      <li>주문번호</li>
-                      <li>결제방법</li>
-                      <li>결제금액</li>
-                      <li>주문상태</li>
-                    </ul>
-                    <ul>
-                      <li key={order.orderId}>
-                        <ul>
-                          <li>
-                            {order.orderItem.length === 1
-                              ? truncateText(
-                                  order.orderItem[0].product.productName,
-                                  20
-                                )
-                              : `${truncateText(order.orderItem[0].product.productName, 20)} 외 ${order.orderItem.length - 1}건`}
-                          </li>
-                          <li>{order.orderId}</li>
-                          <li>{getPaymentMethodText(order.paymentMethod)}</li>
-                          <li>{order.totalPaymentAmount.toLocaleString()}원</li>
-                          <li>{getOrderStatusText(order.orderStatus || "")}</li>
-                        </ul>
-                      </li>
-                    </ul>
-                  </div>
-                </section>
-              );
-            })}
+                    <div className={cx("OrderListText")}>
+                      <ul className={cx("OrderValue")}>
+                        <li>상품명</li>
+                        <li>주문번호</li>
+                        <li>결제방법</li>
+                        <li>결제금액</li>
+                        <li>주문상태</li>
+                      </ul>
+                      <ul>
+                        <li key={order.orderId}>
+                          <ul>
+                            <li>
+                              {order.orderItem.length === 1
+                                ? truncateText(
+                                    order.orderItem[0].product.productName,
+                                    20
+                                  )
+                                : `${truncateText(order.orderItem[0].product.productName, 20)} 외 ${
+                                    order.orderItem.length - 1
+                                  }건`}
+                            </li>
+                            <li>{order.orderId}</li>
+                            <li>{getPaymentMethodText(order.paymentMethod)}</li>
+                            <li>
+                              {order.totalPaymentAmount.toLocaleString()}원
+                            </li>
+                            <li>
+                              {getOrderStatusText(order.orderStatus || "")}
+                            </li>
+                          </ul>
+                        </li>
+                      </ul>
+                    </div>
+                  </section>
+                );
+              })
+            )}
           </div>
         </div>
       </div>

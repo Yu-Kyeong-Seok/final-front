@@ -144,7 +144,7 @@ export default function OrderDetailView(props: OrderDetailProps) {
                     className={cx("ProductImage")}
                   />
                   <div className={cx("OrderInfo")}>
-                    <em>주문아이템 ID : {item.id}</em>
+                    <em>주문아이템 : {item.id}</em>
                     {/* 상품 이름 */}
                     <h4 className={cx("InfoTitle")}>
                       {item.product.productName}

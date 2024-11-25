@@ -2,9 +2,12 @@
   display: flex;
   flex-direction: column;
   gap: 5px;
+  // height: 100vh;
+
   // padding: 0 15px;
 
   .PageHeader {
+    // position: fixed;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -106,6 +109,19 @@
         font-size: 19px;
         cursor: pointer;
       }
+    }
+  }
+
+  .EmptyStateContainer {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    font-size: 18px;
+
+    p {
+      padding-bottom: 15px;
     }
   }
 }

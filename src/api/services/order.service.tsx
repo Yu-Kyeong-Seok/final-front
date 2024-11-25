@@ -8,17 +8,31 @@ import {
   IOrderResponseDTO,
 } from "@/src/api/@types/order.type";
 
+interface OrderData extends CartItem {
+  salesPrice: number;
+  deliveryFee: number;
+  totalPrice: number;
+}
+
 const OrderService = () => {
-  const [cartItemData, setCartItemData] = useState<CartItem[]>([]);
+  const [cartData, setCartData] = useState<OrderData | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [userInfo, setUserInfo] = useState<DeliveryAddress[]>([]);
 
+  const apiUrl = process.env.NEXT_PUBLIC_SERVER_URL;
+
   // 장바구니 아이템조회
   const fetchCartItemData = async () => {
     try {
-      const apiUrl = process.env.NEXT_PUBLIC_SERVER_URL;
       if (!apiUrl) throw new Error("API URL이 설정되지 않았습니다.");
+
+      // cartId 쿠키에서 가져오기
+      const cartId = document.cookie
+        .split("; ")
+        .find((cookie) => cookie.startsWith("cartId="))
+        ?.split("=")[1];
+      if (!cartId) throw new Error("장바구니 ID가 없습니다");
 
       const accessToken = document.cookie
         .split("; ")
@@ -26,7 +40,7 @@ const OrderService = () => {
         ?.split("=")[1];
       if (!accessToken) throw new Error("토큰이 없습니다");
 
-      const response = await fetch(`${apiUrl}/api/cartItems`, {
+      const response = await fetch(`${apiUrl}/api/carts`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${accessToken}`,
@@ -38,9 +52,30 @@ const OrderService = () => {
         throw new Error(`주문 데이터 로드 실패. 상태 코드: ${response.status}`);
 
       const data: CartItem = await response.json();
-      setCartItemData(Array.isArray(data) ? data : [data]);
 
-      console.log("장바구니 아이템 조회::::::", data);
+      // cartId와 일치하는 장바구니만 필터링
+      if (data && data.id === cartId) {
+        // 금액 계산
+        const salesPrice = data.cartItem.reduce(
+          (sum, item) => sum + item.product.sales * item.quantity,
+          0
+        );
+        const deliveryFee = salesPrice >= 40000 ? 0 : 3000;
+        const totalPrice = salesPrice + deliveryFee;
+
+        const orderData: OrderData = {
+          ...data,
+          salesPrice,
+          deliveryFee,
+          totalPrice,
+          totalProductPrice: salesPrice,
+          shippingFee: deliveryFee,
+          totalPaymentAmount: totalPrice,
+        };
+
+        setCartData(orderData);
+        console.log("장바구니 아이템 조회::::::", orderData);
+      }
     } catch (error) {
       console.error("주문 데이터 가져오기 중 오류 발생:", error);
       setError(
@@ -53,10 +88,9 @@ const OrderService = () => {
     }
   };
 
-  // 배송지 조회 (주문자 이름, 폰번호, 기본배송지 연결하기 위해서 )
+  // 배송지 조회 (주문자 이름, 폰번호, 기본배송지 연결하기 위해서)
   const fetchUserInfo = async () => {
     try {
-      const apiUrl = process.env.NEXT_PUBLIC_SERVER_URL;
       if (!apiUrl) throw new Error("API URL이 설정되지 않았습니다.");
 
       const accessToken = document.cookie
@@ -94,7 +128,6 @@ const OrderService = () => {
 
   // 주문 생성
   const createOrder = async (orderRequest: CreateOrderRequest) => {
-    const apiUrl = process.env.NEXT_PUBLIC_SERVER_URL;
     if (!apiUrl) throw new Error("API URL이 설정되지 않았습니다.");
 
     const accessToken = document.cookie
@@ -130,14 +163,6 @@ const OrderService = () => {
     }
   };
 
-  // useEffect(() => {
-  //   fetchCartItemData();
-  // }, []);
-
-  // useEffect(() => {
-  //   fetchUserInfo();
-  // }, []);
-
   useEffect(() => {
     const loadData = async () => {
       setIsLoading(true);
@@ -154,33 +179,14 @@ const OrderService = () => {
     loadData();
   }, []);
 
-  if (isLoading) return <div>로딩 중...</div>;
-
-  if (error) {
-    return (
-      <div>
-        <h2>주문 데이터를 불러오는데 실패했습니다</h2>
-        <p>{error}</p>
-        <button
-          onClick={() => {
-            setError(null);
-            setIsLoading(true);
-            Promise.all([fetchCartItemData(), fetchUserInfo()]);
-          }}
-        >
-          다시 시도
-        </button>
-      </div>
-    );
-  }
-
-  if (!cartItemData.length || !userInfo.length) {
-    return <div>주문 데이터가 없습니다.</div>;
-  }
+  if (isLoading) return <OrderView isLoading={isLoading} />;
+  if (error) return <OrderView error={error} />;
+  if (!cartData) return <OrderView noCartData={true} />;
+  if (!userInfo.length) return <OrderView noDeliveryInfo={true} />;
 
   return (
     <OrderView
-      cartItemData={cartItemData}
+      cartItemData={cartData}
       userInfo={userInfo}
       onCreateOrder={createOrder}
     />

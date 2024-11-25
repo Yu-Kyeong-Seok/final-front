@@ -1,5 +1,4 @@
 "use client";
-
 import { useRouter } from "next/navigation";
 import styles from "./cart.module.scss";
 import cn from "classnames/bind";
@@ -12,9 +11,8 @@ import Button from "@/src/components/Button/Button";
 
 const cx = cn.bind(styles);
 
-// 프롭스
 type CartViewProps = {
-  cartList: CartItem[];
+  cartList: CartItem | null;
   isLoading: boolean;
   error: string | null;
   onUpdateQuantity: (cartItemId: string, quantity: number) => Promise<void>;
@@ -37,7 +35,6 @@ const CartView = ({
     router.back();
   };
 
-  // 아이템 수정 핸들러
   const handleQuantityChange = async (
     cartItemId: string,
     newQuantity: number
@@ -58,7 +55,6 @@ const CartView = ({
     }
   };
 
-  // 삭제 핸ㄷ르러
   const handleRemove = async (cartItemId: string) => {
     if (window.confirm("이 상품을 삭제하시겠습니까?")) {
       try {
@@ -75,33 +71,33 @@ const CartView = ({
 
   if (isLoading) return <div>로딩 중...</div>;
   if (error) return <div>에러: {error}</div>;
+  if (!cartList || cartList.cartItem.length === 0) {
+    return (
+      <div className={cx("PageContainer")}>
+        <div className={cx("PageHeader")}>
+          <button onClick={handleBack} className={cx("BackButton")}>
+            <LuChevronLeft />
+          </button>
+          <h3>장바구니</h3>
+        </div>
+        <div className={cx("EmptyCart")}>
+          <span>장바구니가 비어있습니다.</span>
+          <Button onClick={() => router.push("/")}>쇼핑하기</Button>
+        </div>
+      </div>
+    );
+  }
 
-  // 합산금액계산. 할인가 x 수량
-  const salesPrice = cartList.reduce(
-    (sum, item) => sum + item.product.sales * item.quantity,
+  // 금액 계산
+  const salesPrice = cartList.cartItem.reduce(
+    (sum, item) => sum + item.totalPrice,
     0
   );
-
-  // 배송비. 4만원 이상은 + 3000
   const deliveryFee = salesPrice >= 40000 ? 0 : 3000;
+  const totalPrice = salesPrice + deliveryFee;
 
-  const totalPrice = deliveryFee + salesPrice;
-
-  // 결제 정보 전달
+  // 주문 페이지로 이동
   const handlePayment = () => {
-    // const orderDetails = {
-    //   items: cartList.map((item) => ({
-    //     productName: item.product.productName,
-    //     thumbnail: item.product.thumbnail,
-    //     quantity: item.quantity,
-    //     itemPrice: item.product.sales * item.quantity,
-    //   })),
-    //   salesPrice,
-    //   deliveryFee,
-    //   totalPrice,
-    // };
-
-    // sessionStorage.setItem("orderDetails", JSON.stringify(orderDetails));
     router.push("/order");
   };
 
@@ -115,101 +111,83 @@ const CartView = ({
       </div>
 
       <section>
-        {cartList.length === 0 ? (
-          <div className={cx("EmptyCart")}>
-            <span> 장바구니가 비어있습니다.</span>
-            <Button onClick={() => router.push("/")}>쇼핑하기</Button>
-          </div>
-        ) : (
-          <>
-            <ul className={cx("CartList")}>
-              {cartList.map((item) => (
-                <li key={item.cartItemId} className={cx("CartItem")}>
-                  <span className={cx("ProductName")}>
-                    {item.product.productName}
-                  </span>
+        <ul className={cx("CartList")}>
+          {cartList.cartItem.map((item) => (
+            <li key={item.id} className={cx("CartItem")}>
+              <span className={cx("ProductName")}>
+                {item.product.productName}
+              </span>
 
-                  <div className={cx("ItemInfo")}>
-                    <Image
-                      src={item.product.thumbnail}
-                      alt={item.product.productName}
-                      width={70}
-                      height={80}
-                      className={cx("ProductImage")}
-                    />
-                    <div className={cx("PriceAndButtons")}>
-                      <strong className={cx("ItemPrice")}>
-                        {item.totalPrice.toLocaleString()}원
-                      </strong>
-                      <div className={cx("QuantityWrapper")}>
-                        <button
-                          onClick={() =>
-                            handleQuantityChange(
-                              item.cartItemId,
-                              item.quantity - 1
-                            )
-                          }
-                          disabled={item.quantity <= 1 || isUpdating}
-                        >
-                          <LuMinus />
-                        </button>
-                        <span>{item.quantity}</span>
-                        <button
-                          onClick={() =>
-                            handleQuantityChange(
-                              item.cartItemId,
-                              item.quantity + 1
-                            )
-                          }
-                          disabled={isUpdating}
-                        >
-                          <LuPlus />
-                        </button>
-                      </div>
-                    </div>
+              <div className={cx("ItemInfo")}>
+                <Image
+                  src={item.product.thumbnail || ""}
+                  alt={item.product.productName}
+                  width={70}
+                  height={80}
+                  className={cx("ProductImage")}
+                />
+                <div className={cx("PriceAndButtons")}>
+                  <strong className={cx("ItemPrice")}>
+                    {item.totalPrice.toLocaleString()}원
+                  </strong>
+                  <div className={cx("QuantityWrapper")}>
                     <button
-                      onClick={() => handleRemove(item.cartItemId)}
-                      className={cx("RemoveButton")}
+                      onClick={() =>
+                        handleQuantityChange(item.id, item.quantity - 1)
+                      }
+                      disabled={item.quantity <= 1 || isUpdating}
+                    >
+                      <LuMinus />
+                    </button>
+                    <span>{item.quantity}</span>
+                    <button
+                      onClick={() =>
+                        handleQuantityChange(item.id, item.quantity + 1)
+                      }
                       disabled={isUpdating}
                     >
-                      <LuX />
+                      <LuPlus />
                     </button>
                   </div>
-                </li>
-              ))}
-            </ul>
-            <div className={cx("Summary")}>
-              <p>
-                <span>총 상품 금액</span>
-                <span>{salesPrice.toLocaleString()} 원</span>
-              </p>
-              <p>
-                <span>배송비</span>
-
-                <span>{deliveryFee}원</span>
-              </p>
-
-              <p>
-                <span>결제 예정 금액</span>
-                <strong className={cx("TotalPrice")}>
-                  {totalPrice.toLocaleString()} 원
-                </strong>
-              </p>
-              <div className="PayButton">
-                <Button
-                  disabled={cartList.length === 0 || isUpdating}
-                  type={"submit"}
-                  onClick={handlePayment}
+                </div>
+                <button
+                  onClick={() => handleRemove(item.id)}
+                  className={cx("RemoveButton")}
+                  disabled={isUpdating}
                 >
-                  <span style={{ fontSize: "15px" }}>
-                    {" "}
-                    {totalPrice.toLocaleString()}원 결제하기
-                  </span>
-                </Button>
+                  <LuX />
+                </button>
               </div>
-            </div>
-          </>
-        )}
+            </li>
+          ))}
+        </ul>
+        <div className={cx("Summary")}>
+          <p>
+            <span>총 상품 금액</span>
+            <span>{salesPrice.toLocaleString()}원</span>
+          </p>
+          <p>
+            <span>배송비</span>
+            <span>{deliveryFee.toLocaleString()}원</span>
+          </p>
+          <p>
+            <span>결제 예정 금액</span>
+            <strong className={cx("TotalPrice")}>
+              {totalPrice.toLocaleString()}원
+            </strong>
+          </p>
+          <div className="PayButton">
+            <Button
+              disabled={cartList.cartItem.length === 0 || isUpdating}
+              type="submit"
+              onClick={handlePayment}
+            >
+              <span style={{ fontSize: "15px" }}>
+                {totalPrice.toLocaleString()}원 결제하기
+              </span>
+            </Button>
+          </div>
+        </div>
       </section>
 
       <ModalWrap isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
