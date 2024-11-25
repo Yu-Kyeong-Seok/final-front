@@ -227,7 +227,6 @@ export default function MypageView() {
       >
           <p className={cx("ModalMessage")}>{yesorNoModalMessage}</p>
       </ModalYesorNoWrap>
-      
       <ModalWrap 
             isOpen={isModalOpen} 
             onClose={closeModal} 
@@ -235,8 +234,6 @@ export default function MypageView() {
         >
             <p>{modalMessage}</p>
         </ModalWrap>
-
-
     </div>
   );
 }

@@ -1,0 +1,143 @@
+.Wrapper{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-top:16px;
+   z-index:102;
+
+//    &.searching{
+//     background-color: white;
+
+//    }
+}
+.searchBox{
+    width:calc(100% - 40px);
+    height:40px;
+    background-color:#F6F6F6;
+    margin: 0 auto; // 가운데 정렬을 위해 추가
+    border:none;
+    border-radius:5px;
+   box-shadow: 0px 4px 4px 0px #b2b2b2;
+   //display: flex;
+   align-items: center;
+//    gap:20px;
+   //display: flex;
+  // flex-direction: column;
+
+   .searchForm{
+    display: flex;
+        width: 100%;
+        padding: 0 10px;  
+        position:relative;
+        height:40px;
+        
+   }
+
+}
+.inputWrapper{
+    display: flex;
+    align-items: center;
+    width: 100%;  
+    position: relative;
+}
+.dropdown{
+    position: relative;
+    top:25px;
+    left:0;
+    right:0;
+    width:100%;
+    background-color: white;
+    z-index: 1000;
+
+    .dropdownItemList{
+        list-style: none;
+        
+        padding:20px 0 0 10px;
+        border-bottom: 1px solid #F6F6F6;
+        height: 52px;
+    }
+    .dropdownItem{
+        font-size:15px;
+        color:var(--color-700)
+    }
+}
+.searchIcon{
+    font-size:20px;
+    margin-left:20px;
+    color:#CCCCCC;
+}
+.Input{
+    border:0;
+    background-color:#F6F6F6;
+    padding:10px;
+    flex:1 auto;
+}
+
+.closeBtn{
+    font-size:30px;
+   color:#CCCCCC;
+
+}
+.searchWrapper{
+    margin:33px 0 0 20px;
+
+}
+.searchTitle{
+    font-size:large;
+    font-weight: 500;
+}
+.searchContainer{
+
+    // display: grid;
+    // grid-template-columns: repeat(4,1fr);
+    // width:350px;
+    display: flex;
+    flex-wrap: wrap;
+    // justify-content: center;
+    // align-items: center;
+    gap:10px;
+    margin-top:16px;
+}
+.upSearchContainer{
+    margin-top:42px;
+}
+.detail{
+    color:#7F7F7F;
+    display: block;
+    margin-top:13px;
+}
+.list{
+    display: flex;
+    flex-direction: column;
+    margin-top:42px;
+
+
+}
+.items{
+    display: flex;
+    gap:20px;
+    padding:10px;
+    border-bottom: 1px solid #F6F6F6;
+
+    .index{
+        color:var( --color-main);
+        font-family:500;
+        font-size: 15px;
+    }
+
+    .listItem{
+        font-size: 15px;
+        color:var(--color-700)
+    }
+}
+
+// .overlay{
+//     position:fixed;
+//     top:0;
+//     left:0;
+//     right:0;
+//     bottom:0;
+//     //background-color: white;
+//     z-index:100
+// }
+
