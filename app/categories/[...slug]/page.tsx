@@ -1,13 +1,5 @@
-import { Metadata } from "next";
-import CategoryMenu from "@/src/views/category/category.view";
-import ProductItem from "@/src/components/ProductItem/ProductItem";
-import { fetchProductsByCategory } from "@/src/api/product.api";
-
-
-export const metadata: Metadata = {
-    title: '카테고리',
-    description: '카테고리 페이지',
-};
+import { fetchProductsByCategory } from '@/src/api/product.api';
+import CategoriesView from '@/src/views/categories/categories.view';
 
 interface CategoryPageProps {
     params: {
@@ -15,26 +7,21 @@ interface CategoryPageProps {
     };
 }
 
-export default async function CategoryProductPage({ params }: CategoryPageProps) {
-    const [mainCategory, subCategory] = params.slug || [];
-    const products = await fetchProductsByCategory(mainCategory, subCategory);
+export default async function CategoryPage({ params }: CategoryPageProps) {
+    const { slug } = params;
+    const category = slug[0];
+    const subcategory = slug[1];
 
-    const productsWithDefaultImage = products.map(product => ({
-        ...product,
-        img: product.img || 'assets/images/sample.jpg'  // product.img가 없으면 기본 이미지 사용
-    }));
-    
-    return (
-        <div>
-            <CategoryMenu />
-            <div className="list-wrap">
-                {productsWithDefaultImage.map((product, index) => (
-                    <ProductItem 
-                        key={index}
-                        product={product}
-                    />
-                ))}
-            </div>
-        </div>
-    );
+    if (!category || !subcategory) {
+        return <div>Invalid category</div>;
+    }
+
+    try {
+        const products = await fetchProductsByCategory(category, subcategory);
+        console.log(products);
+        return <CategoriesView category={category} subcategory={subcategory} products={products} />;
+    } catch (error) {
+        console.error('Error fetching category products:', error);
+        return <div>Error occurred while fetching products</div>;
+    }
 }

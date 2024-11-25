@@ -6,6 +6,7 @@ import styles from "./ProductItem.module.scss";
 import cn from 'classnames/bind';
 import { TransformedProduct } from "@/src/api/product.api";
 import { MdOutlineShoppingBag } from "react-icons/md";
+import Image from 'next/image';
 
 const cx = cn.bind(styles);
 
@@ -17,8 +18,15 @@ const ProductItem = ({ product }: ProductItemProps) => (
     <div className={cx("product")}>
         <Link href={`/products/${product.id}`} className={cx("productLink")}>
             <div className={cx("img")}>
-                <img src={product.img} alt={product.name} />
-                {/* cart 버튼은 Link 밖으로 빼서 독립적으로 클릭 가능하게 함 */}
+                {product.img ? (
+                    <img 
+                        src={product.img} 
+                        alt={product.name}
+                    />
+                ) : (
+                    // 이미지가 없을 경우 기본 이미지나 플레이스홀더 표시
+                    <div className={cx("noImage")}>상품 이미지 없음</div>
+                )}
                 <button 
                     className={cx("cart")} 
                     onClick={(e) => {
