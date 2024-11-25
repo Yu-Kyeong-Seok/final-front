@@ -36,9 +36,9 @@ export default function CategoriesView(props: CategoriesViewProps) {
                         <div key={product.id || `${product.name}-${index}`} className={cx("list-item")}>
                             <ProductItem product={product}/>
                         </div>
-                        )
-                    })}
-                </div>
+                    )
+                })}
+            </div>
         </div>
     );
 }
