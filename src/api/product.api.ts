@@ -6,11 +6,12 @@ export interface Product {
     rdate: string;
     thumbnail: string | null;
     img: string | null;
-    delivery: string;
+    delivery?: string;
     seller: string;
     description: string | null;
     packageType: string | null;
     category:string;
+    subCategory:string;
     detail: string;
     __v: number;
 }
@@ -21,6 +22,7 @@ export interface TransformedProduct extends Omit<Product, '_id' | 'productName' 
     salePrice: number;   // sales를 salePrice로 변환
 }
 
+// 전체 상품 조회 함수 추가
 export const fetchProducts = async () => {
     try {
         const response = await fetch(process.env.NEXT_PUBLIC_SERVER_URL + '/api/products');
@@ -38,17 +40,19 @@ export const fetchProducts = async () => {
         throw(error)
     }
 }
+
+// 카테고리별 상품 조회 함수
 export const fetchProductsByCategory = async (mainCategory: string, subCategory: string) => {
     try {
-        const response = await fetch(process.env.NEXT_PUBLIC_SERVER_URL + '/api/products');
+        const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/products/categories?category=${mainCategory}&subCategory=${subCategory}`);
         const data = await response.json();
-        
-        // 카테고리로 필터링
-        const filteredData = data.filter((item: Product) => {
-            return item.category === `${mainCategory}/${subCategory}`;
-        });
 
-        const transformedData = filteredData.map((item: Product): TransformedProduct => ({
+        if (!data.results || !Array.isArray(data.results)) {
+            console.error("Unexpected data format:", data);
+            throw new Error("Invalid data format");
+        }
+
+        const transformedData = data.results.map((item: Product): TransformedProduct => ({
             ...item,
             id: item._id,
             name: item.productName,

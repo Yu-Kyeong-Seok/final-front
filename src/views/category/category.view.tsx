@@ -1,10 +1,11 @@
-'use client'
-import React, { useState } from 'react';
+'use client';
+import React, { useState, useEffect } from 'react';
 import { ChevronDown } from 'lucide-react';
 import styles from "./category.module.scss";
 import cn from "classnames/bind";
 import Link from 'next/link';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { usePathname } from 'next/navigation';
+import { fetchProducts, TransformedProduct } from '@/src/api/product.api';
 
 const cx = cn.bind(styles);
 
@@ -13,47 +14,53 @@ interface CategoryType {
     sub: string[];
 }
 
-const categories: CategoryType[] = [
-    {
-        main: "채소",
-        sub: ["전체보기", "친환경", "고구마·감자·당근", "시금치·쌈채소·나물", "브로콜리·파프리카·양배추", "오이·호박·고추", "냉동채소", "기타채소"]
-    },
-    {
-        main: "과일·견과·쌀",
-        sub: ["전체보기", "친환경", "제철과일", "국산과일", "수입과일", "견과류", "쌀·잡곡"]
-    },
-    {
-        main: "수산·해산·건어물",
-        sub: ["전체보기", "제철수산", "생선류", "굴비·반건류", "오징어·낙지·문어", "새우·게·랍스터", "해산물·조개류", "수산가공품", "김·미역·해조류"]
-    },
-    {
-        main: "정육·계란",
-        sub: ["전체보기", "국내산 소고기", "수입산 소고기", "돼지고기", "계란류", "닭·오리고기", "양념육·돈까스", "양고기"]
-    },
-    {
-        main: "국·반찬·메인요리",
-        sub: ["전체보기", "국·탕·찌개", "밑반찬", "김치·젓갈·장류", "두부·어묵·부침개", "메인요리"]
-    },
-];
-
 export default function CategoryMenu() {
-    const router = useRouter();
-    const searchParams = useSearchParams();
+    const pathname = usePathname();
     const [openCategory, setOpenCategory] = useState<string | null>(null);
+    const [categories, setCategories] = useState<CategoryType[]>([]);
 
-    const handleCategoryClick = (category: string) => {
-        if (openCategory === category) {
-            setOpenCategory(null);
-        } else {
-            setOpenCategory(category);
-        }
+    useEffect(() => {
+        // 데이터 패치 로직
+        const fetchCategories = async () => {
+            try {
+                const data = await fetchProducts();
+                const extractedCategories = extractCategories(data);
+                setCategories(extractedCategories);
+            } catch (error) {
+                console.error(error);
+            }
+        };
+
+        fetchCategories();
+    }, []);
+
+    console.log(fetchProducts);
+
+    const extractCategories = (products: TransformedProduct[]): CategoryType[] => {
+        const categoryMap: { [key: string]: Set<string> } = {};
+
+        products.forEach((product) => {
+            const { category, subCategory } = product;
+
+            if (!categoryMap[category]) {
+                categoryMap[category] = new Set();
+            }
+
+            categoryMap[category].add(subCategory);
+        });
+
+        return Object.entries(categoryMap).map(([main, sub]) => ({
+            main,
+            sub: Array.from(sub),
+        }));
     };
 
-    const createQueryString = (main: string, sub: string) => {
-        const params = new URLSearchParams(searchParams.toString());
-        params.set('main', main);
-        params.set('sub', sub);
-        return params.toString();
+    const handleCategoryClick = (category: string) => {
+        setOpenCategory(prevCategory => prevCategory === category ? null : category);
+    };
+
+    const createCategoryUrl = (main: string, sub: string) => {
+        return `/categories/${encodeURIComponent(main)}/${encodeURIComponent(sub)}`;
     };
 
     return (
@@ -74,9 +81,9 @@ export default function CategoryMenu() {
                         <div className={cx('subCategories', { open: openCategory === category.main })}>
                             {category.sub.map((subCategory) => (
                                 <Link
-                                    key={subCategory}
-                                    href={`/category?${createQueryString(category.main, subCategory)}`}
-                                    className={cx('subCategory')}
+                                    key={`${category.main}-${subCategory}`}
+                                    href={createCategoryUrl(category.main, subCategory)}
+                                    className={cx('subCategory', { active: pathname === createCategoryUrl(category.main, subCategory) })}
                                 >
                                     {subCategory}
                                 </Link>
