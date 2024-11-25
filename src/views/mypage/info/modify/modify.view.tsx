@@ -38,6 +38,7 @@ const ModifyView = () => {
     const [showVerificationInput, setShowVerificationInput] = useState(false); // 인증번호 확인 입력 필드 표시 여부
     const [timer, setTimer] = useState(0); // 남은 시간 (초 단위)
 
+    const [isMove, setIsMove] = useState(false);
     const [myEmail, setMyEmail] = useState<string | null>(null);
 
     const form = useForm<ModifyFormType>({
@@ -184,7 +185,8 @@ const ModifyView = () => {
 
                 if (response.status === 200) {
                     setModalMessage("개인정보 수정 성공!");
-                    router.push("/"); // 회원가입 성공 시 로그인으로 이동
+                    setIsMove(true);
+                    // router.push("/"); 
                 } else {
                     setModalMessage("개인정보 수정에 실패했습니다.");
                 }
@@ -196,7 +198,9 @@ const ModifyView = () => {
         },
         (error) => {
             const [key, { message }] = Object.entries(error)[0];
-            console.log(message);
+            setModalMessage(message as string);
+            openModal();
+            // console.log(message);
         }
     );
     // 중복확인
@@ -252,6 +256,9 @@ const ModifyView = () => {
     const openModal = () => setIsModalOpen(true);
     const closeModal = () => setIsModalOpen(false);
     const handleConfirm = () => {
+        if(isMove) {
+            router.push("/");
+        }
     };
 
     

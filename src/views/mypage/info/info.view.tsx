@@ -22,6 +22,8 @@ const InfoView = () => {
     const [userId, setUserId] = useState<string | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
     
+    const [isMove, setIsMove] = useState(false);
+
     const form = useForm<InfoFormType>({
         mode: "onSubmit",
         reValidateMode: "onSubmit",
@@ -95,7 +97,7 @@ const InfoView = () => {
                     const res = await response.json();
                     
                     setModalMessage("비밀번호 확인 성공!");
-                    router.push("/mypage/info/modify"); 
+                    setIsMove(true);
                 } else {
                     setModalMessage("비밀번호 확인에 실패했습니다.");
                 }
@@ -108,7 +110,9 @@ const InfoView = () => {
         },
         (error) => {
             const [key, { message }] = Object.entries(error)[0];
-            console.log(message);
+            setModalMessage(message as string);
+            openModal();
+            // console.log(message);
         }
     );
 
@@ -119,6 +123,9 @@ const InfoView = () => {
     const openModal = () => setIsModalOpen(true);
     const closeModal = () => setIsModalOpen(false);
     const handleConfirm = () => {
+        if(isMove) {
+            router.push("/mypage/info/modify"); 
+        }
     };
 
     return ( 

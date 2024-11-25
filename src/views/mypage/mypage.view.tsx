@@ -34,6 +34,7 @@ export default function MypageView() {
 
   const [loading, setLoading] = useState<boolean>(true);
 
+  const [isMove, setIsMove] = useState(false);
     // 사용자 정보를 가져오는 함수
     const fetchUserInfo = async () => {
       try {
@@ -57,9 +58,9 @@ export default function MypageView() {
               setEmail(res.data.email);
               setAddress(res.data.profile.delivery.defaultAddress);
           } 
-          else if( response.status === 401) {
-            handleClick("/auth/login")
-          }
+          // else if( response.status === 401) {
+          //   handleClick("/auth/login")
+          // }
           else {
               throw new Error("사용자 정보를 가져오는 데 실패했습니다.");
           }
@@ -107,6 +108,9 @@ export default function MypageView() {
     const openModal = () => setIsModalOpen(true);
     const closeModal = () => setIsModalOpen(false);
     const handleConfirm = () => {
+      if(isMove) {
+        handleClick("/")
+      }
     };
 
   /** 로그아웃 */
@@ -129,7 +133,8 @@ export default function MypageView() {
               
               document.cookie = "accessToken=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT;";
               setModalMessage("로그아웃 되었습니다!"); 
-              handleClick("/")
+              // handleClick("/")
+              setIsMove(true);
           } else {
             setModalMessage("로그아웃에 실패"); 
           }
@@ -156,10 +161,13 @@ export default function MypageView() {
     if (response.ok) {
           const res = await response;
           
-          console.log(response);
+          // console.log(response);
+          
+          document.cookie = "accessToken=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT;";
           
           setModalMessage("회원탈퇴 되었습니다!");
-          handleClick("/")
+          // handleClick("/")
+          setIsMove(true);
       } else {
         setModalMessage("회원탈퇴 실패");
       }

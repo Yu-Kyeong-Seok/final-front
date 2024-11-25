@@ -30,6 +30,7 @@ const SignUpView = () => {
     const [isCheckId, setIsCheckId] = useState(false); 
     const [isCheckEmail, setIsCheckEmail] = useState(false);
     const [isCheckVerification, setIsCheckVerification] = useState(false);
+    const [isMove, setIsMove] = useState(false);
 
     const [showVerificationInput, setShowVerificationInput] = useState(false); // 인증번호 확인 입력 필드 표시 여부
     const [timer, setTimer] = useState(0); // 남은 시간 (초 단위)
@@ -102,14 +103,19 @@ const SignUpView = () => {
     // 가입하기
     const handleSubmit = form.handleSubmit(
         async (data) => {
-
             if(!isCheckId || !isCheckEmail)
             {
                 setModalMessage("중복확인 해주세요");
                 openModal();
                 return;
             }
-
+            if(!isCheckVerification)
+            {
+                setModalMessage("휴대폰 인증을 해주세요");
+                openModal();
+                return;
+            }
+            
             try {
                 const response = await fetch( process.env.NEXT_PUBLIC_SERVER_URL + "/api/users", {
                     method: "POST",
@@ -129,16 +135,14 @@ const SignUpView = () => {
 
                 if (response.status === 200) {
                     setModalMessage("회원가입 성공!");
-                    router.push("/auth/login"); // 회원가입 성공 시 로그인으로 이동
+                    setIsMove(true);
+                    // router.push("/auth/login"); // 회원가입 성공 시 로그인으로 이동
                 } else {
                     setModalMessage("회원가입에 실패했습니다.");
                 }
             } catch (error: any) {
-                if (error.response && error.response.data.message) {
-                    setModalMessage(error.response.data.message); // 서버에서 보낸 에러 메시지
-                } else {
-                    setModalMessage("회원가입 중 문제가 발생했습니다.");
-                }
+                setModalMessage("회원가입 중 문제가 발생했습니다.");
+                console.log(error);
             } finally {
                 openModal();
     
@@ -146,7 +150,9 @@ const SignUpView = () => {
         },
         (error) => {
             const [key, { message }] = Object.entries(error)[0];
-            console.log(message);
+            setModalMessage(message as string);
+            openModal();
+            // console.log(message);
         }
     );
 
@@ -289,6 +295,9 @@ const SignUpView = () => {
     const openModal = () => setIsModalOpen(true);
     const closeModal = () => setIsModalOpen(false);
     const handleConfirm = () => {
+        if(isMove) {
+            router.push("/auth/login"); // 회원가입 성공 시 로그인으로 이동
+        }
     };
 
     return (

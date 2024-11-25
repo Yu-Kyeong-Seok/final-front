@@ -23,6 +23,8 @@ const LoginView = () => {
         router.push(path);
     };
 
+    const [isMove, setIsMove] = useState(false);
+
     const form = useForm<LoginFormType>({
         mode: "onSubmit",
         reValidateMode: "onSubmit",
@@ -68,7 +70,8 @@ const LoginView = () => {
 
                     fetchUserInfo();
 
-                    router.push("/"); // 로그인 성공 시 대시보드로 이동
+                    // router.push("/"); // 로그인 성공 시 대시보드로 이동
+                    setIsMove(true);
                 } else {
                     setModalMessage("로그인에 실패했습니다.");
                 }
@@ -81,7 +84,9 @@ const LoginView = () => {
         },
         (error) => {
             const [key, { message }] = Object.entries(error)[0];
-            console.log(message);
+            setModalMessage(message as string);
+            openModal();
+            // console.log(message);
         }
     );
     
@@ -118,6 +123,9 @@ const LoginView = () => {
     const openModal = () => setIsModalOpen(true);
     const closeModal = () => setIsModalOpen(false);
     const handleConfirm = () => {
+        if(isMove) {
+            router.push("/"); // 회원가입 성공 시 로그인으로 이동
+        }
     };
     
     return (
