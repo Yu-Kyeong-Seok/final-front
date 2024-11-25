@@ -1,6 +1,303 @@
 .PageContainer {
   background-color: #f6f6f6;
   padding: 10px;
+
+  .EmptyState {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: calc(100dvh - 110px);
+    gap: 20px;
+
+    h3 {
+      font-size: 18px;
+    }
+    p {
+      font-size: 16px;
+    }
+    button {
+      width: 50%;
+    }
+  }
+
+  .Contents {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .Item {
+    background-color: var(--color-white);
+    border-radius: 6px;
+    padding: 20px;
+    box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  .ItemHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+  }
+
+  .ItemIcon {
+    padding-left: 10px;
+  }
+
+  .ItemContent {
+    height: 0;
+    overflow: hidden;
+    border-top: 1px solid var(--color-100);
+    padding-top: 15px;
+    margin-top: 15px;
+    font-size: 15px;
+    transition: height 0.5s ease-out;
+  }
+
+  .ItemContent.open {
+    height: auto;
+  }
+
+  .ItemDetail {
+    display: flex;
+    padding: 5px 0;
+    align-items: center;
+    // justify-content: space-between;
+
+    .ProductImage {
+      object-fit: cover;
+      border-radius: 5px;
+    }
+
+    .OrderInfo {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      padding-left: 15px;
+
+      .InfoTitle {
+        font-weight: 400;
+      }
+
+      .ItemInfo .ItemInfoDetail {
+        font-weight: 600;
+        &:nth-child(2) {
+          padding-left: 5px;
+          padding-right: 10px;
+          text-decoration: line-through;
+          color: var(--color-400);
+          font-size: 13px;
+          font-weight: 400;
+          &::after {
+            content: "";
+            display: inline-block;
+            width: 1px;
+            height: 11px;
+            background-color: var(--color-400);
+            margin-left: 15px;
+          }
+        }
+      }
+    }
+  }
+
+  // 주문자 정보
+  .UserInfo {
+    display: flex;
+    gap: 50px;
+    font-size: 15px;
+
+    .UserInfoDetail {
+      li {
+        padding: 6px;
+      }
+    }
+
+    .InfoText {
+      color: var(--color-600);
+    }
+  }
+
+  // 배송지
+  .Address,
+  .Payment {
+    // border-top: 1px solid var(--color-100);
+    padding-top: 15px;
+    // margin-top: 15px;
+    font-size: 15px;
+
+    ul {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      .AddressInfo {
+        line-height: 1.3;
+        width: 80%;
+        font-weight: 500;
+        font-size: 16px;
+        // width: 100%;
+        // text-overflow: ellipsis;
+        // overflow: hidden;
+        // white-space: nowrap;
+      }
+
+      .AddressBtn {
+        button {
+          padding: 5px 10px;
+          font-weight: 600;
+          color: var(--color-700);
+          border: 1px solid var(--color-200);
+        }
+      }
+    }
+  }
+
+  // 결제 수단
+  .Payment {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+    .PaymentMethodsContainer {
+      display: flex;
+
+      .PaymentButtonWrapper {
+        flex: 1;
+        padding: 2.5px;
+
+        button {
+          color: var(--color-700);
+          border: 1px solid var(--color-200);
+          font-weight: 600;
+
+          &:active,
+          &:focus {
+            background-color: var(--color-main2);
+            color: var(--color-white);
+            border: none;
+          }
+        }
+      }
+    }
+
+    .Kakao {
+      button {
+        background-color: #fbd821;
+        color: var(--color-700);
+        font-weight: 600;
+        border: none;
+      }
+    }
+  }
+
+  // 상품 금액
+  .Total {
+    font-size: 15px;
+    padding-top: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+
+    ul {
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .DeliveryFee {
+      padding-bottom: 10px;
+    }
+
+    .ItemHeader {
+      display: flex;
+      padding-top: 20px;
+      border-top: 1px solid var(--color-100);
+
+      .TotalAmout {
+        font-size: 17px;
+        font-weight: 600;
+      }
+    }
+  }
+
+  // 결제 텍스트 & 최종 결제 버튼
+  .PaymentTitle {
+    font-size: 15px;
+  }
+  .PaymentButton {
+    padding-top: 20px;
+
+    button {
+      font-size: 16px;
+    }
+  }
+
+  // 결제완료 바텀시트
+  .PayBottomSheet {
+    font-size: 23px;
+
+    .BottomSheetContent {
+      display: flex;
+      flex-direction: column;
+      gap: 30px;
+      align-items: center;
+      padding: 30px 0 0 0;
+
+      @media (min-width: 768px) {
+        padding: 70px 40px 0 40px;
+      }
+
+      .BottomSheetIcon {
+        color: var(--color-main);
+        font-size: 70px;
+      }
+
+      .BottomSheetText {
+        text-align: center;
+        padding-bottom: 50px;
+
+        h3 {
+          padding-bottom: 15px;
+          font-weight: 500;
+          color: var(--color-600);
+        }
+      }
+
+      .ItemHeader {
+        font-size: 20px;
+        color: var(--color-600);
+        width: 100%;
+        padding-bottom: 20px;
+
+        .TotalAmout {
+          margin-left: auto;
+          color: var(--color-900);
+          font-weight: 700;
+        }
+      }
+
+      .BottomSheetBtns {
+        display: flex;
+        width: 100%;
+        gap: 10px;
+        // @media (min-width: 768px) {
+        // }
+        button {
+          font-size: 15px;
+          flex-grow: 1;
+
+          &:nth-child(1) {
+            font-weight: 600;
+            color: var(--color-700);
+            border: 1px solid var(--color-200);
+          }
+        }
+      }
+    }
+  }
 }
 
 // .PageHeader {
@@ -9,281 +306,3 @@
 //   padding-bottom: 10px;
 //   font-size: 18px;
 // }
-
-.Contents {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.Item {
-  background-color: var(--color-white);
-  border-radius: 6px;
-  padding: 20px;
-  box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.1);
-}
-
-.ItemHeader {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-size: 16px;
-  font-weight: 500;
-  cursor: pointer;
-}
-
-.ItemIcon {
-  padding-left: 10px;
-}
-
-.ItemContent {
-  height: 0;
-  overflow: hidden;
-  border-top: 1px solid var(--color-100);
-  padding-top: 15px;
-  margin-top: 15px;
-  font-size: 15px;
-  transition: height 0.5s ease-out;
-}
-
-.ItemContent.open {
-  height: auto;
-}
-
-.ItemDetail {
-  display: flex;
-  padding: 5px 0;
-  align-items: center;
-  // justify-content: space-between;
-
-  .ProductImage {
-    object-fit: cover;
-    border-radius: 5px;
-  }
-
-  .OrderInfo {
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-    padding-left: 15px;
-
-    .InfoTitle {
-      font-weight: 400;
-    }
-
-    .ItemInfo .ItemInfoDetail {
-      font-weight: 600;
-      &:nth-child(2) {
-        padding-left: 5px;
-        padding-right: 10px;
-        text-decoration: line-through;
-        color: var(--color-400);
-        font-size: 13px;
-        font-weight: 400;
-        &::after {
-          content: "";
-          display: inline-block;
-          width: 1px;
-          height: 11px;
-          background-color: var(--color-400);
-          margin-left: 15px;
-        }
-      }
-    }
-  }
-}
-
-// 주문자 정보
-.UserInfo {
-  display: flex;
-  gap: 50px;
-  font-size: 15px;
-
-  .UserInfoDetail {
-    li {
-      padding: 6px;
-    }
-  }
-
-  .InfoText {
-    color: var(--color-600);
-  }
-}
-
-// 배송지
-.Address,
-.Payment {
-  // border-top: 1px solid var(--color-100);
-  padding-top: 15px;
-  // margin-top: 15px;
-  font-size: 15px;
-
-  ul {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-
-    .AddressInfo {
-      line-height: 1.3;
-      width: 80%;
-      font-weight: 500;
-      font-size: 16px;
-      // width: 100%;
-      // text-overflow: ellipsis;
-      // overflow: hidden;
-      // white-space: nowrap;
-    }
-
-    .AddressBtn {
-      button {
-        padding: 5px 10px;
-        font-weight: 600;
-        color: var(--color-700);
-        border: 1px solid var(--color-200);
-      }
-    }
-  }
-}
-
-// 결제 수단
-.Payment {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-
-  .PaymentMethodsContainer {
-    display: flex;
-
-    .PaymentButtonWrapper {
-      flex: 1;
-      padding: 2.5px;
-
-      button {
-        color: var(--color-700);
-        border: 1px solid var(--color-200);
-        font-weight: 600;
-
-        &:active,
-        &:focus {
-          background-color: var(--color-main2);
-          color: var(--color-white);
-          border: none;
-        }
-      }
-    }
-  }
-
-  .Kakao {
-    button {
-      background-color: #fbd821;
-      color: var(--color-700);
-      font-weight: 600;
-      border: none;
-    }
-  }
-}
-
-// 상품 금액
-.Total {
-  font-size: 15px;
-  padding-top: 10px;
-  display: flex;
-  flex-direction: column;
-  gap: 7px;
-
-  ul {
-    display: flex;
-    justify-content: space-between;
-  }
-
-  .DeliveryFee {
-    padding-bottom: 10px;
-  }
-
-  .ItemHeader {
-    display: flex;
-    padding-top: 20px;
-    border-top: 1px solid var(--color-100);
-
-    .TotalAmout {
-      font-size: 17px;
-      font-weight: 600;
-    }
-  }
-}
-
-// 결제 텍스트 & 최종 결제 버튼
-.PaymentTitle {
-  font-size: 15px;
-}
-.PaymentButton {
-  padding-top: 20px;
-
-  button {
-    font-size: 16px;
-  }
-}
-
-// 결제완료 바텀시트
-.PayBottomSheet {
-  font-size: 23px;
-
-  .BottomSheetContent {
-    display: flex;
-    flex-direction: column;
-    gap: 30px;
-    align-items: center;
-    padding: 30px 0 0 0;
-
-    @media (min-width: 768px) {
-      padding: 70px 40px 0 40px;
-    }
-
-    .BottomSheetIcon {
-      color: var(--color-main);
-      font-size: 70px;
-    }
-
-    .BottomSheetText {
-      text-align: center;
-      padding-bottom: 50px;
-
-      h3 {
-        padding-bottom: 15px;
-        font-weight: 500;
-        color: var(--color-600);
-      }
-    }
-
-    .ItemHeader {
-      font-size: 20px;
-      color: var(--color-600);
-      width: 100%;
-      padding-bottom: 20px;
-
-      .TotalAmout {
-        margin-left: auto;
-        color: var(--color-900);
-        font-weight: 700;
-      }
-    }
-
-    .BottomSheetBtns {
-      display: flex;
-      width: 100%;
-      gap: 10px;
-      // @media (min-width: 768px) {
-      // }
-      button {
-        font-size: 15px;
-        flex-grow: 1;
-
-        &:nth-child(1) {
-          font-weight: 600;
-          color: var(--color-700);
-          border: 1px solid var(--color-200);
-        }
-      }
-    }
-  }
-}

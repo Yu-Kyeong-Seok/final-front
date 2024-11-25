@@ -17,16 +17,32 @@ import ModalWrap from "@/src/components/Modal/Modal";
 const cx = cn.bind(styles);
 
 interface OrderViewProps {
-  cartData: CartItem;
+  cartItemData: CartItem & {
+    salesPrice: number;
+    deliveryFee: number;
+    totalPrice: number;
+  };
   onCreateOrder: (
     orderRequest: CreateOrderRequest
   ) => Promise<IOrderResponseDTO>;
   userInfo: DeliveryAddress[];
+  isLoading?: boolean;
+  error?: string | null;
+  noCartData?: boolean;
+  noDeliveryInfo?: boolean;
 }
 
 type BottomSheetState = "SUCCESS" | "CLOSED";
 
-const OrderView = ({ cartData, onCreateOrder, userInfo }: OrderViewProps) => {
+const OrderView = ({
+  cartItemData,
+  onCreateOrder,
+  userInfo,
+  isLoading,
+  error,
+  noCartData,
+  noDeliveryInfo,
+}: OrderViewProps) => {
   const router = useRouter();
   const [isOrderOpen, setIsOrderOpen] = useState(false);
   const [isUserOpen, setIsUserOpen] = useState(false);
@@ -40,22 +56,64 @@ const OrderView = ({ cartData, onCreateOrder, userInfo }: OrderViewProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalMessage, setModalMessage] = useState<string>("");
 
+  if (isLoading) {
+    return (
+      <div className={cx("PageContainer")}>
+        <div className={cx("LoadingState")}>
+          <span>로딩 중...</span>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className={cx("PageContainer")}>
+        <div className={cx("ErrorState")}>
+          <h3>오류가 발생했습니다</h3>
+          <p>{error}</p>
+          <Button onClick={() => router.back()}>
+            <span>돌아가기</span>
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
+  if (noCartData) {
+    return (
+      <div className={cx("PageContainer")}>
+        <div className={cx("EmptyState")}>
+          <h3>장바구니 정보를 불러올 수 없습니다</h3>
+          <Button onClick={() => router.push("/cart")}>
+            <span>장바구니로 이동</span>
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
+  if (noDeliveryInfo) {
+    return (
+      <div className={cx("PageContainer")}>
+        <div className={cx("EmptyState")}>
+          <h3>등록된 배송지 정보가 없습니다!</h3>
+          <p>먼저 배송지를 등록해주세요.</p>
+          <Button onClick={() => router.push("/deliveryAddress")}>
+            <span>배송지 등록하기</span>
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
   const truncateText = (text: string, maxLength: number) => {
     if (text.length <= maxLength) return text;
     return text.slice(0, maxLength) + "...";
   };
 
-  // 합산금액계산. 할인가 x 수량
-  const salesPrice = cartData.cartItem.reduce(
-    (sum, item) => sum + item.product.sales * item.quantity,
-    0
-  );
-
-  // 배송비. 4만원 이상은 + 3000
-  const deliveryFee = salesPrice >= 40000 ? 0 : 3000;
-
-  // 총 결제금액. 합산금액 + 배송비
-  const totalPrice = deliveryFee + salesPrice;
+  // service에서 계산된 값 사용
+  const { salesPrice, deliveryFee, totalPrice } = cartItemData;
 
   const toggleOrderAccordion = () => {
     setIsOrderOpen(!isOrderOpen);
@@ -84,7 +142,7 @@ const OrderView = ({ cartData, onCreateOrder, userInfo }: OrderViewProps) => {
         deliveryAddress: userInfo[0]?.defaultAddress,
         deliveryRequest: deliveryRequest,
         paymentMethod: selectedPaymentMethod ?? "KAKAO_PAY",
-        orderItem: cartData.cartItem.map((item) => ({
+        orderItem: cartItemData.cartItem.map((item) => ({
           product: item.product.id,
           quantity: item.quantity,
           totalPrice: item.totalPrice,
@@ -99,7 +157,6 @@ const OrderView = ({ cartData, onCreateOrder, userInfo }: OrderViewProps) => {
       console.log("주문 요청 데이터:", JSON.stringify(orderRequest, null, 2));
 
       const response = await onCreateOrder(orderRequest);
-
       console.log("서버 응답 response:::::", response);
 
       if (!response || !response.orderId) {
@@ -180,11 +237,15 @@ const OrderView = ({ cartData, onCreateOrder, userInfo }: OrderViewProps) => {
               <span className={cx("ItemTitle")}>주문상품</span>
               <div>
                 <span className="ItemText">
-                  {cartData.cartItem.length === 1
-                    ? truncateText(cartData.cartItem[0].product.productName, 20)
-                    : `${truncateText(cartData.cartItem[0].product.productName, 20)} 외 ${
-                        cartData.cartItem.length - 1
-                      }건`}
+                  {cartItemData.cartItem.length === 1
+                    ? truncateText(
+                        cartItemData.cartItem[0].product.productName,
+                        20
+                      )
+                    : `${truncateText(
+                        cartItemData.cartItem[0].product.productName,
+                        20
+                      )} 외 ${cartItemData.cartItem.length - 1}건`}
                 </span>
                 <span className={cx("ItemIcon")}>
                   {isOrderOpen ? <LuChevronUp /> : <LuChevronDown />}
@@ -194,7 +255,7 @@ const OrderView = ({ cartData, onCreateOrder, userInfo }: OrderViewProps) => {
 
             {isOrderOpen && (
               <div className={cx("ItemContent", { open: isOrderOpen })}>
-                {cartData.cartItem.map((item) => (
+                {cartItemData.cartItem.map((item) => (
                   <div key={item.id} className={cx("ItemDetail")}>
                     <Image
                       src={item.product.thumbnail || ""}

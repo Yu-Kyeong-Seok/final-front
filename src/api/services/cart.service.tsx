@@ -14,6 +14,12 @@ const CartService = () => {
     try {
       if (!apiUrl) throw new Error("API URL이 설정되지 않았습니다.");
 
+      // cartId 쿠키에서 가져오기
+      const cartId = document.cookie
+        .split("; ")
+        .find((cookie) => cookie.startsWith("cartId="))
+        ?.split("=")[1];
+
       const accessToken = document.cookie
         .split("; ")
         .find((cookie) => cookie.startsWith("accessToken="))
@@ -23,6 +29,7 @@ const CartService = () => {
       const response = await fetch(`${apiUrl}/api/carts`, {
         headers: {
           Authorization: `Bearer ${accessToken}`,
+          "Content-Type": "application/json",
         },
       });
 
@@ -31,17 +38,35 @@ const CartService = () => {
       }
 
       const data: CartItem = await response.json();
-      setCartList(data);
 
-      // 결제를 위한 데이터 저장
-      const orderDetails = {
-        cartId: data.id,
-        items: data.cartItem,
-        totalProductPrice: data.totalProductPrice,
-        shippingFee: data.shippingFee,
-        totalPaymentAmount: data.totalPaymentAmount,
-      };
-      sessionStorage.setItem("orderDetails", JSON.stringify(orderDetails));
+      // cartId와 일치하는 장바구니만 필터링
+      if (data && data.id === cartId) {
+        // 총 금액 계산
+        const totalProductPrice = data.cartItem.reduce(
+          (sum, item) => sum + item.totalPrice,
+          0
+        );
+        const shippingFee = totalProductPrice >= 40000 ? 0 : 3000;
+
+        const userCart: CartItem = {
+          ...data,
+          totalProductPrice,
+          shippingFee,
+          totalPaymentAmount: totalProductPrice + shippingFee,
+        };
+
+        setCartList(userCart);
+
+        // 결제를 위한 데이터 저장
+        const orderDetails = {
+          cartId: userCart.id,
+          items: userCart.cartItem,
+          totalProductPrice: userCart.totalProductPrice,
+          shippingFee: userCart.shippingFee,
+          totalPaymentAmount: userCart.totalPaymentAmount,
+        };
+        sessionStorage.setItem("orderDetails", JSON.stringify(orderDetails));
+      }
     } catch (error) {
       console.error("Fetch 에러", error);
       setError(error instanceof Error ? error.message : "장바구니 조회 실패");
@@ -81,17 +106,6 @@ const CartService = () => {
           `장바구니 수정 실패 (${response.status}): ${errorText}`
         );
       }
-
-      // 로컬 상태 업데이트
-      setCartList((prev) => {
-        if (!prev) return null;
-        return {
-          ...prev,
-          cartItem: prev.cartItem.map((item) =>
-            item.id === cartItemId ? { ...item, quantity, totalPrice } : item
-          ),
-        };
-      });
 
       // 장바구니 데이터 다시 조회하여 최신 정보 업데이트
       await fetchCartList();
@@ -136,10 +150,6 @@ const CartService = () => {
   useEffect(() => {
     fetchCartList();
   }, []);
-
-  if (isLoading) return <div>로딩 중...</div>;
-  if (error) return <div>에러: {error}</div>;
-  if (!cartList) return <div>장바구니가 비어있습니다.</div>;
 
   return (
     <CartView
