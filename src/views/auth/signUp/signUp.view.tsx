@@ -29,6 +29,7 @@ const SignUpView = () => {
 
     const [isCheckId, setIsCheckId] = useState(false); 
     const [isCheckEmail, setIsCheckEmail] = useState(false);
+    const [isCheckVerification, setIsCheckVerification] = useState(false);
 
     const [showVerificationInput, setShowVerificationInput] = useState(false); // 인증번호 확인 입력 필드 표시 여부
     const [timer, setTimer] = useState(0); // 남은 시간 (초 단위)
@@ -150,12 +151,12 @@ const SignUpView = () => {
     );
 
     // 인증번호 받기
-    const handleSendPhoneNumber = async () => {
+    const handleSendVerificationNumber = () => {
         try {
-
+            setIsCheckVerification(false);
             setShowVerificationInput(true); // 클릭 시 인증번호 확인 필드 숨김
 
-            setTimer(5); // 3분 타이머 시작
+            setTimer(180); // 3분 타이머 시작
             // await new Promise((resolve) => setTimeout(resolve, 5000)); // 1분 = 60,000ms
         } catch (error) {
             console.error(error);
@@ -163,6 +164,16 @@ const SignUpView = () => {
 
         }
     }
+    // 인증번호 확인
+    const handlerCheckVerificationNumber = () => {
+        setIsCheckVerification(true);
+        setShowVerificationInput(false);
+        setModalMessage(`확인되었습니다.`);
+        openModal();
+        
+        form.setValue("verificationNumber", "");
+    }
+
     // 중복확인
     const handleCheckDuplicate = async (type: "loginId" | "email", value: string) => {
         if (!value) {
@@ -425,10 +436,9 @@ const SignUpView = () => {
                                         onChange={field.onChange}
                                         value={field.value}
                                     />
-                                    <Button type="button" disabled={!field.value} onClick={handleSendPhoneNumber}>
+                                    <Button type="button" disabled={!field.value} onClick={handleSendVerificationNumber}>
                                         <span>인증번호 받기</span>
                                     </Button>
-                                    {/* {loading ? '전송 중...' : timer > 0 ? `${formatTime(timer)} 후 재시도` : '인증번호 받기'} */}
                                 </div>
                             </React.Fragment>
                         )
@@ -445,7 +455,7 @@ const SignUpView = () => {
                                 <div className={cx("InputContainer")}>
                                     <div className={cx("VerificationNumberWrapper")}>
                                         <Input 
-                                            type="number"
+                                            type="tel"
                                             id={field.name}
                                             name={field.name}
                                             onChange={field.onChange}
@@ -453,7 +463,7 @@ const SignUpView = () => {
                                         />
                                         {timer > 0 ? <span className={cx("VerificationNumber")}>{formatTime(timer)}</span> : ''}
                                     </div>
-                                    <Button type="button" disabled={!field.value}>
+                                    <Button type="button" disabled={!field.value} onClick={handlerCheckVerificationNumber}>
                                         <span>인증번호 확인</span>
                                     </Button>
                                 </div>
@@ -462,7 +472,6 @@ const SignUpView = () => {
                     }}
                     />
                 )}
-                {/* {timer > 0 ? `${formatTime(timer)} 후 재시도` : '인증번호 받기'} */}
                 {/* 이용약관동의 */}
                 <label className={cx("RequiredLabel")}>이용약관동의<span>*</span></label>
                 <div className={cx("Padding")}>
