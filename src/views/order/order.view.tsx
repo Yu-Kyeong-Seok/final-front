@@ -17,7 +17,7 @@ import ModalWrap from "@/src/components/Modal/Modal";
 const cx = cn.bind(styles);
 
 interface OrderViewProps {
-  cartItemData: CartItem;
+  cartData: CartItem;
   onCreateOrder: (
     orderRequest: CreateOrderRequest
   ) => Promise<IOrderResponseDTO>;
@@ -26,11 +26,7 @@ interface OrderViewProps {
 
 type BottomSheetState = "SUCCESS" | "CLOSED";
 
-const OrderView = ({
-  cartItemData,
-  onCreateOrder,
-  userInfo,
-}: OrderViewProps) => {
+const OrderView = ({ cartData, onCreateOrder, userInfo }: OrderViewProps) => {
   const router = useRouter();
   const [isOrderOpen, setIsOrderOpen] = useState(false);
   const [isUserOpen, setIsUserOpen] = useState(false);
@@ -50,7 +46,7 @@ const OrderView = ({
   };
 
   // 합산금액계산. 할인가 x 수량
-  const salesPrice = cartItemData.cartItem.reduce(
+  const salesPrice = cartData.cartItem.reduce(
     (sum, item) => sum + item.product.sales * item.quantity,
     0
   );
@@ -88,7 +84,7 @@ const OrderView = ({
         deliveryAddress: userInfo[0]?.defaultAddress,
         deliveryRequest: deliveryRequest,
         paymentMethod: selectedPaymentMethod ?? "KAKAO_PAY",
-        orderItem: cartItemData.cartItem.map((item) => ({
+        orderItem: cartData.cartItem.map((item) => ({
           product: item.product.id,
           quantity: item.quantity,
           totalPrice: item.totalPrice,
@@ -184,13 +180,10 @@ const OrderView = ({
               <span className={cx("ItemTitle")}>주문상품</span>
               <div>
                 <span className="ItemText">
-                  {cartItemData.cartItem.length === 1
-                    ? truncateText(
-                        cartItemData.cartItem[0].product.productName,
-                        20
-                      )
-                    : `${truncateText(cartItemData.cartItem[0].product.productName, 20)} 외 ${
-                        cartItemData.cartItem.length - 1
+                  {cartData.cartItem.length === 1
+                    ? truncateText(cartData.cartItem[0].product.productName, 20)
+                    : `${truncateText(cartData.cartItem[0].product.productName, 20)} 외 ${
+                        cartData.cartItem.length - 1
                       }건`}
                 </span>
                 <span className={cx("ItemIcon")}>
@@ -201,7 +194,7 @@ const OrderView = ({
 
             {isOrderOpen && (
               <div className={cx("ItemContent", { open: isOrderOpen })}>
-                {cartItemData.cartItem.map((item) => (
+                {cartData.cartItem.map((item) => (
                   <div key={item.id} className={cx("ItemDetail")}>
                     <Image
                       src={item.product.thumbnail || ""}
@@ -262,7 +255,7 @@ const OrderView = ({
             <div className={cx("Address")}>
               <ul>
                 <li className={cx("AddressInfo")}>
-                  {userInfo[0].defaultAddress}
+                  {userInfo[0].defaultAddress} {userInfo[0].detailAddress}
                 </li>
                 <li className={cx("AddressBtn")}>
                   <Button

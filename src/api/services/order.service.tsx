@@ -9,13 +9,20 @@ import {
 } from "@/src/api/@types/order.type";
 
 const OrderService = () => {
-  const [cartItemData, setCartItemData] = useState<CartItem[]>([]);
+  const [cartData, setCartData] = useState<CartItem>({
+    id: "",
+    cartItem: [], // 빈 배열로 초기화
+    totalProductPrice: 0,
+    shippingFee: 0,
+    totalPaymentAmount: 0,
+    userId: "",
+  });
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [userInfo, setUserInfo] = useState<DeliveryAddress[]>([]);
 
   // 장바구니 아이템조회
-  const fetchCartItemData = async () => {
+  const fetchCartData = async () => {
     try {
       const apiUrl = process.env.NEXT_PUBLIC_SERVER_URL;
       if (!apiUrl) throw new Error("API URL이 설정되지 않았습니다.");
@@ -37,10 +44,9 @@ const OrderService = () => {
       if (!response.ok)
         throw new Error(`주문 데이터 로드 실패. 상태 코드: ${response.status}`);
 
-      const data = await response.json();
-      setCartItemData(data.cartItem || []); // cartItem 배열에 접근
-
-      console.log("장바구니조회::::::", data);
+      const data: CartItem = await response.json(); // 응답 데이터를 CartItem 타입으로 지정
+      setCartData(data); // 전체 객체를 설정
+      console.log("::::::장바구니 조회::::::", data);
     } catch (error) {
       console.error("주문 데이터 가져오기 중 오류 발생:", error);
       setError(
@@ -131,7 +137,7 @@ const OrderService = () => {
   };
 
   // useEffect(() => {
-  //   fetchCartItemData();
+  //   fetchcartData();
   // }, []);
 
   // useEffect(() => {
@@ -142,7 +148,7 @@ const OrderService = () => {
     const loadData = async () => {
       setIsLoading(true);
       try {
-        await Promise.all([fetchCartItemData(), fetchUserInfo()]);
+        await Promise.all([fetchCartData(), fetchUserInfo()]);
       } catch (error) {
         console.error("데이터 로딩 중 오류 발생:", error);
         setError(error instanceof Error ? error.message : "알 수 없는 에러");
@@ -165,7 +171,7 @@ const OrderService = () => {
           onClick={() => {
             setError(null);
             setIsLoading(true);
-            Promise.all([fetchCartItemData(), fetchUserInfo()]);
+            Promise.all([fetchCartData(), fetchUserInfo()]);
           }}
         >
           다시 시도
@@ -173,14 +179,13 @@ const OrderService = () => {
       </div>
     );
   }
-
-  if (!cartItemData.length || !userInfo.length) {
+  if (!cartData.cartItem.length || !userInfo.length) {
     return <div>주문 데이터가 없습니다.</div>;
   }
 
   return (
     <OrderView
-      cartItemData={cartItemData}
+      cartData={cartData}
       userInfo={userInfo}
       onCreateOrder={createOrder}
     />
