@@ -5,14 +5,17 @@ const cx = cn.bind(styles);
 
 type ChipProps = {
   label: string;
-  onClick: (label: string) => void;
+  onClick?: (label: string) => void;
   className?: string;
 };
 
 const Chip = (props: ChipProps) => {
   const { label, onClick, className } = props;
   return (
-    <div onClick={() => onClick(label)} className={cx("ChipText", className)}>
+    <div
+      onClick={() => onClick && onClick(label)}
+      className={cx("ChipText", className)}
+    >
       {label}
     </div>
   );
