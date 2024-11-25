@@ -3,6 +3,24 @@
   flex-direction: column;
   background-color: #f6f6f6;
 
+  .EmptyCart {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    // background-color: var(--color-white);
+    font-size: 18px;
+    text-align: center;
+
+    span {
+      display: block;
+      padding-bottom: 15px;
+    }
+
+    button {
+    }
+  }
+
   // padding: 0 15px;
 
   .PageHeader {
@@ -31,23 +49,6 @@
     position: relative;
     min-height: calc(100dvh - 110px);
 
-    .EmptyCart {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      // background-color: var(--color-white);
-      font-size: 18px;
-      text-align: center;
-
-      span {
-        display: block;
-        padding-bottom: 15px;
-      }
-
-      button {
-      }
-    }
     .CartList {
       display: flex;
       flex-direction: column;

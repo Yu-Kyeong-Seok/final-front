@@ -8,26 +8,18 @@ import {
   IOrderResponseDTO,
 } from "@/src/api/@types/order.type";
 
-interface OrderData extends CartItem {
-  salesPrice: number;
-  deliveryFee: number;
-  totalPrice: number;
-}
-
 const OrderService = () => {
-  const [cartData, setCartData] = useState<OrderData | null>(null);
+  const [cartData, setCartData] = useState<CartItem | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [userInfo, setUserInfo] = useState<DeliveryAddress[]>([]);
 
   const apiUrl = process.env.NEXT_PUBLIC_SERVER_URL;
 
-  // 장바구니 아이템조회
   const fetchCartItemData = async () => {
     try {
       if (!apiUrl) throw new Error("API URL이 설정되지 않았습니다.");
 
-      // cartId 쿠키에서 가져오기
       const cartId = document.cookie
         .split("; ")
         .find((cookie) => cookie.startsWith("cartId="))
@@ -53,28 +45,9 @@ const OrderService = () => {
 
       const data: CartItem = await response.json();
 
-      // cartId와 일치하는 장바구니만 필터링
       if (data && data.id === cartId) {
-        // 금액 계산
-        const salesPrice = data.cartItem.reduce(
-          (sum, item) => sum + item.product.sales * item.quantity,
-          0
-        );
-        const deliveryFee = salesPrice >= 40000 ? 0 : 3000;
-        const totalPrice = salesPrice + deliveryFee;
-
-        const orderData: OrderData = {
-          ...data,
-          salesPrice,
-          deliveryFee,
-          totalPrice,
-          totalProductPrice: salesPrice,
-          shippingFee: deliveryFee,
-          totalPaymentAmount: totalPrice,
-        };
-
-        setCartData(orderData);
-        console.log("장바구니 아이템 조회::::::", orderData);
+        setCartData(data);
+        console.log("장바구니 아이템 조회::::::", data);
       }
     } catch (error) {
       console.error("주문 데이터 가져오기 중 오류 발생:", error);
@@ -88,7 +61,6 @@ const OrderService = () => {
     }
   };
 
-  // 배송지 조회 (주문자 이름, 폰번호, 기본배송지 연결하기 위해서)
   const fetchUserInfo = async () => {
     try {
       if (!apiUrl) throw new Error("API URL이 설정되지 않았습니다.");
@@ -113,7 +85,6 @@ const OrderService = () => {
       const data = await response.json();
       console.log("배송지 정보::::::", data);
 
-      // 기본 배송지가 있으면 첫 번째로 정렬
       const sortedAddresses = [...data].sort((a, b) =>
         a.isDefault === b.isDefault ? 0 : a.isDefault ? -1 : 1
       );
@@ -126,7 +97,6 @@ const OrderService = () => {
     }
   };
 
-  // 주문 생성
   const createOrder = async (orderRequest: CreateOrderRequest) => {
     if (!apiUrl) throw new Error("API URL이 설정되지 않았습니다.");
 

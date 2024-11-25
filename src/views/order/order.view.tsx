@@ -17,11 +17,7 @@ import ModalWrap from "@/src/components/Modal/Modal";
 const cx = cn.bind(styles);
 
 interface OrderViewProps {
-  cartItemData: CartItem & {
-    salesPrice: number;
-    deliveryFee: number;
-    totalPrice: number;
-  };
+  cartItemData: CartItem & {};
   onCreateOrder: (
     orderRequest: CreateOrderRequest
   ) => Promise<IOrderResponseDTO>;
@@ -113,7 +109,15 @@ const OrderView = ({
   };
 
   // service에서 계산된 값 사용
-  const { salesPrice, deliveryFee, totalPrice } = cartItemData;
+  // const { salesPrice, deliveryFee, totalPrice } = cartItemData;
+
+  // 금액 계산
+  const salesPrice = cartItemData.cartItem.reduce(
+    (sum, item) => sum + item.product.sales * item.quantity,
+    0
+  );
+  const deliveryFee = salesPrice >= 40000 ? 0 : 3000;
+  const totalPrice = salesPrice + deliveryFee;
 
   const toggleOrderAccordion = () => {
     setIsOrderOpen(!isOrderOpen);
@@ -270,11 +274,12 @@ const OrderView = ({
                       </h4>
                       <div className={cx("ItemInfo")}>
                         <span className={cx("ItemInfoDetail")}>
-                          {item.totalPrice.toLocaleString()}원
-                        </span>
-                        <span className={cx("ItemInfoDetail")}>
                           {item.product.sales.toLocaleString()}원
+                          {item.quantity > 1 && ` * ${item.quantity}`}
                         </span>
+                        {/* <span className={cx("ItemInfoDetail")}>
+                        {item.totalPrice.toLocaleString()}원
+                        </span> */}
                         <span>{item.quantity}개</span>
                       </div>
                     </div>
