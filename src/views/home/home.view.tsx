@@ -38,10 +38,6 @@ export default function HomeView(props:HomeProps) {
             <div className={cx("sec","special-deal")}>
                 <div className={cx("sec-header")}>
                     <h2 className={cx("tit")}>마감세일</h2>
-                    <Link href="/sale" className={cx("all")}>
-                        <span>전체보기</span>
-                        <MdOutlineKeyboardArrowRight />
-                    </Link>
                 </div>
                 <div className={cx("list-wrap")}>
                 {productDefaultImage.slice(0, 8).map((product, index) => {
@@ -77,10 +73,6 @@ export default function HomeView(props:HomeProps) {
             <div className={cx("sec","new-products")}>
                 <div className={cx("sec-header")}>
                     <h2 className={cx("tit")}>고객 반응으로 입증된 신상품</h2>
-                    <Link href="/sale" className={cx("all")}>
-                        <span>전체보기</span>
-                        <MdOutlineKeyboardArrowRight />
-                    </Link>
                 </div>
                 <div className={cx("list-wrap")}>
                 {productDefaultImage.slice(0, 8).map((product, index) => {
