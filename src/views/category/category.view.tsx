@@ -34,8 +34,6 @@ export default function CategoryMenu() {
         fetchCategories();
     }, []);
 
-    console.log(fetchProducts);
-
     const extractCategories = (products: TransformedProduct[]): CategoryType[] => {
         const categoryMap: { [key: string]: Set<string> } = {};
 

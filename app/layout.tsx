@@ -34,17 +34,19 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const pathname = (await headers()).get("x-pathname");
-
-  console.log(pathname);
+  
+  const isExcludedPage = pathname === "/search" || pathname === "/category";
   return (
     <html lang="ko">
       <body className={pretendard.className}>
-        <HeaderWrap
-          backgroundColor={"var(--color-main)"}
-          title="Market"
-          color={"var(--color-white)"}
-          canGoBack={backState}
-        />
+        {!isExcludedPage && (
+          <HeaderWrap
+            backgroundColor={"var(--color-main)"}
+            title="Market"
+            color={"var(--color-white)"}
+            canGoBack={backState}
+          />
+        )}
         <div className={cx("Wrap")}>
           <div className={cx("Content")}>{children}</div>
         </div>
