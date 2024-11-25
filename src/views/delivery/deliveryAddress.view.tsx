@@ -7,6 +7,7 @@ import { LuChevronLeft, LuAlertCircle, LuPencil } from "react-icons/lu";
 // import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { DeliveryAddress } from "@/src/api/@types/delivery.type";
+import Button from "@/src/components/Button/Button";
 
 const cx = cn.bind(styles);
 
@@ -39,14 +40,15 @@ export default function DeliveryAddressView(props: DeliveryAddressViewProps) {
           추가
         </a>
       </div>
+
       <span className={cx("DeliveryAlertText")}>
         <LuAlertCircle /> 배송지에 따라 상품정보 및 배송유형이 달라질 수
         있습니다.
       </span>
 
-      <section>
-        {deliveryAddresses.length > 0 ? (
-          deliveryAddresses.map((address) => (
+      {deliveryAddresses.length > 0 ? (
+        <section>
+          {deliveryAddresses.map((address) => (
             <div key={address._id} className={cx("AddressList")}>
               <ul>
                 <li className={address.isDefault ? cx("DefaultAddress") : ""}>
@@ -71,11 +73,19 @@ export default function DeliveryAddressView(props: DeliveryAddressViewProps) {
                 <LuPencil />
               </span>
             </div>
-          ))
-        ) : (
-          <p>등록된 배송지가 없습니다.</p>
-        )}
-      </section>
+          ))}
+        </section>
+      ) : (
+        <div className={cx("EmptyStateContainer")}>
+          <p className={cx("NoAddressText")}>등록된 배송지가 없습니다.</p>
+          <Button
+            onClick={() => handleClick("/delivery")}
+            className={cx("AddButton")}
+          >
+            배송지 추가
+          </Button>
+        </div>
+      )}
     </div>
   );
 }

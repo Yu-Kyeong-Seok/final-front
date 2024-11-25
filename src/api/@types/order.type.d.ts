@@ -97,8 +97,6 @@ type OrderItemStatus =
   | "EXCHANGE_REQUESTED"
   | "EXCHANGED";
 
-type OrderItemStatus = keyof typeof ORDER_ITEM_STATUS;
-
 interface IOrderItem {
   /** 주문 상품 ID */
   productId: string;
@@ -141,12 +139,12 @@ export interface CreateOrderRequest {
   totalProductPrice: number;
   shippingFee: number;
   totalPaymentAmount: number;
-  orderStatus: orderStatus;
+  orderStatus: OrderStatus;
 }
 
-// 주문 요청 시 사용할 상품 아이템 타입
-interface OrderRequestItem {
-  product: string;
+// 주문 아이템 요청을 위한 타입
+export interface OrderRequestItem {
+  product: string; // product id
   quantity: number;
   totalPrice: number;
   orderItemStatus: OrderItemStatus;

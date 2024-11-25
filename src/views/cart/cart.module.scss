@@ -29,14 +29,14 @@
 
   section {
     position: relative;
-    height: calc(100dvh - 146.333px);
+    min-height: calc(100dvh - 110px);
 
     .EmptyCart {
       position: absolute;
-      top: 45%;
+      top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      background-color: var(--color-white);
+      // background-color: var(--color-white);
       font-size: 18px;
       text-align: center;
 

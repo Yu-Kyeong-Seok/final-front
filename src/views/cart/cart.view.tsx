@@ -1,5 +1,4 @@
 "use client";
-
 import { useRouter } from "next/navigation";
 import styles from "./cart.module.scss";
 import cn from "classnames/bind";
@@ -12,9 +11,22 @@ import Button from "@/src/components/Button/Button";
 
 const cx = cn.bind(styles);
 
-// 프롭스
+// View용 타입 정의
+interface CartItemView {
+  cartItemId: string;
+  cartId: string;
+  product: {
+    id: string;
+    productName: string;
+    sales: number;
+    thumbnail: string;
+  };
+  quantity: number;
+  totalPrice: number;
+}
+
 type CartViewProps = {
-  cartList: CartItem[];
+  cartList: CartItemView[];
   isLoading: boolean;
   error: string | null;
   onUpdateQuantity: (cartItemId: string, quantity: number) => Promise<void>;
@@ -37,7 +49,6 @@ const CartView = ({
     router.back();
   };
 
-  // 아이템 수정 핸들러
   const handleQuantityChange = async (
     cartItemId: string,
     newQuantity: number
@@ -58,7 +69,6 @@ const CartView = ({
     }
   };
 
-  // 삭제 핸ㄷ르러
   const handleRemove = async (cartItemId: string) => {
     if (window.confirm("이 상품을 삭제하시겠습니까?")) {
       try {
@@ -76,32 +86,13 @@ const CartView = ({
   if (isLoading) return <div>로딩 중...</div>;
   if (error) return <div>에러: {error}</div>;
 
-  // 합산금액계산. 할인가 x 수량
-  const salesPrice = cartList.reduce(
-    (sum, item) => sum + item.product.sales * item.quantity,
-    0
-  );
-
-  // 배송비. 4만원 이상은 + 3000
+  // 금액 계산
+  const salesPrice = cartList.reduce((sum, item) => sum + item.totalPrice, 0);
   const deliveryFee = salesPrice >= 40000 ? 0 : 3000;
+  const totalPrice = salesPrice + deliveryFee;
 
-  const totalPrice = deliveryFee + salesPrice;
-
-  // 결제 정보 전달
+  // 주문 페이지로 이동
   const handlePayment = () => {
-    // const orderDetails = {
-    //   items: cartList.map((item) => ({
-    //     productName: item.product.productName,
-    //     thumbnail: item.product.thumbnail,
-    //     quantity: item.quantity,
-    //     itemPrice: item.product.sales * item.quantity,
-    //   })),
-    //   salesPrice,
-    //   deliveryFee,
-    //   totalPrice,
-    // };
-
-    // sessionStorage.setItem("orderDetails", JSON.stringify(orderDetails));
     router.push("/order");
   };
 
@@ -117,7 +108,7 @@ const CartView = ({
       <section>
         {cartList.length === 0 ? (
           <div className={cx("EmptyCart")}>
-            <span> 장바구니가 비어있습니다.</span>
+            <span>장바구니가 비어있습니다.</span>
             <Button onClick={() => router.push("/")}>쇼핑하기</Button>
           </div>
         ) : (
@@ -181,28 +172,25 @@ const CartView = ({
             <div className={cx("Summary")}>
               <p>
                 <span>총 상품 금액</span>
-                <span>{salesPrice.toLocaleString()} 원</span>
+                <span>{salesPrice.toLocaleString()}원</span>
               </p>
               <p>
                 <span>배송비</span>
-
-                <span>{deliveryFee}원</span>
+                <span>{deliveryFee.toLocaleString()}원</span>
               </p>
-
               <p>
                 <span>결제 예정 금액</span>
                 <strong className={cx("TotalPrice")}>
-                  {totalPrice.toLocaleString()} 원
+                  {totalPrice.toLocaleString()}원
                 </strong>
               </p>
               <div className="PayButton">
                 <Button
                   disabled={cartList.length === 0 || isUpdating}
-                  type={"submit"}
+                  type="submit"
                   onClick={handlePayment}
                 >
                   <span style={{ fontSize: "15px" }}>
-                    {" "}
                     {totalPrice.toLocaleString()}원 결제하기
                   </span>
                 </Button>

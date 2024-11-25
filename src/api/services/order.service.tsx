@@ -26,7 +26,7 @@ const OrderService = () => {
         ?.split("=")[1];
       if (!accessToken) throw new Error("토큰이 없습니다");
 
-      const response = await fetch(`${apiUrl}/api/cartItems`, {
+      const response = await fetch(`${apiUrl}/api/carts`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${accessToken}`,
@@ -37,10 +37,10 @@ const OrderService = () => {
       if (!response.ok)
         throw new Error(`주문 데이터 로드 실패. 상태 코드: ${response.status}`);
 
-      const data: CartItem = await response.json();
-      setCartItemData(Array.isArray(data) ? data : [data]);
+      const data = await response.json();
+      setCartItemData(data.cartItem || []); // cartItem 배열에 접근
 
-      console.log("장바구니 아이템 조회::::::", data);
+      console.log("장바구니조회::::::", data);
     } catch (error) {
       console.error("주문 데이터 가져오기 중 오류 발생:", error);
       setError(

@@ -1,13 +1,27 @@
 "use client";
-
 import { useState, useEffect } from "react";
 import { CartItem } from "@/src/api/@types/cart.type";
 import CartView from "@/src/views/cart/cart.view";
 
+// View에서 사용할 타입 (UI 표시용)
+interface CartItemView {
+  cartItemId: string;
+  cartId: string;
+  product: {
+    id: string;
+    productName: string;
+    sales: number;
+    thumbnail: string;
+  };
+  quantity: number;
+  totalPrice: number;
+}
+
 const CartService = () => {
-  const [cartList, setCartList] = useState<CartItem[]>([]);
+  const [cartList, setCartList] = useState<CartItemView[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [cartData, setCartData] = useState<CartItem | null>(null);
 
   const apiUrl = process.env.NEXT_PUBLIC_SERVER_URL;
 
@@ -21,7 +35,7 @@ const CartService = () => {
         ?.split("=")[1];
       if (!accessToken) throw new Error("토큰이 없습니다");
 
-      const response = await fetch(`${apiUrl}/api/cartItems`, {
+      const response = await fetch(`${apiUrl}/api/carts`, {
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
@@ -31,27 +45,36 @@ const CartService = () => {
         throw new Error(`장바구니 조회 실패 (${response.status})`);
       }
 
-      const contentType = response.headers.get("content-type");
-      if (!contentType || !contentType.includes("application/json")) {
-        throw new Error("서버 응답이 JSON 형식이 아닙니다.");
+      const data: CartItem = await response.json();
+      setCartData(data);
+
+      // 데이터 매핑 (View용)
+      if (Array.isArray(data.cartItem)) {
+        const mappedData: CartItemView[] = data.cartItem.map((item) => ({
+          cartItemId: item.id,
+          cartId: data.cartId,
+          product: {
+            id: item.product.id,
+            productName: item.product.productName,
+            sales: item.product.sales,
+            thumbnail: item.product.thumbnail || "",
+          },
+          quantity: item.quantity,
+          totalPrice: item.totalPrice,
+        }));
+
+        setCartList(mappedData);
+
+        // 결제를 위한 데이터 저장
+        const orderDetails = {
+          cartId: data.cartId,
+          items: mappedData,
+          totalProductPrice: data.totalProductPrice,
+          shippingFee: data.shippingFee,
+          totalPaymentAmount: data.totalPaymentAmount,
+        };
+        sessionStorage.setItem("orderDetails", JSON.stringify(orderDetails));
       }
-
-      const text = await response.text(); // 먼저 텍스트로 받아서
-      if (!text) {
-        throw new Error("빈 응답을 받았습니다.");
-      }
-
-      const data = JSON.parse(text); // JSON 파싱
-      if (!Array.isArray(data)) {
-        throw new Error("올바르지 않은 응답 형식입니다.");
-      }
-
-      const mappedData = data.map((item: any) => ({
-        ...item,
-        cartItemId: item.id,
-      }));
-
-      setCartList(mappedData);
     } catch (error) {
       console.error("Fetch 에러", error);
       setError(error instanceof Error ? error.message : "장바구니 조회 실패");
@@ -75,12 +98,6 @@ const CartService = () => {
         ?.split("=")[1];
       if (!accessToken) throw new Error("토큰이 없습니다");
 
-      // console.log("업데이트 request 보내기:", {
-      //   cartItemId,
-      //   quantity,
-      //   totalPrice,
-      // });
-
       const response = await fetch(`${apiUrl}/api/cartItems/${cartItemId}`, {
         method: "PUT",
         headers: {
@@ -90,66 +107,46 @@ const CartService = () => {
         body: JSON.stringify({ quantity, totalPrice }),
       });
 
-      console.log(response.status);
-
       if (!response.ok) {
         const errorText = await response.text();
-        console.error("Server error response:", errorText);
         throw new Error(
           `장바구니 수정 실패 (${response.status}): ${errorText}`
         );
       }
 
-      const contentType = response.headers.get("content-type");
-      if (!contentType || !contentType.includes("application/json")) {
-        // JSON이 아닌 경우, 성공으로 간주하고 로컬 상태만 업데이트,,,,,
+      // 로컬 상태 업데이트
+      setCartList((prev) =>
+        prev.map((item) =>
+          item.cartItemId === cartItemId
+            ? { ...item, quantity, totalPrice }
+            : item
+        )
+      );
 
-        setCartList((prev) =>
-          prev.map((item) =>
-            item.cartItemId === cartItemId
-              ? { ...item, quantity, totalPrice }
-              : item
-          )
+      // sessionStorage 업데이트
+      const orderDetails = JSON.parse(
+        sessionStorage.getItem("orderDetails") || "{}"
+      );
+      if (orderDetails.items) {
+        const updatedItems = orderDetails.items.map((item: CartItemView) =>
+          item.cartItemId === cartItemId
+            ? { ...item, quantity, totalPrice }
+            : item
         );
-        return;
-      }
 
-      const text = await response.text();
-      if (!text) {
-        setCartList((prev) =>
-          prev.map((item) =>
-            item.cartItemId === cartItemId
-              ? { ...item, quantity, totalPrice }
-              : item
-          )
+        // 총 금액 다시 계산
+        const totalProductPrice = updatedItems.reduce(
+          (sum: number, item: CartItemView) => sum + item.totalPrice,
+          0
         );
-        return;
-      }
+        const shippingFee = totalProductPrice >= 40000 ? 0 : 3000;
 
-      try {
-        const updatedItem = JSON.parse(text);
-        console.log("Parsed response:", updatedItem);
+        orderDetails.items = updatedItems;
+        orderDetails.totalProductPrice = totalProductPrice;
+        orderDetails.shippingFee = shippingFee;
+        orderDetails.totalPaymentAmount = totalProductPrice + shippingFee;
 
-        const mappedUpdatedItem = {
-          ...updatedItem,
-          cartItemId: updatedItem.id || cartItemId,
-        };
-
-        setCartList((prev) =>
-          prev.map((item) =>
-            item.cartItemId === cartItemId ? mappedUpdatedItem : item
-          )
-        );
-      } catch (parseError) {
-        console.error("JSON parse error:", parseError);
-        // JSON 파싱 실패시 로컬 상태만 업데이트
-        setCartList((prev) =>
-          prev.map((item) =>
-            item.cartItemId === cartItemId
-              ? { ...item, quantity, totalPrice }
-              : item
-          )
-        );
+        sessionStorage.setItem("orderDetails", JSON.stringify(orderDetails));
       }
     } catch (error) {
       console.error("Cart update error:", error);
@@ -181,9 +178,34 @@ const CartService = () => {
         );
       }
 
+      // 상태 업데이트
       setCartList((prev) =>
         prev.filter((item) => item.cartItemId !== cartItemId)
       );
+
+      // sessionStorage 업데이트
+      const orderDetails = JSON.parse(
+        sessionStorage.getItem("orderDetails") || "{}"
+      );
+      if (orderDetails.items) {
+        const updatedItems = orderDetails.items.filter(
+          (item: CartItemView) => item.cartItemId !== cartItemId
+        );
+
+        // 총 금액 다시 계산
+        const totalProductPrice = updatedItems.reduce(
+          (sum: number, item: CartItemView) => sum + item.totalPrice,
+          0
+        );
+        const shippingFee = totalProductPrice >= 40000 ? 0 : 3000;
+
+        orderDetails.items = updatedItems;
+        orderDetails.totalProductPrice = totalProductPrice;
+        orderDetails.shippingFee = shippingFee;
+        orderDetails.totalPaymentAmount = totalProductPrice + shippingFee;
+
+        sessionStorage.setItem("orderDetails", JSON.stringify(orderDetails));
+      }
     } catch (error) {
       console.error("Remove cart item error:", error);
       throw error;

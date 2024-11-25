@@ -17,7 +17,7 @@ import ModalWrap from "@/src/components/Modal/Modal";
 const cx = cn.bind(styles);
 
 interface OrderViewProps {
-  cartItemData: CartItem[];
+  cartItemData: CartItem;
   onCreateOrder: (
     orderRequest: CreateOrderRequest
   ) => Promise<IOrderResponseDTO>;
@@ -26,7 +26,6 @@ interface OrderViewProps {
 
 type BottomSheetState = "SUCCESS" | "CLOSED";
 
-// ordverView
 const OrderView = ({
   cartItemData,
   onCreateOrder,
@@ -45,14 +44,13 @@ const OrderView = ({
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalMessage, setModalMessage] = useState<string>("");
 
-  /** 주문 아이템 텍스트 길이 제한 */
   const truncateText = (text: string, maxLength: number) => {
     if (text.length <= maxLength) return text;
     return text.slice(0, maxLength) + "...";
   };
 
   // 합산금액계산. 할인가 x 수량
-  const salesPrice = cartItemData.reduce(
+  const salesPrice = cartItemData.cartItem.reduce(
     (sum, item) => sum + item.product.sales * item.quantity,
     0
   );
@@ -63,7 +61,6 @@ const OrderView = ({
   // 총 결제금액. 합산금액 + 배송비
   const totalPrice = deliveryFee + salesPrice;
 
-  // 토글 아코디언
   const toggleOrderAccordion = () => {
     setIsOrderOpen(!isOrderOpen);
   };
@@ -72,7 +69,6 @@ const OrderView = ({
     setIsUserOpen(!isUserOpen);
   };
 
-  // 주문생성 핸들러
   const handleCreateOrder = async () => {
     try {
       setIsSubmitting(true);
@@ -82,7 +78,6 @@ const OrderView = ({
       }
 
       if (!selectedPaymentMethod) {
-        // throw new Error("결제 수단을 선택해주세요.");
         setModalMessage("결제 수단을 선택해주세요.");
         setIsModalOpen(true);
         setIsSubmitting(false);
@@ -93,13 +88,8 @@ const OrderView = ({
         deliveryAddress: userInfo[0]?.defaultAddress,
         deliveryRequest: deliveryRequest,
         paymentMethod: selectedPaymentMethod ?? "KAKAO_PAY",
-        orderItem: cartItemData.map((item) => ({
+        orderItem: cartItemData.cartItem.map((item) => ({
           product: item.product.id,
-          // product: {
-          //   ...item.product,
-          //   id: undefined,
-          //   _id: undefined,
-          // },
           quantity: item.quantity,
           totalPrice: item.totalPrice,
           orderItemStatus: "PAYMENT_PENDING",
@@ -112,23 +102,18 @@ const OrderView = ({
 
       console.log("주문 요청 데이터:", JSON.stringify(orderRequest, null, 2));
 
-      // 주문 생성 API 호출
       const response = await onCreateOrder(orderRequest);
 
       console.log("서버 응답 response:::::", response);
 
-      // API 응답이 없거나 실패 시
-      if (!response || !response || !response.orderId) {
-        // console.error(response);
+      if (!response || !response.orderId) {
         throw new Error("주문 생성 실패");
       }
 
       setCreatedOrderId(response.orderId);
-      // 주문 생성 성공 후 성공 바텀시트로 띄워주기.
       setBottomSheetState("SUCCESS");
     } catch (error) {
       console.log("주문 생성 실패:", error);
-
       setBottomSheetState("CLOSED");
     } finally {
       setIsSubmitting(false);
@@ -136,12 +121,12 @@ const OrderView = ({
   };
 
   const handleViewOrderDetail = (path: string) => {
-    router.push(path); // 주문 상세 페이지로 이동
+    router.push(path);
   };
 
   const handleContinueShopping = () => {
     setBottomSheetState("CLOSED");
-    router.push("/"); // 홈으로 이동
+    router.push("/");
   };
 
   const handleDeliveryPage = () => {
@@ -167,7 +152,6 @@ const OrderView = ({
                   {totalPrice.toLocaleString()}원
                 </span>
               </div>
-              {/* <p>주문번호: {createdOrderId}</p> */}
               <div className={cx("BottomSheetBtns")}>
                 <Button
                   onClick={() =>
@@ -175,7 +159,6 @@ const OrderView = ({
                   }
                   variants="outline"
                 >
-                  {" "}
                   <span>주문 상세보기</span>
                 </Button>
                 <Button onClick={handleContinueShopping}>
@@ -186,7 +169,7 @@ const OrderView = ({
           </div>
         );
       case "CLOSED":
-        return null; // 바텀시트가 닫힌 상태일 때 아무것도 표시하지 않음
+        return null;
       default:
         return null;
     }
@@ -195,17 +178,20 @@ const OrderView = ({
   return (
     <div className={cx("PageContainer")}>
       <div className={cx("Inner")}>
-        {/* <div className={cx("PageHeader")}></div> */}
         <div className={cx("Contents")}>
-          {/* 주문상품 - 펼치기 전 */}
           <div className={cx("Item")}>
             <div className={cx("ItemHeader")} onClick={toggleOrderAccordion}>
               <span className={cx("ItemTitle")}>주문상품</span>
               <div>
                 <span className="ItemText">
-                  {cartItemData.length === 1
-                    ? truncateText(cartItemData[0].product.productName, 20)
-                    : `${truncateText(cartItemData[0].product.productName, 20)} 외 ${cartItemData.length - 1}건`}
+                  {cartItemData.cartItem.length === 1
+                    ? truncateText(
+                        cartItemData.cartItem[0].product.productName,
+                        20
+                      )
+                    : `${truncateText(cartItemData.cartItem[0].product.productName, 20)} 외 ${
+                        cartItemData.cartItem.length - 1
+                      }건`}
                 </span>
                 <span className={cx("ItemIcon")}>
                   {isOrderOpen ? <LuChevronUp /> : <LuChevronDown />}
@@ -213,13 +199,12 @@ const OrderView = ({
               </div>
             </div>
 
-            {/*  주문상품 - 펼쳤을 때 */}
             {isOrderOpen && (
               <div className={cx("ItemContent", { open: isOrderOpen })}>
-                {cartItemData.map((item) => (
-                  <div key={item.cartItemId} className={cx("ItemDetail")}>
+                {cartItemData.cartItem.map((item) => (
+                  <div key={item.id} className={cx("ItemDetail")}>
                     <Image
-                      src={item.product.thumbnail}
+                      src={item.product.thumbnail || ""}
                       alt={item.product.productName}
                       width={70}
                       height={70}
@@ -245,7 +230,6 @@ const OrderView = ({
             )}
           </div>
 
-          {/* 주문자 정보 */}
           <div className={cx("Item")}>
             <div className={cx("ItemHeader")} onClick={toggleUserAccordion}>
               <span className={cx("ItemTitle")}>주문자 정보</span>
@@ -271,7 +255,6 @@ const OrderView = ({
             )}
           </div>
 
-          {/* 배송지 */}
           <div className={cx("Item")}>
             <div className={cx("ItemHeader")}>
               <span className={cx("ItemTitle")}>배송지</span>
@@ -294,7 +277,6 @@ const OrderView = ({
             </div>
           </div>
 
-          {/* 배송 요청사항 */}
           <div className={cx("Item")}>
             <div className={cx("ItemHeader")}>
               <span className={cx("ItemTitle")}>배송 요청사항</span>
@@ -308,38 +290,32 @@ const OrderView = ({
             </div>
           </div>
 
-          {/* 결제 수단 선택 */}
           <div className={cx("Item")}>
             <div className={cx("ItemHeader")}>
               <span className={cx("ItemTitle")}>결제 수단</span>
             </div>
             <div className={cx("Payment")}>
-              {(
-                [
-                  ["KAKAO_PAY", "카카오페이"],
-                  // ["CREDIT_CARD", "신용카드"],
-                  // ["SIMPLE_PAY", "간편결제"],
-                  // ["MOBILE_PAYMENT", "모바일결제"],
-                ] as const
-              ).map(([method, label]) => (
-                <div
-                  key={method}
-                  className={cx({
-                    Kakao: method === "KAKAO_PAY",
-                    PaymentType: method !== "KAKAO_PAY",
-                  })}
-                >
-                  <Button
-                    disabled={isSubmitting}
-                    variants={
-                      selectedPaymentMethod === method ? "solid" : "outline"
-                    }
-                    onClick={() => setSelectedPaymentMethod(method)}
+              {([["KAKAO_PAY", "카카오페이"]] as const).map(
+                ([method, label]) => (
+                  <div
+                    key={method}
+                    className={cx({
+                      Kakao: method === "KAKAO_PAY",
+                      PaymentType: method !== "KAKAO_PAY",
+                    })}
                   >
-                    <span>{label}</span>
-                  </Button>
-                </div>
-              ))}
+                    <Button
+                      disabled={isSubmitting}
+                      variants={
+                        selectedPaymentMethod === method ? "solid" : "outline"
+                      }
+                      onClick={() => setSelectedPaymentMethod(method)}
+                    >
+                      <span>{label}</span>
+                    </Button>
+                  </div>
+                )
+              )}
 
               <div className={cx("PaymentMethodsContainer")}>
                 {["CREDIT_CARD", "SIMPLE_PAY", "MOBILE_PAYMENT"].map(
@@ -374,7 +350,6 @@ const OrderView = ({
             </div>
           </div>
 
-          {/* 상품 계산 금액 */}
           <div className={cx("Item")}>
             <div className={cx("ItemHeader")}>
               <span className={cx("ItemTitle")}>상품 금액</span>
@@ -396,7 +371,6 @@ const OrderView = ({
             </div>
           </div>
 
-          {/* 주문하기 버튼 */}
           <div className={cx("OrderBtn")}>
             <Button onClick={handleCreateOrder} disabled={isSubmitting}>
               <span style={{ fontSize: "15px" }}>
@@ -405,12 +379,9 @@ const OrderView = ({
             </Button>
           </div>
         </div>
-        {/* Contents 끝 */}
 
-        {/* 바텀시트 */}
         <BottomSheet
           isOpen={bottomSheetState !== "CLOSED"}
-          // isOpen={bottomSheetState == "CLOSED"}
           onClose={() => !isSubmitting && setBottomSheetState("CLOSED")}
         >
           {renderBottomSheetContent()}

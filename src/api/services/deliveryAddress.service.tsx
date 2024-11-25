@@ -79,8 +79,8 @@ const DeliveryAddressService = () => {
     );
   }
 
-  if (deliveryAddressData.length === 0)
-    return <h2>등록된 배송지가 없습니다.</h2>;
+  // if (deliveryAddressData.length === 0)
+  //   return <h2>등록된 배송지가 없습니다.</h2>;
 
   return <DeliveryAddressView deliveryAddresses={deliveryAddressData} />;
 };
