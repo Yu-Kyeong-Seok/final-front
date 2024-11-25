@@ -26,6 +26,17 @@ const statusMap: Record<IInquiry["status"], string> = {
   completed: "완료",
 };
 
+/** 시간 매핑 */
+const formatter = new Intl.DateTimeFormat("ko-KR", {
+  year: "numeric",
+  month: "2-digit",
+  day: "2-digit",
+  hour: "2-digit",
+  minute: "2-digit",
+  second: "2-digit",
+  hour12: false,
+});
+
 export default function InquiryListView(props: InquiryListViewProps) {
   const { inquiries } = props;
 
@@ -64,7 +75,7 @@ export default function InquiryListView(props: InquiryListViewProps) {
                 </dl>
 
                 <dl className={cx("InquiryDateStatus")}>
-                  <dt>{new Date(inquiry.createdAt).toLocaleString()}</dt>
+                  <dt>{formatter.format(new Date(inquiry.createdAt))}</dt>
                   {/* <dd>작성자: {inquiry.author.userName}</dd> */}
                   <dd className={cx("InquiryStatus")}>
                     {statusMap[inquiry.status]}
@@ -79,7 +90,13 @@ export default function InquiryListView(props: InquiryListViewProps) {
 
         <div className={cx("Buttons")}>
           <Button disabled={false} variants={"outline"}>
-            카카오톡 문의
+            <a
+              href="https://open.kakao.com/o/sSr9PS1g"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              카카오톡 문의
+            </a>
           </Button>
           <Button
             disabled={false}
