@@ -96,10 +96,10 @@ export default function InquiryWriteView({
             required
           >
             <option value="">유형을 선택해주세요</option>
-            <option value="Cancel">주문</option>
+            <option value="Cancel">취소</option>
             <option value="Refund">환불</option>
             <option value="Exchange">교환</option>
-            <option value="etc">기타</option>
+            {/* <option value="etc">기타</option> */}
           </select>
         </div>
 
