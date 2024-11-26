@@ -1,0 +1,10 @@
+.list-wrap{
+    display:flex; 
+    flex-wrap: wrap; 
+    gap:1rem;
+    padding:2rem;
+    > div{
+        flex-basis: calc(50% - 0.5rem);
+        margin-bottom:1rem;
+    }
+}

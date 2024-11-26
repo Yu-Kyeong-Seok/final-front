@@ -1,0 +1,50 @@
+.swiper-container {
+    width: 100%;
+    height: 40vh; /* 뷰포트 높이의 40% */
+    position: relative;
+    overflow: hidden;
+}
+
+.swiper {
+    width: 100%;
+    height: 100%;
+}
+
+.swiper-slide {
+    width: 100%;
+    height: 100%;
+    position: relative;
+}
+
+.image-wrapper {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    overflow: hidden;
+}
+
+.slide-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* 이미지 비율 유지하면서 컨테이너 채우기 */
+    object-position: center;
+}
+
+/* 반응형 미디어 쿼리 */
+@media screen and (orientation: landscape) {
+    .swiper-container {
+        height: 50vh; /* 가로 모드일 때는 높이를 좀 더 크게 */
+    }
+}
+
+@media screen and (min-width: 768px) {
+    .swiper-container {
+        height: 45vh; /* 태블릿 이상에서는 높이를 약간 조정 */
+    }
+}
+
+@media screen and (min-width: 1024px) {
+    .swiper-container {
+        height: 40vh; /* 데스크탑에서의 높이 */
+    }
+}

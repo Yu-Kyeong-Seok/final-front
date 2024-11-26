@@ -1,0 +1,57 @@
+.Wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0 20px;
+    font-size: 14px;
+}
+
+.Form {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    margin: 0;
+
+    label {
+        padding: 18px 0px 7px;
+    }
+
+}
+
+.InputContainer {
+    display: flex;
+    flex-direction: row;
+    
+    button {
+        width: 122px;
+        height: 46px;
+        margin-left: 8px;
+        
+    }
+}
+
+.RequiredLabel {
+    // padding: 18px 0px 7px;
+        span {
+            color: var(--color-red);
+        }
+}
+
+.ButtonWrapper {
+    margin-top: 20px;
+}
+
+.VerificationNumberWrapper {
+    position: relative;
+    width: 100%;
+}
+
+.VerificationNumber {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    right: 12px;
+    color: red;
+    // display: none;
+    pointer-events: none;
+}

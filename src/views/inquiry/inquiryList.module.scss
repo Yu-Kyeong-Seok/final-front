@@ -1,0 +1,137 @@
+.PageContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+
+  // padding: 0 15px;
+
+  .PageHeader {
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    // line-height: 40px;
+    font-size: 16px;
+    padding: 10px;
+
+    a {
+      cursor: pointer;
+    }
+
+    h3 {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+  }
+
+  section {
+    padding: 15px 0;
+
+    .InquiryList {
+      // display: flex;
+      // align-items: center;
+      // justify-content: space-between;
+      font-size: 14px;
+      padding: 10px;
+      color: var(--color-700);
+      border-bottom: 1px solid var(--color-100);
+
+      .InquiryItemWrap {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        position: relative;
+
+        .InquiryItem {
+          display: flex;
+          flex-wrap: wrap;
+          line-height: 1.2;
+          align-items: center;
+
+          dt {
+            padding-right: 5px;
+
+            // max-width: 100%;
+            // width: auto;
+          }
+
+          .InquiryTitle {
+            // padding-left: 5px;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            overflow: hidden;
+            max-width: 80%;
+            font-weight: 600;
+            cursor: pointer;
+
+            @media (min-width: 768px) {
+              max-width: 100%;
+            }
+          }
+        }
+
+        .InquiryDateStatus {
+          display: flex;
+          // flex-wrap: nowrap;
+          flex-direction: column;
+          font-size: 12px;
+          color: var(--color-700);
+          gap: 2.5px;
+          width: 20%;
+        }
+
+        .InquiryStatus {
+          display: block;
+          // position: absolute;
+          // top: 0;
+          // right: 20%;
+          font-size: 12px;
+          background-color: var(--color-100);
+          flex-shrink: 0;
+          flex-grow: 0;
+          align-self: flex-start;
+          padding: 2.5px 5px;
+          border-radius: 50px;
+          font-weight: 600;
+        }
+      }
+    }
+
+    .NoData {
+      p {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 16px;
+        text-align: center;
+      }
+    }
+  }
+  .Buttons {
+    display: flex;
+    gap: 5px;
+    justify-content: center;
+    position: fixed;
+    bottom: 5%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    max-width: 76.8rem;
+    width: 100%;
+    padding: 10px;
+
+    button {
+      border: 2px solid var(--color-100);
+      color: var(--color-700);
+      font-weight: 600;
+    }
+
+    .InquiryBtn {
+      border: none;
+      color: var(--color-white);
+      background-color: var(--color-main);
+    }
+  }
+}

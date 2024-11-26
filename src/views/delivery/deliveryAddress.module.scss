@@ -1,0 +1,127 @@
+.PageContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  // height: 100vh;
+
+  // padding: 0 15px;
+
+  .PageHeader {
+    // position: fixed;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    // line-height: 40px;
+    font-size: 16px;
+    padding: 10px;
+
+    a {
+      cursor: pointer;
+    }
+
+    .AddAdress {
+      font-size: 14px;
+      display: inline-block;
+      background-color: var(--color-main2);
+      color: var(--color-white);
+      padding: 5px 10px;
+      border-radius: 5px;
+      text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.1);
+      cursor: pointer;
+    }
+  }
+
+  .DeliveryAlertText {
+    background-color: #f4f4f4;
+    font-size: 13px;
+    padding: 10px 0;
+    text-align: center;
+    color: var(--color-400);
+  }
+
+  section {
+    padding: 15px 0;
+
+    .AddressList {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 14px;
+      padding: 10px 15px 10px 10px;
+      color: var(--color-700);
+      border-bottom: 1px solid var(--color-100);
+
+      ul {
+        // padding: 5px;
+
+        .AddressItem {
+          line-height: 1.2;
+          text-overflow: ellipsis;
+          white-space: wrap;
+          overflow: hidden;
+          width: 100%;
+        }
+
+        li {
+          ul {
+            display: flex;
+            gap: 5px;
+            padding: 5px 0;
+
+            li:nth-child(1) {
+              &::after {
+                content: "";
+                display: inline-block;
+                width: 1px;
+                height: 10px;
+                background-color: var(--color-300);
+                margin-left: 5px;
+              }
+            }
+          }
+
+          .AddressUser {
+            font-size: 13px;
+          }
+        }
+
+        .DefaultAddress {
+          background-color: #eee;
+          display: inline-block;
+          padding: 2.5px 5px;
+          color: var(--color-900);
+          font-size: 12px;
+          font-weight: 500;
+          border-radius: 50px;
+          margin: 5px 0;
+        }
+
+        .DeliveryType {
+          font-size: 13px;
+          font-weight: 600;
+          color: var(--color-main);
+          padding: 5px 0;
+        }
+      }
+
+      span {
+        color: var(--color-300);
+        font-size: 19px;
+        cursor: pointer;
+      }
+    }
+  }
+
+  .EmptyStateContainer {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    font-size: 18px;
+
+    p {
+      padding-bottom: 15px;
+    }
+  }
+}

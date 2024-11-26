@@ -1,0 +1,27 @@
+@import url("./reset.css");
+
+:root {
+  --color-white: #ffffff;
+  --color-10: #fafafa;
+  --color-50: #f6f6f6;
+  --color-100: #e5e5e5;
+  --color-200: #ccc;
+  --color-300: #b2b2b2;
+  --color-400: #999;
+  --color-500: #7f7f7f;
+  --color-600: #666;
+  --color-700: #4c4c4c;
+  --color-800: #333;
+  --color-900: #191919;
+  --color-black: #000000;
+
+  --color-red: #da3a44;
+  --color-blue: #1d62ec;
+  --color-yellow: #f3cb3c;
+
+  --color-main: #0dbd88;
+  --color-main2: #61cead;
+  --color-main3: #b0e3d4;
+  --color-main4: #eaf8f4;
+  --color-main5: #f2f9f7;
+}

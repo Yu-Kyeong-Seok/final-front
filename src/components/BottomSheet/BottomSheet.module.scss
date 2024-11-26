@@ -1,0 +1,54 @@
+.Container {
+  position: relative;
+  width: 100%;
+  max-width: inherit;
+  margin: 0 auto;
+}
+
+.Dimmed {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  z-index: 99;
+}
+
+.BottomSheet {
+  position: fixed;
+  left: 50%;
+  transform: translateX(-50%) translateY(100%);
+  bottom: 0;
+  width: 100%;
+  max-width: inherit;
+  transition: transform 0.3s ease-out;
+  z-index: 100;
+
+  @media (min-width: 768px) {
+    max-width: 76.8rem;
+  }
+
+  &.opened {
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+.BottomSheetInner {
+  background-color: var(--color-white);
+  border-radius: 10px 10px 0 0;
+  padding: 25px;
+  min-height: 80dvh;
+
+  .BottomSheetHeader {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+  }
+
+  .BottomSheetBtn {
+    background-color: transparent;
+    font-size: 30px;
+    padding: 0;
+  }
+}

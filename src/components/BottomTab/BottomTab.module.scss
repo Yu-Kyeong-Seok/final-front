@@ -1,0 +1,34 @@
+.bottomTab {
+    position: fixed;
+    width:100%;
+    max-width: 76.8rem;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    height: 60px;
+    background-color: var(--color-white);
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    border: 1px solid #eee;
+    z-index: 50;
+  }
+  
+  .tabItem {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 8px;
+    color: #666;
+    transition: all 0.2s ease;
+    text-decoration: none;
+  
+    &:hover {
+      color: #00ba88;
+    }
+  
+    &.active {
+      color: #00ba88;
+    }
+  }

@@ -1,0 +1,79 @@
+.MypageContainer {
+  background-color: #f6f6f6;
+  padding: 15px;
+  height: 100%;
+
+  .ModalMessage {
+    margin: 40px 0;
+    font-size: 20px;
+    font-weight: bold;
+    // color: red;
+  }
+  
+  @media (min-width: 767px) {
+    padding: 30px;
+  }
+
+  .MypageSection {
+    box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.1);
+    padding: 30px 10px;
+    background-color: var(--color-white);
+    border-radius: 6px;
+    height: auto;
+    min-height: 100%;
+
+    .MypageTitle {
+      font-size: 17px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      padding: 0 10px 30px;
+
+      h3 {
+        display: inline-block;
+        position: relative;
+        z-index: 0;
+
+        &::after {
+          position: absolute;
+          bottom: 0;
+          left: 0;
+          content: "";
+          display: inline-block;
+          width: 100%;
+          height: 7px;
+          background-color: var(--color-main3);
+          z-index: -1;
+        }
+
+        // line-height: 50px;
+      }
+
+      a {
+        color: var(--color-main);
+        font-size: 20px;
+      }
+    }
+
+    ul {
+      padding: 0 10px;
+      li {
+        display: flex;
+        justify-content: space-between;
+        background-color: var(--color-white);
+        font-size: 15px;
+        line-height: 50px;
+        border-top: 1px solid #e6e5e5;
+        color: var(--color-800);
+        cursor: pointer;
+
+        // border-radius: 6px;
+
+        &:nth-child(1) {
+          border-top: none;
+          border-radius: 10px;
+        }
+      }
+    }
+  }
+}

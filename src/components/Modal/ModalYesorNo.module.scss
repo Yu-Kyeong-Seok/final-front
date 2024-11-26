@@ -1,0 +1,51 @@
+.modalOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modalContent {
+    background: white;
+    // padding: 2rem;
+    border-radius: 8px;
+    max-width: 500px;
+    width: 90%;
+    overflow: hidden;
+    text-align: center;
+}
+
+.button-box{
+    display: flex;
+    justify-content: center;
+    margin-top:2rem;
+    height: 54px;
+}
+
+.closeButton {
+    float: left;
+    border: none;
+    color: var(--color-700);
+    background: var(--color-50);
+    font-size: 1.5rem;
+    cursor: pointer;
+    height: 100%;
+    width: 100%;
+}
+
+.confirmButton {
+    float: right;
+    border: none;
+    color: var(--color-white);
+    background: var(--color-main);
+    font-size: 1.5rem;
+    cursor: pointer;
+    height: 100%;
+    width: 100%;
+}
