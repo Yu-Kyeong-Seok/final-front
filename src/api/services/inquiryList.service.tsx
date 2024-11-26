@@ -19,8 +19,6 @@ const InquiryListService = () => {
         ?.split("=")[1];
       if (!accessToken) throw new Error("토큰이 없습니다");
 
-      // console.log(`${apiUrl}/api/inquiries`);
-
       const response = await fetch(`${apiUrl}/api/inquiries`, {
         method: "GET",
         headers: {
@@ -35,9 +33,7 @@ const InquiryListService = () => {
         );
 
       const data = await response.json();
-
       console.log("fetched inquiry data:: 문의내역", data);
-
       setInquiryListData(data.results);
     } catch (error) {
       console.error("1:1 문의내역 가져오기 중 오류 발생:", error);
@@ -74,8 +70,6 @@ const InquiryListService = () => {
       </div>
     );
   }
-
-  if (inquiryListData.length === 0) return <h2>등록된 1:1문의가 없습니다.</h2>;
 
   return <InquiryListView inquiries={inquiryListData} />;
 };
