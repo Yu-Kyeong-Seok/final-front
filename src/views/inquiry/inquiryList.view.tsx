@@ -17,7 +17,7 @@ const inquiryTypeMap: Record<IInquiry["inquiryType"], string> = {
   Cancel: "주문",
   Refund: "환불",
   Exchange: "교환",
-  etc: "기타",
+  "etc.": "기타",
 };
 
 /** 상태 매핑 */
