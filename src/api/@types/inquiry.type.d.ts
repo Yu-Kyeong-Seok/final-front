@@ -1,5 +1,5 @@
 type Status = "Processing" | "completed";
-type InquiryType = "Cancel" | "Refund" | "Exchange" | "etc";
+type InquiryType = "Cancel" | "Refund" | "Exchange" | "etc.";
 // type InquiryType = "Cancel" | "Refund" | "Exchange";
 
 export interface IInquiry {
