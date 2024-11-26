@@ -90,7 +90,7 @@ const CartView = ({
 
   // 금액 계산
   const salesPrice = cartList.cartItem.reduce(
-    (sum, item) => sum + item.totalPrice,
+    (sum, item) => sum + item.product.sales * item.quantity,
     0
   );
   const deliveryFee = salesPrice >= 40000 ? 0 : 3000;
@@ -128,7 +128,9 @@ const CartView = ({
                 />
                 <div className={cx("PriceAndButtons")}>
                   <strong className={cx("ItemPrice")}>
-                    {item.totalPrice.toLocaleString()}원
+                    {/* 제품가격 */}
+                    {item.product.sales.toLocaleString()}원{item.quantity > 1}
+                    {/* {item.quantity > 1 && ` x ${item.quantity}`} */}
                   </strong>
                   <div className={cx("QuantityWrapper")}>
                     <button
