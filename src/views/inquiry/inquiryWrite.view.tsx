@@ -63,7 +63,7 @@ export default function InquiryWriteView({
       setTitle("");
       setContent("");
       setModalMessage(
-        "문의가 성공적으로 등록되었습니다.<br>답변은 유선이나 이메일로 전달드리겠습니다."
+        "문의가 성공적으로 등록되었습니다.\n 답변은 유선이나 이메일로 전달드리겠습니다."
       );
       openModal();
     } catch (error) {
@@ -151,7 +151,15 @@ export default function InquiryWriteView({
         onClose={closeModal}
         onConfirm={closeModal}
       >
-        <p style={{ fontSize: "15px" }}>{modalMessage}</p>
+        <p
+          style={{
+            fontSize: "15px",
+            whiteSpace: "pre-line",
+            lineHeight: "1.5",
+          }}
+        >
+          {modalMessage}
+        </p>
       </ModalWrap>
     </div>
   );

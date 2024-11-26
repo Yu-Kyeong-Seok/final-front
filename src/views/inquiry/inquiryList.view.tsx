@@ -50,6 +50,28 @@ export default function InquiryListView(props: InquiryListViewProps) {
     router.back();
   };
 
+  const ActionButtons = () => (
+    <div className={cx("Buttons")}>
+      <Button disabled={false} variants={"outline"}>
+        <a
+          href="https://open.kakao.com/o/sSr9PS1g"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          카카오톡 문의
+        </a>
+      </Button>
+      <Button
+        disabled={false}
+        variants={"solid"}
+        className={cx("InquiryBtn")}
+        onClick={() => handleClick("/inquiry/write")}
+      >
+        1:1 문의
+      </Button>
+    </div>
+  );
+
   return (
     <div className={cx("PageContainer")}>
       <div className={cx("PageHeader")}>
@@ -61,52 +83,39 @@ export default function InquiryListView(props: InquiryListViewProps) {
 
       <section>
         {inquiries.length > 0 ? (
-          inquiries.map((inquiry) => (
-            <div key={inquiry.inquiryId} className={cx("InquiryList")}>
-              <div className={cx("InquiryItemWrap")}>
-                <dl className={cx("InquiryItem")}>
-                  <dt>[{inquiryTypeMap[inquiry.inquiryType]}]</dt>
-                  <dd
-                    className={cx("InquiryTitle")}
-                    onClick={() => handleClick(`/inquiry/${inquiry.inquiryId}`)}
-                  >
-                    {inquiry.title}
-                  </dd>
-                </dl>
+          <>
+            {inquiries.map((inquiry) => (
+              <div key={inquiry.inquiryId} className={cx("InquiryList")}>
+                <div className={cx("InquiryItemWrap")}>
+                  <dl className={cx("InquiryItem")}>
+                    <dt>[{inquiryTypeMap[inquiry.inquiryType]}]</dt>
+                    <dd
+                      className={cx("InquiryTitle")}
+                      onClick={() =>
+                        handleClick(`/inquiry/${inquiry.inquiryId}`)
+                      }
+                    >
+                      {inquiry.title}
+                    </dd>
+                  </dl>
 
-                <dl className={cx("InquiryDateStatus")}>
-                  <dt>{formatter.format(new Date(inquiry.createdAt))}</dt>
-                  {/* <dd>작성자: {inquiry.author.userName}</dd> */}
-                  <dd className={cx("InquiryStatus")}>
-                    {statusMap[inquiry.status]}
-                  </dd>
-                </dl>
+                  <dl className={cx("InquiryDateStatus")}>
+                    <dt>{formatter.format(new Date(inquiry.createdAt))}</dt>
+                    <dd className={cx("InquiryStatus")}>
+                      {statusMap[inquiry.status]}
+                    </dd>
+                  </dl>
+                </div>
               </div>
-            </div>
-          ))
+            ))}
+            <ActionButtons />
+          </>
         ) : (
-          <p>등록된 1:1 문의가 없습니다.</p>
+          <div className={cx("NoData")}>
+            <p>등록된 1:1 문의가 없습니다.</p>
+            <ActionButtons />
+          </div>
         )}
-
-        <div className={cx("Buttons")}>
-          <Button disabled={false} variants={"outline"}>
-            <a
-              href="https://open.kakao.com/o/sSr9PS1g"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              카카오톡 문의
-            </a>
-          </Button>
-          <Button
-            disabled={false}
-            variants={"solid"}
-            className={cx("InquiryBtn")}
-            onClick={() => handleClick("/inquiry/write")}
-          >
-            1:1 문의
-          </Button>
-        </div>
       </section>
     </div>
   );
